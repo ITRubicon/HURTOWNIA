@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SourceAuthRepository::class)]
 #[ORM\UniqueConstraint(name: 'name_un', fields: ['name'])]
-class SourceAuth implements IApiConnection
+class SourceAuth implements IConnection
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

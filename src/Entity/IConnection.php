@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-interface IApiConnection
+interface IConnection
 {
     public function getBaseUrl();
     public function getAuth();
