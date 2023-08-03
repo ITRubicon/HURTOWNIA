@@ -1,0 +1,3 @@
+#!/bin//bash
+
+bin/console doctrine:database:drop --force && bin/console doctrine:database:drop --connection=warehouse_db --force && rm ./migrations/*.php && bin/console doctrine:database:create && bin/console doctrine:database:create --connection=warehouse_db && bin/console make:migration && bin/console doctrine:migrations:migrate --no-interaction && bin/console doctrine:schema:update --em=warehouse --force --complete
