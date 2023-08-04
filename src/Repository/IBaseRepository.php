@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\SourceAuth;
 use App\Service\TaskReporter\TaskReporter;
-use App\Utilities\DataFormatter;
+use App\Utilities\DateFormatter;
 use App\Utilities\DateValidator;
 use App\Utilities\Timer;
 use Doctrine\DBAL\Connection;
@@ -92,44 +92,34 @@ abstract class IBaseRepository
     {
         $valuesIns = [];
         $questionMarks = [];
-        $apiKeys = array_column($this->getFieldsParams(), 'sourceField');
-        dump('Przygotowuję dane do zapisu');
+        $fieldsParams = $this->getFieldsParams();
+        echo "\nPrzygotowuję dane do zapisu";
         $this->timer->start();
         
         foreach ($this->fetchResult as &$row) {
-            // $start = microtime(true);
-            $val = [];
             $row['source'] = $this->source->getName();
             
-            foreach ($apiKeys as $apiKey) {
-                $val = isset($row[$apiKey]) ? $row[$apiKey] : null;
+            foreach ($fieldsParams as $fp) {
+                $val = isset($row[$fp['sourceField']]) ? $row[$fp['sourceField']] : null;
 
-                if (!empty($params['format']))
-                    $val = isset($val) ? $this->formatValue($val, $params['format']) : null;
-                // else
-                //     $val =  $this->formatValue($val, ['whitespaces' => true]); // powiniek załatwić klient http
+                if (!empty($fp['format']))
+                    $val = isset($val) ? $this->formatValue($val, $fp['format']) : null;
+                
                 $valuesIns[] = $val;
             }
 
             unset($row);
-            $questionMarks[] = $this->makeQueryPlaceholders(count($apiKeys));
+            $questionMarks[] = $this->makeQueryPlaceholders(count($fieldsParams));
             
-            // dump(number_format(memory_get_usage() / (1024 * 1024), 4) . 'MB');
-            // dump("Czas dla pojedynczego rekordu: " . number_format(microtime(true) - $start, 4) . "s");
+            // dump(number_format(memory_get_usage() / (1024 * 1024), 2) . 'MB');
         }
-        dump('Czas przygotowania danych: ' . $this->timer->getInterval() . "s");
+        echo "\nCzas przygotowania danych: " . $this->timer->getInterval() . "s";
 
         return [
             'valuesIns' => $valuesIns,
-            'types' => $this->getCombinedArray('type'),
+            'types' => array_column($fieldsParams, 'type'),
             'questionMarks' => implode(',', $questionMarks),
         ];
-    }
-
-    protected function getCombinedArray(string $column)
-    {
-        $fields = $this->getFieldsParams();
-        return array_combine(array_keys($fields), array_column($fields, $column));
     }
 
     protected function formatValue($value, array $formatOptions)
@@ -140,16 +130,16 @@ abstract class IBaseRepository
 
             switch ($key) {
                 case 'date':
-                    $value = DataFormatter::formatDate($value, $format);
+                    $value = DateFormatter::formatDate($value, $format);
                     break;
                 case 'json':
-                    $value = DataFormatter::formatJson($value);
+                    $value = DateFormatter::formatJson($value);
                     break;
                 case 'int':
-                    $value = DataFormatter::formatInt($value);
+                    $value = DateFormatter::formatInt($value);
                     break;
                 case 'dec':
-                    $value = DataFormatter::formatFloat($value);
+                    $value = DateFormatter::formatFloat($value);
                     break;
                 default:
                     $value = preg_replace('/[[:cntrl:]]/', '', (String) $value);

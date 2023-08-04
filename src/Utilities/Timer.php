@@ -2,8 +2,6 @@
 
 namespace App\Utilities;
 
-use DateTime;
-
 class Timer
 {
     private $begin;
@@ -11,12 +9,19 @@ class Timer
 
     public function start()
     {
-        $this->begin = new DateTime();
+        $this->reset();
+        $this->begin = microtime(true);
     }
 
     public function stop()
     {
-        $this->finish = new DateTime();
+        $this->finish = microtime(true);
+    }
+
+    public function reset()
+    {
+        $this->begin = null;
+        $this->finish = null;
     }
 
     public function getInterval()
@@ -24,6 +29,6 @@ class Timer
         if ($this->finish === null)
             $this->stop();
 
-        return $this->finish->diff($this->begin)->format('%H:%I:%S.%F');
+        return number_format($this->finish - $this->begin, 4);
     }
 }

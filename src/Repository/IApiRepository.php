@@ -21,6 +21,7 @@ abstract class IApiRepository extends IBaseRepository
     {
         echo "\nOdpytywany endopoint:  " . $this->source->getBaseUrl() . $path;
         $this->httpClient->request($this->source, $path);
+        echo "\nCzas zapytania: " . $this->httpClient->getRequestTime() . "s";
         
         if ($this->httpClient->getHttpCode() === 200)
             return $this->decodeResponse();
