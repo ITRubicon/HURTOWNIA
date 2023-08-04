@@ -52,10 +52,10 @@ abstract class BaseApiCommand extends Command
         $start = new DateTime('now');
 
         $msg = 'Znalezione api:';
-        for ($i=0; $i < $apiSourcesCount; $i++) { 
+        for ($i = 0; $i < $apiSourcesCount; $i++) {
             $msg .= ' ' . $apiSources[$i]->getName() . ',';
         }
-        
+
         $io->info($msg);
 
         $io->info('Czyszczę stare błędy pobierania');
@@ -68,24 +68,23 @@ abstract class BaseApiCommand extends Command
                     $this->clearTable();
 
                 $io->info(sprintf('Pobieram dla %s', $apiSources[$i]->getName()));
-                
+
                 $this->fetch($apiSources[$i], $io);
                 unset($apiSources[$i]);
             }
         } catch (\Throwable $th) {
-            $io->error($th->getMessage() . ". Code: " . $th->getCode() . "\n" . $th->getFile() . " in line: " . $th->getLine());
+            $io->error($th->getMessage() . ". Kod: " . $th->getCode() . "\n" . $th->getFile() . " w linii: " . $th->getLine());
             $io->error($th->getTraceAsString());
             return Command::FAILURE;
         }
 
-        $io->success('Wszystko przeszło pomyślnie');
-
+        $io->success('Koniec pracy');
         $end = new DateTime('now');
-
         $io->info([
             'start: ' . $start->format('Y-m-d H:i:s'),
             'koniec: ' . $end->format('Y-m-d H:i:s'),
             'czas: ' . $end->diff($start)->format('%H:%I:%S'),
+            'błędy requestów: ' . $this->errorRepo->getErrorsCount(),
         ]);
 
         return Command::SUCCESS;

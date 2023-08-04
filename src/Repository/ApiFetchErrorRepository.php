@@ -44,8 +44,15 @@ class ApiFetchErrorRepository extends ServiceEntityRepository
         $res = $this->createQueryBuilder('e')
             ->delete()
             ->getQuery()
-            ->getSingleScalarResult()
-        ;
+            ->getSingleScalarResult();
         return $res ?? 0;
+    }
+
+    public function getErrorsCount(): int
+    {
+        $qb = $this->createQueryBuilder('error');
+        $qb->select('COUNT(error.id) as total');
+
+        return (int)$qb->getQuery()->getSingleScalarResult();
     }
 }
