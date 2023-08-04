@@ -77,7 +77,7 @@ class CustomerCommand extends BaseApiCommand
 
         $rodoCount = count($fetchedRows['rodo']);
         if ($rodoCount > 0) {
-            $io->info(sprintf('Pobrano %s emaili', $rodoCount));
+            $io->info(sprintf('Pobrano %s zgód rodo', $rodoCount));
             $this->rodoRepo->saveRodo($fetchedRows['rodo']);
         }
         unset($fetchedRows['rodo']);

@@ -50,7 +50,7 @@ class PartsSoldRepository extends IApiRepository
     protected function getFieldsParams(): array
     {
         return [
-            'rodzaj' => ['sourceField' => 'Rodzaj', 'type' => ParameterType::INTEGER],
+            'rodzaj' => ['sourceField' => 'Rodzaj', 'type' => ParameterType::STRING],
             'dokument_numer' => ['sourceField' => 'NumerDokSprzed', 'type' => ParameterType::STRING],
             'data' => ['sourceField' => 'DataDokSprzed', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d']],
             'klient_rodzaj' => ['sourceField' => 'RodzajKlienta', 'type' => ParameterType::STRING],

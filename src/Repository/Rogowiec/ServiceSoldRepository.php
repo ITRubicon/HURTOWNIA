@@ -49,7 +49,7 @@ class ServiceSoldRepository extends IApiRepository
     protected function getFieldsParams(): array
     {
         return [
-            'serwis_nr' => ['sourceField' => 'NrSerwisu', 'type' => ParameterType::INTEGER],
+            'serwis_nr' => ['sourceField' => 'NrSerwisu', 'type' => ParameterType::STRING],
             'zlecenie_data' => ['sourceField' => 'DataZlecenia', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d']],
             'marka' => ['sourceField' => 'Marka', 'type' => ParameterType::STRING],
             'model' => ['sourceField' => 'NazwaModelu', 'type' => ParameterType::STRING],
