@@ -25,8 +25,6 @@ class AgeingCarsRepository extends IApiRepository
 
                 $url = str_replace('{orgId}', $b, $this->endpoint);
                 $this->fetchResult = $this->fetchApiResult($url);
-
-                $this->fetchResult = $this->fetchApiResult($url);
                 $resCount += count($this->fetchResult);
                 $this->save();
                 $this->clearDataArrays();
