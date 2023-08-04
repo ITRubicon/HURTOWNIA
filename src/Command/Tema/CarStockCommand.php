@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'tema:car-stock',
+    name: 'tema:car:stock',
     description: 'Pobiera id samochodów na magazynach. Parametry: nazwa api (opcja)',
 )]
 class CarStockCommand extends BaseApiCommand

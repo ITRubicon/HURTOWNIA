@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'tema:contact-rodo',
+    name: 'tema:contact:rodo',
     description: 'Pobiera zgody RODO dla kontaktów',
 )]
 class RodoCustomerContactCommand extends BaseApiCommand

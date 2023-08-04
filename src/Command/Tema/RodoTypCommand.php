@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'tema:rodo-type',
+    name: 'tema:rodo:type',
     description: 'Pobiera typy zgód rodo. Parametry: nazwa api (opcja)',
 )]
 class RodoTypCommand extends BaseApiCommand

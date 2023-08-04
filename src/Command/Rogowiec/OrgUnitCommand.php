@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'rogowiec:org-unit',
+    name: 'rogowiec:orgunit',
     description: 'Pobiera dane o oddziałach. Parametry: nazwa api (opcja)',
 )]
 class OrgUnitCommand extends BaseApiCommand

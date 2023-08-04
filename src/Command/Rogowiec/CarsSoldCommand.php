@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'rogowiec:cars-sold',
+    name: 'rogowiec:cars:sold',
     description: 'Pobiera dane sprzedaży samochodów. Parametry: data od (wymagane), data do (wymagane), nazwa api (opcja)',
 )]
 class CarsSoldCommand extends BaseApiCommand

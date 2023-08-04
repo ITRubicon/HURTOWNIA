@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'tema:prepayment-corrections',
+    name: 'tema:prepayment:corrections',
     description: 'Pobiera korekty zaliczek i pozycje z nich. Parametry: nazwa api (opcja)',
 )]
 class PrepaymentCorrectionDocumentCommand extends BaseApiCommand

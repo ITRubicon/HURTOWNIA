@@ -35,7 +35,7 @@ class ServiceSoldRepository extends IApiRepository
                 $i++;
             }
         } else 
-            throw new \Exception("Nie żadnych jednostek organizacyjnych. Najpierw uruchom komendę pobierającą jednostki organizacyjne [rogowiec:org-unit]", -1);
+            throw new \Exception("Nie żadnych jednostek organizacyjnych. Najpierw uruchom komendę pobierającą jednostki organizacyjne [rogowiec:orgunit]", -1);
 
         return ['fetched' => $resCount];
     }

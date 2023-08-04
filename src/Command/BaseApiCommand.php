@@ -16,7 +16,6 @@ abstract class BaseApiCommand extends Command
 {
     protected SourceAuthRepository $apiAuthRepo;
     protected $producerName = null;
-    // protected $apiResult;
     protected $cmdArgs;
     protected ApiFetchErrorRepository $errorRepo;
 

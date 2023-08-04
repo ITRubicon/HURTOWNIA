@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class RogowiecCommand extends Command
 {
-    private const COMMANDS = ['rogowiec:branch', 'rogowiec:org-unit', 'rogowiec:ageing:cars', 'rogowiec:ageing:parts', 'rogowiec:ageing:production', 'rogowiec:cars-orders', 'rogowiec:cars-sold', 'rogowiec:parts-sold', 'rogowiec:service-sold', 'rogowiec:invoice', 'rogowiec:customer'];
+    private const COMMANDS = ['rogowiec:branch', 'rogowiec:orgunit', 'rogowiec:ageing:cars', 'rogowiec:ageing:parts', 'rogowiec:ageing:production', 'rogowiec:cars:orders', 'rogowiec:cars:sold', 'rogowiec:parts:sold', 'rrogowiec:service:sold', 'rogowiec:invoice', 'rogowiec:customer'];
 
     protected function configure(): void
     {
@@ -64,7 +64,7 @@ class RogowiecCommand extends Command
 
         switch ($cmd) {
             case 'rogowiec:branch':
-            case 'rogowiec:org-unit':
+            case 'rogowiec:orgunit':
             case 'rogowiec:ageing:cars':
             case 'rogowiec:customer':
                 break;
