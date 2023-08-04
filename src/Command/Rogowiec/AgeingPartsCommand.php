@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'rogowiec:ageing-parts',
+    name: 'rogowiec:ageing:parts',
     description: 'Pobiera dane wiekowania części. Parametry: data do (wymagane), nazwa api (opcja)',
 )]
 class AgeingPartsCommand extends BaseApiCommand

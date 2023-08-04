@@ -12,8 +12,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'rogowiec:ageing-cars',
-    description: 'Pobiera dane wiekowania samochodów. Działa tylko dzień dzisiejszy. Parametry: nazwa api (opcja)',
+    name: 'rogowiec:ageing:cars',
+    description: 'Pobiera dane wiekowania samochodów. Pobiera tylko na dzień dzisiejszy. Parametry: nazwa api (opcja)',
 )]
 class AgeingCarsCommand extends BaseApiCommand
 {

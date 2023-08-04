@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'rogowiec:ageing-production',
+    name: 'rogowiec:ageing:production',
     description: 'Pobiera dane robót w toku. Parametry: data do (wymagane), nazwa api (opcja)',
 )]
 class AgeingProductionCommand extends BaseApiCommand
