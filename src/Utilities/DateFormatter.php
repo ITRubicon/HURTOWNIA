@@ -4,10 +4,13 @@ namespace App\Utilities;
 
 use DateTime;
 
-class DataFormatter
+class DateFormatter
 {
     public static function formatDate(string $date, string $format = 'Y-m-d')
     {
+        if (empty($date))
+            return null;
+            
         $dt = new DateTime($date);
         return $dt->format($format);
     }
