@@ -23,15 +23,15 @@ class ExceptionSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ConsoleEvents::TERMINATE => [
-                ['setEnded', 1000]
-            ],
-            ConsoleEvents::COMMAND => [
-                ['setStarted', 1000]
-            ],
-            ConsoleEvents::ERROR => [
-                ['setError', 1000]
-            ]
+            // ConsoleEvents::TERMINATE => [
+            //     ['setEnded', 1000]
+            // ],
+            // ConsoleEvents::COMMAND => [
+            //     ['setStarted', 1000]
+            // ],
+            // ConsoleEvents::ERROR => [
+            //     ['setError', 1000]
+            // ]
         ];
     }
 
