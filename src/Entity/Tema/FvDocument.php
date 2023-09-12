@@ -49,6 +49,12 @@ class SaleInvoiceDocument
 
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $order_name = null;
+    
+    #[ORM\Column(length: 40, nullable: true)]
+    private ?string $payment_method = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $operator_code = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $notes = null;

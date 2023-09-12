@@ -18,6 +18,8 @@ abstract class BaseApiCommand extends Command
     protected $producerName = null;
     protected $cmdArgs;
     protected ApiFetchErrorRepository $errorRepo;
+    protected $dateFrom;
+    protected $dateTo;
 
     public function __construct(SourceAuthRepository $authRepo, ApiFetchErrorRepository $errorRepo)
     {
@@ -34,6 +36,8 @@ abstract class BaseApiCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $this->cmdArgs = $input->getArguments();
         $apiSources = $this->getApiAuth($this->cmdArgs['api']);
+        $this->dateFrom = $this->cmdArgs['dateFrom'] ?? null;
+        $this->dateTo = $this->cmdArgs['dateTo'] ?? null;
         $apiSourcesCount = count($apiSources);
 
         if (empty($this->producerName)) {

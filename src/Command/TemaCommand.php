@@ -22,7 +22,9 @@ class TemaCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)');
+            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)')
+            ->addArgument('dateFrom', InputArgument::OPTIONAL, 'Data początkowa (domyślnie pierwszy dzień miesiąca', date('Y-m-01'))
+            ->addArgument('dateTo', InputArgument::OPTIONAL, 'Data końcowa (domyślnie dzień dzisiejszy)', date('Y-m-d'));
         ;
     }
 
@@ -37,10 +39,7 @@ class TemaCommand extends Command
 
         foreach (self::COMMANDS as $cmd) {
             $command = $this->getApplication()->find($cmd);
-            $inputArgs = ['command' => $cmd];
-            if(!empty($source))
-                $inputArgs['api'] = $source;
-
+            $inputArgs = $this->prepareArguments($cmd, $input);
             $io->info(sprintf('Trwa pobieranie: %s', $cmd));
             $command->run(new ArrayInput($inputArgs), $output);
             unset($command);
@@ -55,5 +54,24 @@ class TemaCommand extends Command
         ]);
 
         return Command::SUCCESS;
+    }
+
+    private function prepareArguments(string $cmd, & $input)
+    {
+        $arguments = ['command' => $cmd];
+
+        if(!empty($input->getArgument('api')))
+            $arguments['api'] = $input->getArgument('api');
+
+        switch ($cmd) {
+            case 'tema:order':
+                $arguments['dateFrom'] = $input->getArgument('dateFrom');
+                $arguments['dateTo'] = $input->getArgument('dateTo');
+                break;
+            default:
+                break;
+        }
+
+        return $arguments;
     }
 }
