@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class TemaCommand extends Command
 {
-    private const COMMANDS = ['tema:customer', 'tema:rodo:type', 'tema:car', 'tema:stock', 'tema:car:stock', 'tema:fv', 'tema:fv:corrections', 'tema:fvz', 'tema:prepayment', 'tema:prepayment:corrections', 'tema:pz', 'tema:wz', 'tema:service', 'tema:contact:rodo'];
+    private const COMMANDS = ['tema:customer', 'tema:rodo:type', 'tema:car', 'tema:stock', 'tema:car:stock', 'tema:fv', 'tema:fv:corrections', 'tema:fvz', 'tema:fvz:corrections', 'tema:prepayment', 'tema:prepayment:corrections', 'tema:pz', 'tema:wz', 'tema:service', 'tema:contact:rodo'];
 
     protected function configure(): void
     {
