@@ -23,7 +23,7 @@ class ServiceOrderDocument
     #[ORM\Column(length: 12, nullable: true)]
     private ?string $doc_id = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(length: 40, nullable: true)]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]

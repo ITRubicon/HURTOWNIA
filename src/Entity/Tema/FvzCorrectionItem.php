@@ -38,6 +38,15 @@ class FvzCorrectionItem
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
     private ?string $taxRate = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 4)]
+    private ?string $correctionValue = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $carId = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $vin = null;
+
     #[ORM\Column]
     private ?bool $isExempt = null;
 

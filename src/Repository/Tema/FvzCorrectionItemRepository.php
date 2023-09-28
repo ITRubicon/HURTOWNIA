@@ -36,6 +36,9 @@ class FvzCorrectionItemRepository extends IApiRepository
             'net_price' => ['sourceField' => 'netPrice', 'type' => ParameterType::STRING],
             'tax_rate' => ['sourceField' => 'value', 'type' => ParameterType::STRING],
             'is_exempt' => ['sourceField' => 'isExempt', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
+            'correction_value' => ['sourceField' => 'correctionNetValue', 'type' => ParameterType::STRING],
+            'car_id' => ['sourceField' => 'vehicleId', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
+            'vin' => ['sourceField' => 'vin', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];   
     }

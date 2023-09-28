@@ -13,10 +13,10 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'tema:fvz:corrections',
+    name: 'tema:fvz:correction',
     description: 'Pobiera korekty dokumentów zakupowych i pozycje z nich. Parametry: nazwa api (opcja)',
 )]
-class FvzCorrectionsDocumentCommand extends BaseApiCommand
+class FvzCorrectionDocumentCommand extends BaseApiCommand
 {
     private $docRepo;
     private $itemRepo;

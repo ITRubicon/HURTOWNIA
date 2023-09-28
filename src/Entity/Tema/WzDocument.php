@@ -24,7 +24,7 @@ class WzDocument
     #[ORM\Column(length: 12, nullable: true)]
     private ?string $wzId = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(length: 40, nullable: true)]
     private ?string $name = null;
 
     #[ORM\Column(length: 20, nullable: true)]
