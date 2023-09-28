@@ -96,8 +96,7 @@ class WzDocumentRepository extends IApiRepository
 
     private function getStocks()
     {
-        
-        $q = "SELECT stock_id FROM tema_stock WHERE source = :source";
+        $q = "SELECT stock_id FROM tema_stock WHERE source = :source and stock_id != 11";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 

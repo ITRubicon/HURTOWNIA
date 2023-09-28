@@ -23,8 +23,12 @@ class InvoiceRepository extends IApiRepository
             echo "\nId faktury " . $invoicesIds[$i] . " ----> " . $i+1 . "/$invoicesIdsCount";
             $url = str_replace('{id}', $invoicesIds[$i], $this->endpoint);
             $res = $this->fetchApiResult($url);
+            if ($res['id'] === 0)
+                continue;
+
             $this->collectClients($res);
             array_push($this->fetchResult, $res);
+            
             unset($invoicesIds[$i]);
         }
             $this->save();
@@ -72,7 +76,7 @@ class InvoiceRepository extends IApiRepository
 
     private function fetchUnitId()
     {
-        $q = "SELECT SUBSTRING(id_zasob, 3) AS branch_id FROM rogowiec_org_unit WHERE source = :source AND SUBSTR(id_zasob, 5, 2) = '01'";
+        $q = "SELECT resource_id FROM rogowiec_sale_unit WHERE source = :source";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 

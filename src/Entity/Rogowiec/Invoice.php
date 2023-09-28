@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping\Table;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 #[Table(name: 'rogowiec_invoice')]
-#[Index(name: "source_idx", fields: ["source"])]
+#[Index(name: "source_idx", fields: ["source", "number"])]
 class Invoice
 {
     #[ORM\Id]
