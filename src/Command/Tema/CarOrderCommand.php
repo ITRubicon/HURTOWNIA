@@ -14,7 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'tema:order',
-    description: 'Pobiera zamówienia samochodów i poycje z nich. Parametry: nazwa api (opcja)',
+    description: 'Pobiera zamówienia samochodów i poycje z nich. Parametry: nazwa api (opcja), dateFrom, dateTo [domyślnie bieżący miesiąc]',
 )]
 class CarOrderCommand extends BaseApiCommand
 {
