@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping\Table;
 #[ORM\Entity(repositoryClass: CarRepository::class)]
 #[Table(name: 'tema_warehouse')]
 #[Index(name: "source_idx", fields: ["source"])]
-class Warehouse
+class PartsWarehouse
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

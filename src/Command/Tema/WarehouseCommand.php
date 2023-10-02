@@ -6,21 +6,21 @@ use App\Command\BaseApiCommand;
 use App\Entity\IConnection;
 use App\Repository\ApiFetchErrorRepository;
 use App\Repository\SourceAuthRepository;
-use App\Repository\Tema\WarehouseRepository;
+use App\Repository\Tema\PartsWarehouseRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'tema:warehouse',
-    description: 'Pobiera listę samochodów. Parametry: nazwa api (opcja)',
+    description: 'Pobiera części na magazynie. Parametry: nazwa api (opcja)',
 )]
 class WarehouseCommand extends BaseApiCommand
 {
     private $repo;
     protected $producerName = 'Tema';
 
-    public function __construct(WarehouseRepository $repo, SourceAuthRepository $apiAuthRepo, ApiFetchErrorRepository $errorRepo)
+    public function __construct(PartsWarehouseRepository $repo, SourceAuthRepository $apiAuthRepo, ApiFetchErrorRepository $errorRepo)
     {
         parent::__construct($apiAuthRepo, $errorRepo);
         $this->repo = $repo;

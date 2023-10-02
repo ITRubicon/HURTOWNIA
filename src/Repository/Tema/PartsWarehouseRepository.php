@@ -5,7 +5,7 @@ namespace App\Repository\Tema;
 use App\Repository\IApiRepository;
 use Doctrine\DBAL\ParameterType;
 
-class WarehouseRepository extends IApiRepository
+class PartsWarehouseRepository extends IApiRepository
 {
     private string $endpoint = '/api/dms/v1/warehouse/{stockId}/:sync';
     protected $table = 'tema_warehouse';

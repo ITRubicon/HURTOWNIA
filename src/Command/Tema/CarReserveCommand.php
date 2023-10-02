@@ -6,22 +6,21 @@ use App\Command\BaseApiCommand;
 use App\Entity\IConnection;
 use App\Repository\ApiFetchErrorRepository;
 use App\Repository\SourceAuthRepository;
-use App\Repository\Tema\CustomerContactRepository;
+use App\Repository\Tema\CarReserveRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'tema:customer:contact',
-    description: 'Pobiera dane kontaktowe klientów. [dane pobierane podczas komendy tema:customer]',
-    hidden: true
+    name: 'tema:car:reserve',
+    description: 'Pobiera listę rezerw na samochodach. Parametry: nazwa api (opcja)',
 )]
-class CustomerContactCommand extends BaseApiCommand
+class CarReserveCommand extends BaseApiCommand
 {
     private $repo;
     protected $producerName = 'Tema';
 
-    public function __construct(CustomerContactRepository $repo, SourceAuthRepository $apiAuthRepo, ApiFetchErrorRepository $errorRepo)
+    public function __construct(CarReserveRepository $repo, SourceAuthRepository $apiAuthRepo, ApiFetchErrorRepository $errorRepo)
     {
         parent::__construct($apiAuthRepo, $errorRepo);
         $this->repo = $repo;

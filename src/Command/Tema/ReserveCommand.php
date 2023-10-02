@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'tema:reserve',
-    description: 'Pobiera listę samochodów. Parametry: nazwa api (opcja)',
+    description: 'Pobiera części z rezerwy. Parametry: nazwa api (opcja)',
 )]
 class ReserveCommand extends BaseApiCommand
 {
