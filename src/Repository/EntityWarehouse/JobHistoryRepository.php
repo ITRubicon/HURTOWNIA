@@ -34,21 +34,21 @@ class JobHistoryRepository
 
     public function setEnd(int $id)
     {
-        $dql = "UPDATE App\EntityWarehouse\JobHistory j SET j.end = :end, j.status = :status WHERE j.id = :id";
-        $this->entityManager->createQuery($dql)
-            ->setParameter('id', $id)
-            ->setParameter('end', new \DateTime())
-            ->setParameter('status', 1)
-            ->execute();
+        $job = $this->entityManager->find(JobHistory::class, $id);
+        $job->setEnd(new \DateTime());        
+        if ($job->getStatus() !== JobStatus::ERROR)
+            $job->setStatus(JobStatus::ENDED);
+            
+        $this->entityManager->persist($job);    
+        $this->entityManager->flush();
     }
 
     public function setError(int $id, string $msg)
     {
-        $dql = "UPDATE App\EntityWarehouse\JobHistory j SET j.error = :error, j.end = :end, j.status = :status WHERE j.id = :id";
-        $this->entityManager->createQuery($dql)
-            ->setParameter('id', $id)
-            ->setParameter('error', $msg)
-            ->setParameter('status', -1)
-            ->execute();
+        $job = $this->entityManager->find(JobHistory::class, $id);
+        $job->setError($msg)
+            ->setStatus(JobStatus::ERROR);
+        $this->entityManager->persist($job);    
+        $this->entityManager->flush();
     }
 }

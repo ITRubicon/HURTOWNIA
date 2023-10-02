@@ -2,36 +2,36 @@
 
 namespace App\EventSubscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use App\Service\TaskReporter\TaskReporter;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
     private $id = false;
-    private $taskReporter = 'unknown';
+    private $taskReporter;
 
     public function __construct(TaskReporter $taskReporter)
     {
         $this->taskReporter = $taskReporter;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
-            // ConsoleEvents::TERMINATE => [
-            //     ['setEnded', 1000]
-            // ],
-            // ConsoleEvents::COMMAND => [
-            //     ['setStarted', 1000]
-            // ],
-            // ConsoleEvents::ERROR => [
-            //     ['setError', 1000]
-            // ]
+            ConsoleEvents::TERMINATE => [
+                ['setEnded', 1000]
+            ],
+            ConsoleEvents::COMMAND => [
+                ['setStarted', 1000]
+            ],
+            ConsoleEvents::ERROR => [
+                ['setError', 1000]
+            ]
         ];
     }
 
@@ -46,7 +46,6 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $commandName = $command->getName();
         if ($commandName != 'cache:clear') {
             $this->id = $this->taskReporter->setStart($commandName, $args);
-            
             $output->writeln(sprintf('ZAPIS DO JOBS_HISTORY'));
         }
     }
@@ -54,24 +53,19 @@ class ExceptionSubscriber implements EventSubscriberInterface
     public function setEnded(ConsoleTerminateEvent $event)
     {
         if ($this->id == true) {
-            $input = $event->getInput();
             $this->taskReporter->setEnd($this->id);
-            
             $output = $event->getOutput();
-            // $command = $event->getCommand();
-            // $commandName = $command->getName();
-            $output->writeln('');
             $output->writeln(sprintf('KOŃCOWY ZAPIS DO JOBS_HISTORY'));
         }
     }
 
     public function setError(ConsoleErrorEvent $event)
     {
-        // $input = $event->getInput();
         $output = $event->getOutput();
-
         if ($this->id == true) {
-            $this->taskReporter->setError($this->id, $event->getError());
+            $e = $event->getError();
+            $msg = $e->getMessage() . ". W linii: " . $e->getLine() . ".\n" . $e->getTraceAsString();
+            $this->taskReporter->setError($this->id, $msg);
             $output->writeln('');
             $output->writeln(sprintf('Bład  <info>%s</info>', $event->getError()));
         }
