@@ -64,14 +64,18 @@ class HttpClient
 
     private function setAuthHeaders()
     {
-        if (strtoupper($this->authType) === 'BASIC_AUTH') {
-            curl_setopt($this->ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($this->ch, CURLOPT_USERPWD, "$this->auth");
-        }
-
-        if (strtoupper($this->authType) === 'WEBAPIKEY') {
-            if (!in_array($this->auth, $this->httpHeader))
-                array_push($this->httpHeader, $this->auth);
+        switch (strtoupper($this->authType)) {
+            case 'BASIC_AUTH':
+                curl_setopt($this->ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                curl_setopt($this->ch, CURLOPT_USERPWD, "$this->auth");
+                break;
+            case 'WEBAPIKEY':
+                if (!in_array($this->auth, $this->httpHeader))
+                    array_push($this->httpHeader, $this->auth);
+                break;
+            default:
+                throw new \Exception("Nieznany lub niepoprawny sposób autoryzacji", 1);
+                break;
         }
     }
 
