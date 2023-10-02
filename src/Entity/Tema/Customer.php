@@ -30,13 +30,13 @@ class Customer
     #[ORM\Column(length: 15, nullable: true)]
     private ?string $vatId = null;
 
-    #[ORM\Column(length: 11, nullable: true)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $personalId = null;
 
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $krsId = null;
 
-    #[ORM\Column(length: 9, nullable: true)]
+    #[ORM\Column(length: 15, nullable: true)]
     private ?string $regonId = null;
 
     #[ORM\Column(length: 160, nullable: true)]
