@@ -61,14 +61,14 @@ class ServiceOrderDocumentCommand extends BaseApiCommand
         $endDocsCount = count($fetchedRows['endDocs']);
         if ($endDocsCount > 0) {
             $io->info(sprintf('Pobrano %s pozycji z dokumentów końcowych', $endDocsCount));
-            $this->endDocRepo->saveDocs($fetchedRows['items']);
+            $this->endDocRepo->saveDocs($fetchedRows['endDocs']);
         }
         unset($fetchedRows['endDocs']);
 
         $carsCount = count($fetchedRows['cars']);
         if ($carsCount > 0) {
             $io->info(sprintf('Pobrano %s samochód', $carsCount));
-            $this->carRepo->saveCars($fetchedRows['items']);
+            $this->carRepo->saveCars($fetchedRows['cars']);
         }
         unset($fetchedRows['cars']);
     }
