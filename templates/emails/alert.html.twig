@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+<style>
+    body {
+        background-color: #eee;
+    }
+
+    .msg {
+        background-color: black;
+        color: #ddd;
+        margin-top: 15px;
+        padding: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<p>{{ company }} - błędy pobierania</p>
+<div class="msg">
+{{ msg|raw }}
+<div>
+
+{% endblock %}

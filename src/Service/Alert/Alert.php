@@ -3,33 +3,35 @@
 namespace App\Service\Alert;
 
 use App\Repository\EntityWarehouse\JobHistoryRepository;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
 class Alert
 {
     private $mailer;
-    private $templating;
-    private $con;
-    private $jobRepo;
-    private $userRepo;
 
-    public function __construct(MailerInterface $mailer, /* \Twig\Environment $templating */ JobHistoryRepository $jobRepo)
+    public function __construct(MailerInterface $mailer, /* \Twig\Environment $templating JobHistoryRepository $jobRepo*/)
     {
         $this->mailer = $mailer;
         // $this->templating = $templating;
-        $this->jobRepo = $jobRepo;
+        // $this->jobRepo = $jobRepo;
     }
 
 
     public function sendCommandAlert(string $msg): void
     {
-        $email = (new Email())
+        $email = (new TemplatedEmail())
             ->from('alert@example.com')
             ->to('andrzej.guzowski@rubicon.katowice.pl')
             ->priority(Email::PRIORITY_HIGH)
-            ->subject('ALERT - HURTOWNIA')
-            ->html('<p>See Twig integration for better HTML integration!</p><br>' . $msg);
+            ->subject('ALERT - HURTOWNIA - ' . $_ENV['COMPANY'])
+            ->htmlTemplate('emails/alert.html.twig')
+            ->context([
+                'msg' => $msg,
+                'company' => $_ENV['COMPANY']
+            ])
+        ;
 
         $this->mailer->send($email);
     }

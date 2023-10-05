@@ -69,7 +69,7 @@ class InvoiceRepository extends IApiRepository
                     $invoiceIds = array_merge($invoiceIds, array_values($res['items']));
             }
         } else 
-            throw new \Exception("Nie żadnych . Najpierw uruchom komendę pobierającą listę oddziałów [rogowiec:branch]", 99);
+            throw new \Exception("Nie żadnych . Najpierw uruchom komendę pobierającą listę oddziałów [rogowiec:saleunit]", 99);
 
         return $invoiceIds;
     }

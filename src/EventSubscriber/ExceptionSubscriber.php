@@ -64,7 +64,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $output = $event->getOutput();
         if ($this->id == true) {
             $e = $event->getError();
-            $msg = $e->getMessage() . ". W linii: " . $e->getLine() . ".\n" . $e->getTraceAsString();
+            $msg = $e->getMessage() . ". Linia: " . $e->getLine() . ".<br>" . str_replace(PHP_EOL, '<br>', $e->getTraceAsString());
             $this->taskReporter->setError($this->id, $msg);
             $output->writeln('');
             $output->writeln(sprintf('Bład  <info>%s</info>', $event->getError()));
