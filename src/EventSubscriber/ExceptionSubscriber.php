@@ -22,17 +22,22 @@ class ExceptionSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
-        return [
-            ConsoleEvents::TERMINATE => [
-                ['setEnded', 1000]
-            ],
-            ConsoleEvents::COMMAND => [
-                ['setStarted', 1000]
-            ],
-            ConsoleEvents::ERROR => [
-                ['setError', 1000]
-            ]
-        ];
+        if ($_ENV['APP_ENV'] === 'prod')
+            return [
+                ConsoleEvents::TERMINATE => [
+                    ['setEnded', 1000]
+                ],
+                ConsoleEvents::COMMAND => [
+                    ['setStarted', 1000]
+                ],
+                ConsoleEvents::ERROR => [
+                    ['setError', 1000]
+                ]
+            ];
+        else {
+            dump('Korzystasz ze środowiska ' . $_ENV['APP_ENV'] . '. Żadne alerty nie będą przychodziły!' . PHP_EOL . 'Ustaw APP_ENV w pliku .env na prod');
+            return [];
+        }
     }
 
     public function setStarted(ConsoleCommandEvent $event)
