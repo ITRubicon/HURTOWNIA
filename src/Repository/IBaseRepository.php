@@ -62,7 +62,6 @@ abstract class IBaseRepository
                 $this->db->close();
             } catch (\Throwable $th) {
                 throw new \Exception($th->getMessage(), $th->getCode(), $th);
-                exit(0);
             }
         }
     }

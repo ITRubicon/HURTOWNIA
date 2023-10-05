@@ -65,20 +65,15 @@ abstract class BaseApiCommand extends Command
         $io->info('Usunąłem ' . $this->errorRepo->clearErrors() . ' wpisów');
 
         $io->info('Pobieram dane');
-        try {
-            for ($i = 0; $i < $apiSourcesCount; $i++) {
-                if ($i === 0)
-                    $this->clearTable();
 
-                $io->info(sprintf('Pobieram dla %s', $apiSources[$i]->getName()));
+        for ($i = 0; $i < $apiSourcesCount; $i++) {
+            if ($i === 0)
+                $this->clearTable();
 
-                $this->fetch($apiSources[$i], $io);
-                unset($apiSources[$i]);
-            }
-        } catch (\Throwable $th) {
-            $io->error($th->getMessage() . ". Kod: " . $th->getCode() . "\n" . $th->getFile() . " w linii: " . $th->getLine());
-            $io->error($th->getTraceAsString());
-            return Command::FAILURE;
+            $io->info(sprintf('Pobieram dla %s', $apiSources[$i]->getName()));
+
+            $this->fetch($apiSources[$i], $io);
+            unset($apiSources[$i]);
         }
 
         $io->success('Koniec pracy');

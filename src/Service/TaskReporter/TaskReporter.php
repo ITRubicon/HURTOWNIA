@@ -40,14 +40,10 @@ class TaskReporter
         return $this->jobHistory->save($history, true);
     }
 
-    public function get($id)
-    {
-        // return $this->jobHistory->get($id);
-    }
-
     public function setError(int $id, string $msg)
     {
         $this->jobHistory->setError($id, $msg);
+        $this->sendErrorReport($msg);
     }
 
     public function setEnd(int $id)
@@ -55,12 +51,12 @@ class TaskReporter
         return $this->jobHistory->setEnd($id);
     }
 
-    public function sendErrorReport()
+    public function sendErrorReport($msg)
     {
         // pobrać błędne endpointy
         // pobrać niewykonane zadania
         // wygenerować widok
         // wysłać
-        // $this->alert->sendCommandAlert($param);
+        $this->alert->sendCommandAlert($msg);
     }
 }
