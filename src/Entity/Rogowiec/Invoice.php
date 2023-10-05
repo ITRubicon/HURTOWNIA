@@ -22,6 +22,9 @@ class Invoice
     #[ORM\Column(length: 255)]
     private ?string $number = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $correctedNo = null;
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $docDate = null;
 

@@ -85,6 +85,7 @@ class InvoiceRepository extends IApiRepository
         return [
             'id' => ['sourceField' => 'id', 'type' => ParameterType::INTEGER],
             'number' => ['sourceField' => 'number', 'type' => ParameterType::STRING],
+            'corrected_no' => ['sourceField' => 'correctedNo', 'type' => ParameterType::STRING],
             'doc_date' => ['sourceField' => 'docDate', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d']],
             'sale_date' => ['sourceField' => 'saleDate', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d']],
             'currency' => ['sourceField' => 'currency', 'type' => ParameterType::STRING],
