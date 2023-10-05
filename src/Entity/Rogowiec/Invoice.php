@@ -19,10 +19,10 @@ class Invoice
     #[ORM\Column(length: 20)]
     private ?string $source = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
     private ?string $number = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
     private ?string $correctedNo = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
