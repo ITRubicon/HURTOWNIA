@@ -13,10 +13,24 @@ class SaleUnitRepository extends IApiRepository
     public function fetch(): array
     {
         $this->clearDataArrays();
-        $this->fetchResult = $this->fetchApiResult($this->endpoint);
+        $branches = $this->getBranches();
+        $branchesCount = count($branches);
+        $i = 1;
+        foreach ($branches as $b) {
+            echo "\nOddział $b ----> $i/$branchesCount";
+            $res = $this->fetchApiResult($this->endpoint . "&BranchId=" . $b);
+            $this->fetchResult = array_merge($this->fetchResult, $res);
+            $i++;
+        }
         $resCount = count($this->fetchResult);
         $this->save();
         return ['fetched' => $resCount];
+    }
+
+    private function getBranches()
+    {
+        $q = "SELECT id_zaob AS branch_id FROM rogowiec_branch WHERE source = :source";
+        return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
     protected function getFieldsParams(): array

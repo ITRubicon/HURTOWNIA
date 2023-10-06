@@ -42,7 +42,6 @@ class PartsSoldRepository extends IApiRepository
 
     private function fetchBranchId()
     {
-        
         $q = "SELECT dms_id FROM rogowiec_branch WHERE source = :source";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
