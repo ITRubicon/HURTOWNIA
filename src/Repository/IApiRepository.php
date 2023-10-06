@@ -17,11 +17,6 @@ abstract class IApiRepository extends IBaseRepository
         $this->reporter = $reporter;
     }
 
-    public function getHttpErrors()
-    {
-        return $this->reporter->getFetchErrors();
-    }
-
     protected function fetchApiResult(string $path): array
     {
         echo "\nOdpytywany endopoint:  " . $this->source->getBaseUrl() . $path;
@@ -37,12 +32,8 @@ abstract class IApiRepository extends IBaseRepository
                     $path,
                     $this->httpClient->getHttpCode()
                 );
-                return [];
             }
-            else {
-                echo "\nPUSTO!";
-                return [];
-            }
+            return [];
         }
     }
 
