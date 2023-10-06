@@ -59,6 +59,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
     {
         if ($this->id == true) {
             $this->taskReporter->setEnd($this->id);
+            $this->taskReporter->sendFetchErrors();
             $output = $event->getOutput();
             $output->writeln(sprintf('KOŃCOWY ZAPIS DO JOBS_HISTORY'));
         }
@@ -70,7 +71,8 @@ class ExceptionSubscriber implements EventSubscriberInterface
         if ($this->id == true) {
             $e = $event->getError();
             $msg = $e->getMessage() . ". Linia: " . $e->getLine() . ".<br>" . str_replace(PHP_EOL, '<br>', $e->getTraceAsString());
-            $this->taskReporter->setError($this->id, $msg);
+            $cmd = $event->getCommand()->getName();
+            $this->taskReporter->setError($this->id, $msg, $cmd);
             $output->writeln('');
             $output->writeln(sprintf('Bład  <info>%s</info>', $event->getError()));
         }

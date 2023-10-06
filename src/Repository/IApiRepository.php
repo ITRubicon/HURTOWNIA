@@ -32,24 +32,21 @@ abstract class IApiRepository extends IBaseRepository
                     $path,
                     $this->httpClient->getHttpCode()
                 );
-                return [];
-                // throw new HttpException(0, 'Nie udało się pobrać danych. Kod http: ' . $this->httpClient->getHttpCode());
             }
-            else {
-                echo "\nPUSTO!";
-                return [];
-            }
+            return [];
         }
     }
 
     protected function isResponseValid()
     {
-        $resp = $this->decodeResponse();
-        
-        if (empty($resp) || $this->httpClient->getHttpCode() === 500 || !preg_match('/NotFound/i', $resp['code']))
+        if ($this->httpClient->getHttpCode() === 500)
             return false;
-        else
-            return true;
+        if (empty($this->httpClient->getContent()))
+            return false;
+        if (!preg_match('/NotFound/i', $this->decodeResponse()['code']))
+            return false;
+        
+        return true;
     }
 
     protected function decodeResponse(): array

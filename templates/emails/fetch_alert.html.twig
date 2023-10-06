@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+<style>
+    .main-container {
+        width: 100%;
+        display: flex;
+        margin: 0;
+        justify-content: center;
+        align-items: center;
+        background-color: #fafafa;
+    }
+
+    .table-container {
+        display: flex;
+        flex-flow: column nowrap;
+        background-color: white;
+        width: 80%;
+        margin: 0 auto;
+        border-radius: 4px;
+        border: 1px solid #DADADA;
+        box-shadow: 0px 1px 4px rgba(0, 0, 0, .08);
+    }
+
+    .table-row {
+        display: flex;
+        flex-flow: row nowrap;
+        width: 100%;
+        border-bottom: 1px solid #dadada;
+    }
+
+    .heading {
+        background-color: #ececec;
+        color: #3e3e3e;
+        font-weight: bold;
+    }
+
+    .row-item {
+        display: flex;
+        flex: 1;
+        font-size: 14px;
+        padding: 8px 0;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .table-row:last-child {
+        border-bottom: 0;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<p>{{ company }} | Problematyczne endpointy</p>
+
+<div class="main-container">
+    <div class="table-container">
+    <div class="table-row heading">
+        <div class="row-item">API</div>
+        <div class="row-item">endpoint</div>
+        <div class="row-item">kod http</div>
+        <div class="row-item">czas</div>
+    </div>
+{% for e in errors %}
+    <div class="table-row">
+        <div class="row-item">{{ e.source }}</div>
+        <div class="row-item">{{ e.endpoint }}</div>
+        <div class="row-item">{{ e.http_code }}</div>
+        <div class="row-item">{{ e.time }}</div>
+    </div>
+{% endfor %}
+</div>
+
+{% endblock %}

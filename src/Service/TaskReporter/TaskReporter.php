@@ -40,10 +40,10 @@ class TaskReporter
         return $this->jobHistory->save($history, true);
     }
 
-    public function setError(int $id, string $msg)
+    public function setError(int $id, string $msg, string $command)
     {
         $this->jobHistory->setError($id, $msg);
-        $this->sendErrorReport($msg);
+        $this->sendErrorReport($command, $msg);
     }
 
     public function setEnd(int $id)
@@ -51,12 +51,24 @@ class TaskReporter
         return $this->jobHistory->setEnd($id);
     }
 
-    public function sendErrorReport($msg)
+    public function sendErrorReport(string $command, string $msg)
     {
-        // pobrać błędne endpointy
-        // pobrać niewykonane zadania
-        // wygenerować widok
-        // wysłać
-        $this->alert->sendCommandAlert($msg);
+        $this->alert->sendCommandAlert($command, $msg);
+    }
+
+    public function sendFetchErrors()
+    {
+        $errors = [];
+        foreach ($this->errorRepo->findAll() as $e) {
+            $errors[] = [
+                'source' => $e->getSource(),
+                'endpoint' => $e->getEndpoint(),
+                'http_code' => $e->getHttpCode(),
+                'time' => $e->getTime()->format('Y-m-d H:i:s')
+            ];
+        }
+        
+        if (!empty($errors))
+            $this->alert->sendFetchErrors($errors);
     }
 }

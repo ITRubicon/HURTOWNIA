@@ -65,6 +65,7 @@ class RogowiecCommand extends Command
         switch ($cmd) {
             case 'rogowiec:branch':
             case 'rogowiec:orgunit':
+            case 'rogowiec:saleunit':
             case 'rogowiec:ageing:cars':
             case 'rogowiec:customer':
                 break;
