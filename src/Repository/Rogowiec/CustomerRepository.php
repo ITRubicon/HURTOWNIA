@@ -72,7 +72,9 @@ class CustomerRepository extends IApiRepository
                 UNION
                 SELECT DISTINCT kod_klienta FROM rogowiec_service_sold rss WHERE source = :source
             ) uq 
-            WHERE kod_klienta != ''";
+            WHERE kod_klienta != ''
+            AND kod_klienta NOT IN (SELECT code FROM mmc.rogowiec_customer WHERE source = :source)
+            ";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
