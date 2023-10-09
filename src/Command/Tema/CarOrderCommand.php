@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'tema:order',
+    name: 'tema:car:order',
     description: 'Pobiera zamówienia samochodów i poycje z nich. Parametry: nazwa api (opcja), dateFrom, dateTo [domyślnie bieżący miesiąc]',
 )]
 class CarOrderCommand extends BaseApiCommand
