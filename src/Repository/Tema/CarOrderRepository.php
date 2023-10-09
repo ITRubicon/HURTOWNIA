@@ -37,8 +37,9 @@ class CarOrderRepository extends IApiRepository
 
                 $this->collectItems($res);
                 $resultCount += count($res);
-                array_merge($this->fetchResult, $res);
+                $this->fetchResult = array_merge($this->fetchResult, $res);
             }
+            $this->save();
         } else 
             throw new \Exception("Nie żadnych jednostek organizacyjnych. Najpierw uruchom komendę pobierającą listę jednostek [tema:stock]");
 
