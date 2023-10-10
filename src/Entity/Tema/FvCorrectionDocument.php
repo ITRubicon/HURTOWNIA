@@ -60,4 +60,12 @@ class FvCorrectionDocument
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $notes = null;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $who = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $forWhom = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $reason = null;
 }

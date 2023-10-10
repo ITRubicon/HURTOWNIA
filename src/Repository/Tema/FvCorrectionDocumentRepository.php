@@ -32,7 +32,7 @@ class FvCorrectionDocumentRepository extends IApiRepository
                 $this->collectItems($doc);
                 array_push($this->fetchResult, $doc);
             }
-
+            
             $this->save();
             $this->fetchResult = [];
         }
@@ -83,6 +83,9 @@ class FvCorrectionDocumentRepository extends IApiRepository
             'order_id' => ['sourceField' => 'orderId', 'type' => ParameterType::STRING],
             'order_name' => ['sourceField' => 'orderName', 'type' => ParameterType::STRING],
             'notes' => ['sourceField' => 'notes', 'type' => ParameterType::STRING],
+            'who' => ['sourceField' => 'who', 'type' => ParameterType::STRING],
+            'for_whom' => ['sourceField' => 'forWhom', 'type' => ParameterType::STRING],
+            'reason' => ['sourceField' => 'reason', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
     }

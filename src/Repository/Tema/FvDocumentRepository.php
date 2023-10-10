@@ -83,6 +83,9 @@ class FvDocumentRepository extends IApiRepository
             'payment_method' => ['sourceField' => 'paymentMethod', 'type' => ParameterType::STRING],
             'operator_code' => ['sourceField' => 'operatorCode', 'type' => ParameterType::INTEGER],
             'notes' => ['sourceField' => 'notes', 'type' => ParameterType::STRING],
+            'who' => ['sourceField' => 'who', 'type' => ParameterType::STRING],
+            'for_whom' => ['sourceField' => 'forWhom', 'type' => ParameterType::STRING],
+            'reason' => ['sourceField' => 'reason', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
     }
