@@ -71,7 +71,7 @@ class CustomerRepository extends IApiRepository
         $this->db->executeQuery($q);
 
         $q = "INSERT INTO rogowiec_customer_email_archive (source, customer_code, address, owner, is_default)
-            SELECT source, customer_code, address, owner, is_default FROM rogowiec_customer_email
+            SELECT source, customer_code, address, owner, is_default FROM rogowiec_customer_email r
                 ON DUPLICATE KEY UPDATE
                 address = r.address,
                 owner = r.owner,
@@ -80,7 +80,7 @@ class CustomerRepository extends IApiRepository
         $this->db->executeQuery($q);
         
         $q = "INSERT INTO rogowiec_customer_phone_archive (source, customer_code, `number`, owner, is_default)
-            SELECT source, customer_code, number, owner, is_default FROM rogowiec_customer_phone
+            SELECT source, customer_code, number, owner, is_default FROM rogowiec_customer_phone r
                 ON DUPLICATE KEY UPDATE
                 number = r.number,
                 owner = r.owner,
