@@ -52,6 +52,9 @@ class InvoiceCommand extends BaseApiCommand
             $this->invoiceCustomerRepo->saveCustomers($fetchedRows['customers']);
         }
         unset($fetchedRows['customers']);
+        
+        $io->info('Archiwum faktur');
+        $this->repo->archive();
     }
 
     protected function clearTable()

@@ -22,8 +22,8 @@ class InvoiceRepository extends IApiRepository
         $invoicesIdsCount = count($invoicesIdsToFetch);
         $this->clearDataArrays();
 
-        for ($i=0; $i < $invoicesIdsCount ; $i++) {
-            echo "\nId faktury " . $invoicesIdsCount[$i] . " ----> " . $i+1 . "/$invoicesIdsCount";
+        for ($i = 0; $i < $invoicesIdsCount; $i++) {
+            echo "\nId faktury " . $invoicesIdsCount[$i] . " ----> " . $i + 1 . "/$invoicesIdsCount";
             $url = str_replace('{id}', $invoicesIdsCount[$i], $this->endpoint);
             $res = $this->fetchApiResult($url);
             if ($res['id'] === 0)
@@ -31,16 +31,47 @@ class InvoiceRepository extends IApiRepository
 
             $this->collectClients($res);
             array_push($this->fetchResult, $res);
-            
+
             unset($invoicesIdsCount[$i]);
         }
-            $this->save();
-            $this->fetchResult = [];
+        $this->save();
+        $this->fetchResult = [];
 
         return [
             'fetched' => $invoicesIdsCount,
             'customers' => $this->customers
         ];
+    }
+
+    public function archive()
+    {
+        $q = "INSERT INTO rogowiec_invoice_archive (id, source, `number`, doc_date, sale_date, currency, net_value, gross_value, corrected_no)
+            SELECT
+                id, source, `number`, doc_date, sale_date, currency, net_value, gross_value, corrected_no
+            FROM rogowiec_invoice ri
+                ON duplicate KEY UPDATE
+                net_value = ri.net_value,
+                gross_value = ri.gross_value,
+                corrected_no = ri.corrected_no
+        ";
+        $this->db->executeQuery($q);
+
+        $q = "INSERT INTO rogowiec_invoice_customer_archive (invoice_id, source, customer_kind, customer_code, name, first_name, last_name, tax_number, personal_id, busines_number, kind)
+            SELECT
+                invoice_id, source, customer_kind, customer_code, name, first_name, last_name, tax_number, personal_id, busines_number, kind
+            FROM rogowiec_invoice_customer ric
+            ON duplicate KEY UPDATE
+                customer_kind = ric.customer_kind,
+                customer_code = ric.customer_code,
+                name = ric.name,
+                first_name = ric.first_name,
+                last_name = ric.last_name,
+                tax_number = ric.tax_number,
+                personal_id = ric.personal_id,
+                busines_number = ric.busines_number,
+                kind = ric.kind
+        ";
+        $this->db->executeQuery($q);
     }
 
     private function collectClients(array &$invoice)
@@ -71,7 +102,7 @@ class InvoiceRepository extends IApiRepository
                 if (!empty($res['items']))
                     $invoiceIds = array_merge($invoiceIds, array_values($res['items']));
             }
-        } else 
+        } else
             throw new \Exception("Nie żadnych jednostek sprzedaży. Najpierw uruchom komendę pobierającą listę oddziałów [rogowiec:saleunit]", 99);
 
         return $invoiceIds;
