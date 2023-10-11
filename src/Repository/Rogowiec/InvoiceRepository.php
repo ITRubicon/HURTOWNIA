@@ -16,12 +16,15 @@ class InvoiceRepository extends IApiRepository
     {
         $this->clearDataArrays();
         $invoicesIds = $this->fetchInvoiceId();
-        $invoicesIdsCount = count($invoicesIds);
+        $fvPossessed = $this->getPresentDocumentIds();
+        $invoicesIdsToFetch = array_diff($invoicesIds, $fvPossessed);
+        dd($invoicesIdsToFetch);
+        $invoicesIdsCount = count($invoicesIdsToFetch);
         $this->clearDataArrays();
 
         for ($i=0; $i < $invoicesIdsCount ; $i++) {
-            echo "\nId faktury " . $invoicesIds[$i] . " ----> " . $i+1 . "/$invoicesIdsCount";
-            $url = str_replace('{id}', $invoicesIds[$i], $this->endpoint);
+            echo "\nId faktury " . $invoicesIdsCount[$i] . " ----> " . $i+1 . "/$invoicesIdsCount";
+            $url = str_replace('{id}', $invoicesIdsCount[$i], $this->endpoint);
             $res = $this->fetchApiResult($url);
             if ($res['id'] === 0)
                 continue;
@@ -29,7 +32,7 @@ class InvoiceRepository extends IApiRepository
             $this->collectClients($res);
             array_push($this->fetchResult, $res);
             
-            unset($invoicesIds[$i]);
+            unset($invoicesIdsCount[$i]);
         }
             $this->save();
             $this->fetchResult = [];
@@ -69,7 +72,7 @@ class InvoiceRepository extends IApiRepository
                     $invoiceIds = array_merge($invoiceIds, array_values($res['items']));
             }
         } else 
-            throw new \Exception("Nie żadnych . Najpierw uruchom komendę pobierającą listę oddziałów [rogowiec:saleunit]", 99);
+            throw new \Exception("Nie żadnych jednostek sprzedaży. Najpierw uruchom komendę pobierającą listę oddziałów [rogowiec:saleunit]", 99);
 
         return $invoiceIds;
     }
@@ -78,6 +81,16 @@ class InvoiceRepository extends IApiRepository
     {
         $q = "SELECT resource_id FROM rogowiec_sale_unit WHERE (name LIKE '%samo%' OR name LIKE '%moto%') AND name NOT LIKE '%faktury zal%' AND source = :source";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
+    }
+
+    private function getPresentDocumentIds()
+    {
+        $q = "SELECT id FROM rogowiec_invoice_archive WHERE source = :source AND doc_date BETWEEN :dateFrom AND :dateTo";
+        return $this->db->fetchFirstColumn(
+            $q,
+            ['source' => $this->source->getName(), 'dateFrom' => $this->dateFrom, 'dateTo' => $this->dateTo],
+            ['source' => ParameterType::STRING, 'dateFrom' => ParameterType::STRING, 'dateTo' => ParameterType::STRING]
+        );
     }
 
     protected function getFieldsParams(): array
