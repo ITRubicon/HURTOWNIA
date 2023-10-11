@@ -82,6 +82,8 @@ class CustomerCommand extends BaseApiCommand
         }
         unset($fetchedRows['rodo']);
 
+        $io->info('Archiwum klientów');
+        $this->repo->archive();
     }
 
     protected function clearTable()
