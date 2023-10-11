@@ -35,6 +35,12 @@ class FvItem
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
     private ?string $netPrice = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
+    private ?string $purchasePrice = null;
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $unit = null;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
     private ?string $taxRate = null;
 
