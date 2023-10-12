@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 #[Table(name: 'rogowiec_customer_phone_archive')]
 #[Index(name: "source_customercode_idx", fields: ["source", "customer_code"])]
-#[UniqueConstraint("source_code_number_un", columns: ["source", "code", "number"])]
+#[UniqueConstraint("source_code_number_un", columns: ["source", "customer_code", "number"])]
 class CustomerPhoneArchive
 {
     #[ORM\Id]
