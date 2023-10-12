@@ -25,6 +25,8 @@ class CustomerRepository extends IApiRepository
             echo "\nKlient " . $i + 1 . "/$codesCount";
             $url = str_replace('{code}', $clientCodes[$i], $this->endpoint);
             $res = $this->fetchApiResult($url);
+            if (empty($res['code']))
+                continue;
             $this->collectFeature($res, 'addresses');
             $this->collectFeature($res, 'emails');
             $this->collectFeature($res, 'phones');
