@@ -23,8 +23,8 @@ class InvoiceRepository extends IApiRepository
         $this->clearDataArrays();
 
         for ($i = 0; $i < $invoicesIdsCount; $i++) {
-            echo "\nId faktury " . $invoicesIdsCount[$i] . " ----> " . $i + 1 . "/$invoicesIdsCount";
-            $url = str_replace('{id}', $invoicesIdsCount[$i], $this->endpoint);
+            echo "\nId faktury " . $invoicesIdsToFetch[$i] . " ----> " . $i + 1 . "/$invoicesIdsCount";
+            $url = str_replace('{id}', $invoicesIdsToFetch[$i], $this->endpoint);
             $res = $this->fetchApiResult($url);
             if ($res['id'] === 0)
                 continue;
@@ -32,7 +32,7 @@ class InvoiceRepository extends IApiRepository
             $this->collectClients($res);
             array_push($this->fetchResult, $res);
 
-            unset($invoicesIdsCount[$i]);
+            unset($invoicesIdsToFetch[$i]);
         }
         $this->save();
         $this->fetchResult = [];
