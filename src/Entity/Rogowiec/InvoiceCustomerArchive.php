@@ -5,10 +5,12 @@ namespace App\Entity\Rogowiec;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 #[Table(name: 'rogowiec_invoice_customer_archive')]
 #[Index(name: "source_invoiceId_idx", fields: ["source", "invoice_id"])]
+#[UniqueConstraint("source_invoiceId_kind_un", columns: ["source", "invoice_id", "kind"])]
 class InvoiceCustomerArchive
 {
     #[ORM\Id]

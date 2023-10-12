@@ -6,11 +6,13 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 #[Table(name: 'rogowiec_invoice_archive')]
 #[Index(name: "source_idx", fields: ["source", "number"])]
 #[Index(name: "source_id_idx", fields: ["source", "id"])]
+#[UniqueConstraint("source_id_un", columns: ["source", "id"])]
 class InvoiceArchive
 {
     #[ORM\Id]
