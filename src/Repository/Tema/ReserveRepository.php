@@ -29,6 +29,7 @@ class ReserveRepository extends IApiRepository
                     continue;
 
                 $this->fetchResult = $res['items'];
+                $this->addStockId($stock);
                 $this->save();
                 $this->fetchResult = [];
                 $resCount += count($res['items']);
@@ -38,6 +39,14 @@ class ReserveRepository extends IApiRepository
         return [
             'fetched' => $resCount,
         ];
+    }
+
+    private function addStockId($stock)
+    {
+        $itemsCount = count($this->fetchResult);
+        for ($i=0; $i < $itemsCount; $i++) { 
+            $this->fetchResult[$i]['stock_id'] = $stock;
+        }
     }
 
     private function getStocks()
@@ -56,6 +65,7 @@ class ReserveRepository extends IApiRepository
             'admission_date' => ['sourceField' => 'admissionDate', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d H:i:s']],
             'value' => ['sourceField' => 'value', 'type' => ParameterType::STRING],
             'delivery_note' => ['sourceField' => 'deliveryNote', 'type' => ParameterType::STRING],
+            'stock_id' => ['sourceField' => 'stock_id', 'type' => ParameterType::INTEGER],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
     }

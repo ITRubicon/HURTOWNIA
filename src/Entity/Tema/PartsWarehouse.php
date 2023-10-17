@@ -22,6 +22,9 @@ class PartsWarehouse
     private ?string $source = null;
 
     #[ORM\Column]
+    private ?int $stock_id = null;
+
+    #[ORM\Column]
     private ?int $row_id = null;
 
     #[ORM\Column(nullable: true)]
