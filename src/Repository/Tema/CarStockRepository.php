@@ -7,7 +7,7 @@ use Doctrine\DBAL\ParameterType;
 
 class CarStockRepository extends IApiRepository
 {
-    private string $endpoint = '/api/dms/v1/stocks/{stockId}/:sync:row-ids';
+    private string $endpoint = '/api/dms/v1/stocks/{stockId}/:sync';
     protected $table = 'tema_car_stock';
 
     public function fetch(): array
@@ -26,10 +26,10 @@ class CarStockRepository extends IApiRepository
                 $res = $this->fetchApiResult($url);
 
                 if (!empty($res)) {
-                    foreach ($res['rowIds'] as $r) {
+                    foreach ($res['items'] as $r) {
                         array_push($this->fetchResult, [
                             'stock_id' => $stock,
-                            'car_id' => $r
+                            'car_id' => $r['vehicleReference']['objectId']
                         ]);
                     }
                 }
