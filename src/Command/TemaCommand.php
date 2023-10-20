@@ -64,7 +64,7 @@ class TemaCommand extends Command
             $arguments['api'] = $input->getArgument('api');
 
         switch ($cmd) {
-            case 'tema:order':
+            case 'tema:car:order':
                 $arguments['dateFrom'] = $input->getArgument('dateFrom');
                 $arguments['dateTo'] = $input->getArgument('dateTo');
                 break;
