@@ -42,7 +42,7 @@ class Car
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $bodyColor = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column]
