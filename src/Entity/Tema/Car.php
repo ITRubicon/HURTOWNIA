@@ -57,7 +57,7 @@ class Car
     #[ORM\Column(length: 17, nullable: true)]
     private ?string $vin = null;
 
-    #[ORM\Column(length: 10, nullable: true)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $registrationNo = null;
 
     #[ORM\Column(nullable: true)]
