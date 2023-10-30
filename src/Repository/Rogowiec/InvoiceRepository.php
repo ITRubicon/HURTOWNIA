@@ -17,7 +17,7 @@ class InvoiceRepository extends IApiRepository
         $this->clearDataArrays();
         $invoicesIds = $this->fetchInvoiceId();
         $invoicesArchived = $this->getPresentDocumentIds();
-        $invoicesIdsToFetch = array_diff($invoicesIds, $invoicesArchived);
+        $invoicesIdsToFetch = array_values(array_diff($invoicesIds, $invoicesArchived));
 
         $invoicesIdsCount = count($invoicesIdsToFetch);
         $this->clearDataArrays();
