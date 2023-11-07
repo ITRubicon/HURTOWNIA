@@ -56,7 +56,7 @@ class SaleInvoiceDocument
     #[ORM\Column(nullable: true)]
     private ?int $operator_code = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
     #[ORM\Column(length: 100, nullable: true)]

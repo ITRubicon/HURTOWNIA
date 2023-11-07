@@ -47,6 +47,6 @@ class CarOrder
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $vin = null;
 
-    #[ORM\Column(length: 300, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 }

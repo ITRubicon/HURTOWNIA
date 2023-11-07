@@ -48,7 +48,7 @@ class WzDocument
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $orderName = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
 }

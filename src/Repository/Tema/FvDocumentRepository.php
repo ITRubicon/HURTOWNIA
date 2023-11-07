@@ -94,7 +94,7 @@ class FvDocumentRepository extends IApiRepository
     {
         foreach ($doc['items'] as $item) {
             $item['doc_id'] = $doc['id'];
-            $item['unit'] = $item['unit']['name'];
+            $item['unit'] = $item['unit']['name'] ?? '';
             array_push($this->documentItems, $item);
         }
         unset($doc['items']);

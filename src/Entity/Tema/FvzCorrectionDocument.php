@@ -50,7 +50,7 @@ class FvzCorrectionDocument
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
     private ?string $grossValue = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
 }
