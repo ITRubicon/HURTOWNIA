@@ -110,7 +110,7 @@ class InvoiceRepository extends IApiRepository
 
     private function fetchUnitId()
     {
-        $q = "SELECT resource_id FROM rogowiec_sale_unit WHERE (name LIKE '%samo%' OR name LIKE '%moto%') AND name NOT LIKE '%faktury zal%' AND source = :source";
+        $q = "SELECT resource_id FROM rogowiec_sale_unit WHERE name NOT LIKE '%faktury zal%' AND name NOT LIKE '%prowizj%' AND source = :source";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
