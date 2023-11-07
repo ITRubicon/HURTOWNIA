@@ -42,7 +42,7 @@ class ServiceSoldRepository extends IApiRepository
 
     private function fetchBranchId()
     {
-        $q = "SELECT dms_id FROM rogowiec_org_unit rou WHERE source = :source AND rodzaj LIKE 'Serwis%'";
+        $q = "SELECT dms_id FROM rogowiec_org_unit rou WHERE source = :source AND rodzaj LIKE 'Serwis%' OR nazwa LIKE '%skp%";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
