@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 #[Index(name: "source_idx", fields: ["source", "number"])]
 #[Index(name: "source_id_idx", fields: ["source", "id"])]
 #[UniqueConstraint("source_id_un", columns: ["source", "id"])]
-#[UniqueConstraint("source_id_un", columns: ["source", "number"])]
+#[UniqueConstraint("source_number_un", columns: ["source", "number"])]
 class InvoiceArchive
 {
     #[ORM\Id]
