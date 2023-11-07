@@ -28,6 +28,9 @@ class InvoiceArchive
     #[ORM\Column(length: 50)]
     private ?string $correctedNo = null;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $worker = null;
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $docDate = null;
 

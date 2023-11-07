@@ -39,4 +39,7 @@ class Invoice
 
     #[ORM\Column(type: 'decimal', precision: 12, scale: 2)]
     private ?string $grossValue = null;
+
+    #[ORM\Column(length: 300, nullable: true)]
+    private ?string $platnosci = null;
 }
