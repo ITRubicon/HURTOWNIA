@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\Table;
 #[ORM\Entity(repositoryClass: WzItemRepository::class)]
 #[Table(name: 'tema_fvz_correction_document_item')]
 #[Index(name: "source_docid_idx", fields: ["source", "doc_id"])]
+#[Index(name: "source_vin_idx", fields: ["source", "vin"])]
 class FvzCorrectionItem
 {
     #[ORM\Id]

@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\Table;
 #[ORM\Entity(repositoryClass: ServiceEntityRepository::class)]
 #[Table(name: 'tema_car_order')]
 #[Index(name: "source_idx", fields: ["source"])]
+#[Index(name: "source_vin_idx", fields: ["source", "vin"])]
 class CarOrder
 {
     #[ORM\Id]

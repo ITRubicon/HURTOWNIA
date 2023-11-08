@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\Table;
 #[ORM\Entity(repositoryClass: WzDocumentRepository::class)]
 #[Table(name: 'tema_prepayment_correction_document')]
 #[Index(name: "source_issuedate_idx", fields: ["source", "issueDate"])]
+#[Index(name: "source_vin_idx", fields: ["source", "vin"])]
 class PrepaymentCorrectionDocument
 {
     #[ORM\Id]

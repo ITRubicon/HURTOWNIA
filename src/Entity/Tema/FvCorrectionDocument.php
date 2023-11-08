@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\Table;
 #[Table(name: 'tema_fv_correction_document')]
 #[Index(name: "source_issuedate_idx", fields: ["source", "issueDate"])]
 #[Index(name: "source_correcteddocid_idx", fields: ["source", "correctedInvoiceId"])]
+#[Index(name: "source_vin_idx", fields: ["source", "vin"])]
 class FvCorrectionDocument
 {
     #[ORM\Id]
