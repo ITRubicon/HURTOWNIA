@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\Table;
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 #[Table(name: 'tema_customer')]
 #[Index(name: "source_idx", fields: ["source"])]
+#[Index(name: "source_customerid_idx", fields: ["source", "customer_id"])]
 class Customer
 {
     #[ORM\Id]
