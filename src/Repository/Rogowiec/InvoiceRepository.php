@@ -26,15 +26,15 @@ class InvoiceRepository extends IApiRepository
             echo "\nId faktury " . $invoicesIdsToFetch[$i] . " ----> " . $i + 1 . "/$invoicesIdsCount";
             $url = str_replace('{id}', $invoicesIdsToFetch[$i], $this->endpoint);
             $res = $this->fetchApiResult($url);
-            if ($res['id'] === 0)
+            if (empty($res['id']))
                 continue;
 
             $this->collectClients($res);
             array_push($this->fetchResult, $res);
 
+            $this->save();
             unset($invoicesIdsToFetch[$i]);
         }
-        $this->save();
         $this->fetchResult = [];
 
         return [
