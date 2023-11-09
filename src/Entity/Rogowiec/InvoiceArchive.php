@@ -11,18 +11,20 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 #[Table(name: 'rogowiec_invoice_archive')]
 #[Index(name: "source_idx", fields: ["source", "number"])]
-#[Index(name: "source_id_idx", fields: ["source", "id"])]
+// #[Index(name: "source_id_idx", fields: ["source", "id"])]
 // #[UniqueConstraint("source_id_un", columns: ["source", "id"])]
 #[UniqueConstraint("source_number_un", columns: ["source", "number"])]
 class InvoiceArchive
 {
-    #[ORM\Id]
+    // #[ORM\Id]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Id]
     #[ORM\Column(length: 20)]
     private ?string $source = null;
 
+    #[ORM\Id]
     #[ORM\Column(length: 50)]
     private ?string $number = null;
 
