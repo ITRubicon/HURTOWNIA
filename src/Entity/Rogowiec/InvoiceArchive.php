@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 class InvoiceArchive
 {
     // #[ORM\Id]
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $id = null;
 
     #[ORM\Id]
