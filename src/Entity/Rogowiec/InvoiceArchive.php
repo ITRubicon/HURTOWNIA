@@ -48,4 +48,7 @@ class InvoiceArchive
 
     #[ORM\Column(type: 'decimal', precision: 12, scale: 2)]
     private ?string $grossValue = null;
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $customerCode = null;
 }
