@@ -28,7 +28,7 @@ class InvoiceArchive
     #[ORM\Column(length: 50)]
     private ?string $number = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $correctedNo = null;
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -40,7 +40,7 @@ class InvoiceArchive
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $saleDate = null;
 
-    #[ORM\Column(type: 'string', length: 30)]
+    #[ORM\Column(type: 'string', length: 30, nullable: true)]
     private ?string $currency = null;
 
     #[ORM\Column(type: 'decimal', precision: 12, scale: 2)]
