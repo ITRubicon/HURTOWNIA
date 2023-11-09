@@ -33,9 +33,9 @@ class CustomerRepository extends IApiRepository
             $this->collectFeature($res, 'dataProcessingStatements');
             array_push($this->fetchResult, $res);
             unset($clientCodes[$i]);
+            $this->save();
+            $this->fetchResult = [];
         }
-
-        $this->save();
 
         return [
             'fetched' => $codesCount,

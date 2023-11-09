@@ -30,10 +30,11 @@ class InvoiceRepository extends IApiRepository
                 continue;
 
             $this->collectClients($res);
+            array_push($this->fetchResult, $res);
             $this->save();
             unset($invoicesIdsToFetch[$i]);
+            $this->fetchResult = [];
         }
-        $this->fetchResult = [];
 
         return [
             'fetched' => $invoicesIdsCount,
