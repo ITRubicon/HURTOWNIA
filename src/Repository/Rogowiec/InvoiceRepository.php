@@ -60,6 +60,7 @@ class InvoiceRepository extends IApiRepository
                 invoice_id, source, customer_kind, customer_code, name, first_name, last_name, tax_number, personal_id, busines_number, kind
             FROM rogowiec_invoice_customer ric
             ON duplicate KEY UPDATE
+                invoice_id = ric.invoice_id,
                 customer_kind = ric.customer_kind,
                 customer_code = ric.customer_code,
                 name = ric.name,
