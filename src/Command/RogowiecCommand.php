@@ -5,6 +5,7 @@ namespace App\Command;
 use DateTime;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,6 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class RogowiecCommand extends Command
 {
+    use LockableTrait;
     private const COMMANDS = ['rogowiec:branch', 'rogowiec:orgunit', 'rogowiec:saleunit', 'rogowiec:ageing:cars', 'rogowiec:ageing:parts', 'rogowiec:ageing:production', 'rogowiec:cars:orders', 'rogowiec:cars:sold', 'rogowiec:parts:sold', 'rogowiec:service:sold', 'rogowiec:invoice', 'rogowiec:customer'];
 
     protected function configure(): void
@@ -30,6 +32,11 @@ class RogowiecCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (!$this->lock()) {
+            $output->writeln('The command is already running in another process.');
+            return Command::SUCCESS;
+        }
+
         $io = new SymfonyStyle($input, $output);
 
         $start = new DateTime('now');
@@ -52,6 +59,7 @@ class RogowiecCommand extends Command
             'czas: ' . $end->diff($start)->format('%H:%I:%S'),
         ]);
 
+        $this->release();
         return Command::SUCCESS;
     }
 

@@ -8,12 +8,14 @@ use App\Repository\SourceAuthRepository;
 use DateTime;
 use Exception;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class BaseApiCommand extends Command
 {
+    use LockableTrait;
     protected SourceAuthRepository $apiAuthRepo;
     protected $producerName = null;
     protected $cmdArgs;
@@ -33,6 +35,11 @@ abstract class BaseApiCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (!$this->lock()) {
+            $output->writeln('The command is already running in another process.');
+            return Command::SUCCESS;
+        }
+
         $io = new SymfonyStyle($input, $output);
         $this->cmdArgs = $input->getArguments();
         $apiSources = $this->getApiAuth($this->cmdArgs['api']);
@@ -85,6 +92,7 @@ abstract class BaseApiCommand extends Command
             'błędy requestów: ' . $this->errorRepo->getErrorsCount(),
         ]);
 
+        $this->release();
         return Command::SUCCESS;
     }
 

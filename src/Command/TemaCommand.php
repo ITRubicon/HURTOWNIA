@@ -5,6 +5,7 @@ namespace App\Command;
 use DateTime;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,6 +18,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class TemaCommand extends Command
 {
+    use LockableTrait;
+
     private const COMMANDS = ['tema:stock', 'tema:customer', 'tema:user', 'tema:rodo:type', 'tema:car', 'tema:car:order', 'tema:car:reserve', 'tema:car:stock', 'tema:fv', 'tema:fv:corrections', 'tema:fvz', 'tema:fvz:correction', 'tema:mm', 'tema:prepayment', 'tema:prepayment:corrections', 'tema:pz', 'tema:wz', 'tema:reserve', 'tema:service', 'tema:warehouse', /* 'tema:contact:rodo' */];
 
     protected function configure(): void
@@ -30,6 +33,11 @@ class TemaCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (!$this->lock()) {
+            $output->writeln('The command is already running in another process.');
+            return Command::SUCCESS;
+        }
+
         $io = new SymfonyStyle($input, $output);
         $source = $input->getArgument('api');
 
@@ -53,6 +61,7 @@ class TemaCommand extends Command
             'czas: ' . $end->diff($start)->format('%H:%I:%S'),
         ]);
 
+        $this->release();
         return Command::SUCCESS;
     }
 
