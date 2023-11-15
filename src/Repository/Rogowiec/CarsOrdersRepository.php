@@ -64,6 +64,14 @@ class CarsOrdersRepository extends IApiRepository
             'sprzedawca' => ['sourceField' => 'Sprzedawca', 'type' => ParameterType::STRING],
             'vin' => ['sourceField' => 'Vin', 'type' => ParameterType::STRING],
             'id_samochodu' => ['sourceField' => 'VehicleId', 'type' => ParameterType::INTEGER],
+            'typ_zamowienia' => ['sourceField' => 'TypZam', 'type' => ParameterType::STRING],
+            'rodzaj_zamowienia' => ['sourceField' => 'RodzajZam', 'type' => ParameterType::STRING],
+            'wyroznik_zamowienia' => ['sourceField' => 'WyroznikZam', 'type' => ParameterType::STRING],
+            'komentarz' => ['sourceField' => 'Komentarz', 'type' => ParameterType::STRING],
+            'uwagi' => ['sourceField' => 'Uwagi', 'type' => ParameterType::STRING],
+            'notatka1' => ['sourceField' => 'Notatka1', 'type' => ParameterType::STRING],
+            'notatka2' => ['sourceField' => 'Notatka2', 'type' => ParameterType::STRING],
+            'notatka3' => ['sourceField' => 'Notatka3', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
     }

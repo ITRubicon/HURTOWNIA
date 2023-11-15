@@ -62,4 +62,28 @@ class CarsOrders
 
     #[ORM\Column(nullable: true)]
     private ?int $id_samochodu = null;
+
+    #[ORM\Column(nullable: true, length: 20)]
+    private ?string $typ_zamowienia = null;
+
+    #[ORM\Column(nullable: true, length: 100)]
+    private ?string $rodzaj_zamowienia = null;
+
+    #[ORM\Column(nullable: true, length: 100)]
+    private ?string $wyroznik_zamowienia = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $komentarz = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $uwagi = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $notatka1 = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $notatka2 = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $notatka3 = null;
 }
