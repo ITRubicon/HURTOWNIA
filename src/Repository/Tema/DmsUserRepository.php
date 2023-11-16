@@ -16,7 +16,7 @@ class DmsUserRepository extends IApiRepository
         $resCount = 0;
         $res = [];
         do {
-            $nextTimestamp = '';            
+            $nextTimestamp = '';
             if (!empty($res['lastTimestamp']))
                 $nextTimestamp = '?timestamp=' . urlencode($res['lastTimestamp']);
 
@@ -24,11 +24,10 @@ class DmsUserRepository extends IApiRepository
             if (empty($res))
                 continue;
 
-            $this->fetchResult = $res['items'];
-            $this->save();
-            $this->fetchResult = [];
+            $this->fetchResult = array_merge($this->fetchResult, $res['items']);
             $resCount += count($res['items']);
         } while ($res['fetchNext']);
+        $this->save();
 
         return [
             'fetched' => $resCount,

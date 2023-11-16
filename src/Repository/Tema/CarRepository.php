@@ -24,11 +24,10 @@ class CarRepository extends IApiRepository
             if (empty($res))
                 continue;
 
-            $this->fetchResult = $res['items'];
-            $this->save();
-            $this->clearDataArrays();
+            $this->fetchResult = array_merge($this->fetchResult, $res['items']);
             $resCount += count($res['items']);
         } while ($res['fetchNext']);
+        $this->save();
 
         return ['fetched' => $resCount];
     }

@@ -28,12 +28,13 @@ class PartsWarehouseRepository extends IApiRepository
                 if (empty($res))
                     continue;
 
-                $this->fetchResult = $res['items'];
-                $this->addStockId($stock);
-                $this->save();
-                $this->fetchResult = [];
+                $this->fetchResult = array_merge($this->fetchResult, $res['items']);
                 $resCount += count($res['items']);
             } while ($res['fetchNext']);
+            
+            $this->addStockId($stock);
+            $this->save();
+            $this->fetchResult = [];
         }
 
         return [

@@ -53,15 +53,18 @@ abstract class IBaseRepository
     public function save()
     {
         if (!empty($this->fetchResult)) {
-            $data = $this->prepareDataToInsert();
-            $insFields = $this->makeQueryFields();
+            $this->fetchResult = array_chunk($this->fetchResult, 10000);
+            foreach ($this->fetchResult as $batch) {
+                $data = $this->prepareDataToInsert($batch);
+                $insFields = $this->makeQueryFields();
 
-            $q = "INSERT INTO $this->table ($insFields) VALUES " . $data['questionMarks'];
-            try {
-                $this->db->executeQuery($q, $data['valuesIns'], $data['types']);
-                $this->db->close();
-            } catch (\Throwable $th) {
-                throw new \Exception($th->getMessage(), $th->getCode(), $th);
+                $q = "INSERT INTO $this->table ($insFields) VALUES " . $data['questionMarks'];
+                try {
+                    $this->db->executeQuery($q, $data['valuesIns'], $data['types']);
+                    $this->db->close();
+                } catch (\Throwable $th) {
+                    throw new \Exception($th->getMessage(), $th->getCode(), $th);
+                }
             }
         }
     }
@@ -88,32 +91,33 @@ abstract class IBaseRepository
         return implode(',', $fields);
     }
 
-    protected function prepareDataToInsert(): array
+    protected function prepareDataToInsert(array &$batch): array
     {
         $valuesIns = [];
         $questionMarks = [];
         $fieldsParams = $this->getFieldsParams();
         echo "\nPrzygotowuję dane do zapisu";
         $this->timer->start();
-        
-        foreach ($this->fetchResult as &$row) {
+
+        foreach ($batch as &$row) {
             $row['source'] = $this->source->getName();
-            
+
             foreach ($fieldsParams as $fp) {
                 $val = isset($row[$fp['sourceField']]) ? $row[$fp['sourceField']] : null;
 
                 if (!empty($fp['format']))
                     $val = isset($val) ? $this->formatValue($val, $fp['format']) : null;
-                
+
                 $valuesIns[] = $val;
             }
 
             unset($row);
             $questionMarks[] = $this->makeQueryPlaceholders(count($fieldsParams));
-            
-            // dump(number_format(memory_get_usage() / (1024 * 1024), 2) . 'MB');
+
         }
-        echo "\nCzas przygotowania danych: " . $this->timer->getInterval() . "s";
+        echo "\nZużycie pamięci\t\t" . number_format(memory_get_usage() / (1024 * 1024), 2) . 'MB';
+        echo "\nMaksymalne zużycie pamięci\t" . number_format(memory_get_peak_usage() / (1024 * 1024), 2) . 'MB';
+        echo "\nCzas przygotowania danych:\t " . $this->timer->getInterval() . "s";
 
         return [
             'valuesIns' => $valuesIns,
@@ -142,7 +146,7 @@ abstract class IBaseRepository
                     $value = DateFormatter::formatFloat($value);
                     break;
                 default:
-                    $value = preg_replace('/[[:cntrl:]]/', '', (String) $value);
+                    $value = preg_replace('/[[:cntrl:]]/', '', (string) $value);
                     break;
             }
             return $value;

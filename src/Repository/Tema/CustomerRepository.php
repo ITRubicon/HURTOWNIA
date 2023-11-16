@@ -26,11 +26,10 @@ class CustomerRepository extends IApiRepository
                 continue;
 
             $this->getClientData($res['items']);
-            $this->fetchResult = $res['items'];
-            $this->save();
-            $this->fetchResult = [];
+            $this->fetchResult = array_merge($this->fetchResult, $res['items']);
             $resCount += count($res['items']);
         } while ($res['fetchNext']);
+        $this->save();
 
         return [
             'fetched' => $resCount,
