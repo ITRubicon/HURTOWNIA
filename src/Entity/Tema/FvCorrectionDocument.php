@@ -31,7 +31,7 @@ class FvCorrectionDocument
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $correctedInvoiceId = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(length: 40, nullable: true)]
     private ?string $correctedInvoiceName = null;
 
     #[ORM\Column(length: 20, nullable: true)]

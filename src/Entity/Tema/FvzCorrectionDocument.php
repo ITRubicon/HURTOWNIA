@@ -30,7 +30,7 @@ class FvzCorrectionDocument
     #[ORM\Column(length: 12, nullable: true)]
     private ?string $corrected_doc_id = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(length: 40, nullable: true)]
     private ?string $corrected_name = null;
 
     #[ORM\Column(length: 20, nullable: true)]
