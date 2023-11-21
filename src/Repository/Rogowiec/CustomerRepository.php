@@ -118,7 +118,9 @@ class CustomerRepository extends IApiRepository
                 SELECT DISTINCT kod_klienta FROM rogowiec_parts_sold WHERE source = :source
                 UNION
                 SELECT DISTINCT kod_klienta FROM rogowiec_service_sold WHERE source = :source
-            ) uq 
+                UNION
+                SELECT DISTINCT customer_code AS kod_klienta FROM rogowiec_invoice_customer_archive WHERE source = :source
+            ) uq
             WHERE kod_klienta != ''
             AND kod_klienta NOT IN (SELECT code FROM rogowiec_customer_archive WHERE source = :source)
         ";
