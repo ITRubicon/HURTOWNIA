@@ -27,6 +27,7 @@ class StockRepository extends IApiRepository
             'category' => ['sourceField' => 'category', 'type' => ParameterType::STRING],
             'stock_id' => ['sourceField' => 'id', 'type' => ParameterType::STRING],
             'name' => ['sourceField' => 'name', 'type' => ParameterType::STRING],
+            'address' => ['sourceField' => 'address', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];   
     }
