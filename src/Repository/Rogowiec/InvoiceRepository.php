@@ -49,6 +49,7 @@ class InvoiceRepository extends IApiRepository
                 id, source, `number`, doc_date, sale_date, currency, net_value, gross_value, corrected_no
             FROM rogowiec_invoice ri
                 ON duplicate KEY UPDATE
+                id = ri.id,
                 net_value = ri.net_value,
                 gross_value = ri.gross_value,
                 corrected_no = ri.corrected_no
