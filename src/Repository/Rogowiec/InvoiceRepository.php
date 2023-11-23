@@ -81,12 +81,6 @@ class InvoiceRepository extends IApiRepository
         $this->db->executeQuery($q);
 
         $q = "UPDATE rogowiec_invoice_archive i
-            JOIN rogowiec_invoice_customer_archive c ON c.source = i.source AND c.invoice_id = i.id AND ISNULL(i.customer_code) AND c.customer_kind = 'Recipient'
-            SET i.customer_code = c.customer_code
-        ";
-        $this->db->executeQuery($q);
-
-        $q = "UPDATE rogowiec_invoice_archive i
             JOIN rogowiec_invoice_customer_archive c ON c.source = i.source AND c.invoice_id = i.id AND ISNULL(i.customer_code) AND c.customer_kind = 'ExternalPayment'
             SET i.customer_code = c.customer_code
         ";
