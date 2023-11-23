@@ -57,7 +57,6 @@ class ServiceSoldRepository extends IApiRepository
             'kod_interwencja' => ['sourceField' => 'KodInterwencji', 'type' => ParameterType::STRING],
             'silnik_typ' => ['sourceField' => 'TypSilnika', 'type' => ParameterType::STRING],
             'rejestracja_nr' => ['sourceField' => 'NumerRejestracyjny', 'type' => ParameterType::STRING],
-            'rok_produkcja' => ['sourceField' => 'NumerRejestracyjny', 'type' => ParameterType::STRING],
             'vin' => ['sourceField' => 'VIN', 'type' => ParameterType::STRING],
             'rok_produkcja' => ['sourceField' => 'RokProdukcji', 'type' => ParameterType::INTEGER],
             'kod_klienta' => ['sourceField' => 'KodKlienta', 'type' => ParameterType::STRING],
