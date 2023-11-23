@@ -54,6 +54,7 @@ class RogowiecCommand extends Command
         $end = new DateTime('now');
 
         $io->success([
+            '========= KONIEC ==========',
             'start: ' . $start->format('Y-m-d H:i:s'),
             'koniec: ' . $end->format('Y-m-d H:i:s'),
             'czas: ' . $end->diff($start)->format('%H:%I:%S'),
