@@ -49,7 +49,7 @@ class ServiceSold
     private ?string $vin = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $rok_produkcja = null;
+    private ?string $rok_produkcja = null;
 
     #[ORM\Column(length: 10)]
     private ?string $kod_klienta = null;
