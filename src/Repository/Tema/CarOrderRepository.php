@@ -7,7 +7,7 @@ use Doctrine\DBAL\ParameterType;
 
 class CarOrderRepository extends IApiRepository
 {
-    private string $endpoint = '/api/dms/v1/vehicle-orders/{branchId}?creationDateFrom={dateFrom}&creationDateTo={dateTo}';
+    private string $endpoint = '/api/dms/v1/vehicle-orders/{branchId}/:sync';
     protected $table = 'tema_car_order';
     private $orderItems = [];
 
@@ -17,27 +17,28 @@ class CarOrderRepository extends IApiRepository
         $stocks = $this->getStocks();
         $stocksCount = count($stocks);
         $resultCount = 0;
+        $res = [];
 
         if ($stocksCount) {
-            echo "\nPobieranie endpointów dla oddziałów";
             $i = 1;
             foreach ($stocks as $stock) {
                 echo "\nNr stocku $stock ----> $i/$stocksCount";
                 $i++;
 
-                $url = str_replace(
-                    ['{branchId}', '{dateFrom}', '{dateTo}'],
-                    [$stock, $this->dateFrom, $this->dateTo],
-                    $this->endpoint
-                );
-                $res = $this->fetchApiResult($url);
-                
-                if (empty($res))
-                    continue;
+                $url = str_replace('{branchId}', $stock, $this->endpoint);
+                do {
+                    $nextTimestamp = '';
+                    if (!empty($res['lastTimestamp']))
+                        $nextTimestamp = '?timestamp=' . urlencode($res['lastTimestamp']);
 
-                $this->collectItems($res);
-                $resultCount += count($res);
-                $this->fetchResult = array_merge($this->fetchResult, $res);
+                    $res = $this->fetchApiResult($url . $nextTimestamp);
+                    if (empty($res))
+                        continue;
+
+                    $this->collectItems($res['items']);
+                    $this->fetchResult = array_merge($this->fetchResult, $res['items']);
+                    $resultCount += count($res['items']);
+                } while ($res['fetchNext']);
             }
             $this->save();
         } else 
@@ -61,6 +62,7 @@ class CarOrderRepository extends IApiRepository
             'payer_id' => ['sourceField' => 'payerId', 'type' => ParameterType::STRING],
             'vehicle_id' => ['sourceField' => 'vehicleId', 'type' => ParameterType::INTEGER],
             'vin' => ['sourceField' => 'vin', 'type' => ParameterType::STRING],
+            'seller_id' => ['sourceField' => 'sellerId', 'type' => ParameterType::STRING],
             'notes' => ['sourceField' => 'notes', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
