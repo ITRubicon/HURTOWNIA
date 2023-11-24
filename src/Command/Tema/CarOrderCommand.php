@@ -32,16 +32,12 @@ class CarOrderCommand extends BaseApiCommand
     protected function configure(): void
     {
         $this
-            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)')
-            ->addArgument('dateFrom', InputArgument::OPTIONAL, 'Data początkowa (domyślnie pierwszy dzień miesiąca', date('Y-m-01'))
-            ->addArgument('dateTo', InputArgument::OPTIONAL, 'Data końcowa (domyślnie dzień dzisiejszy)', date('Y-m-d'));
+            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)', 'ALL')
         ;
     }
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
-        $this->orderRepo->setDateFrom($this->dateFrom);
-        $this->orderRepo->setDateTo($this->dateTo);
         $this->orderRepo->setSource($api);
         $this->itemRepo->setSource($api);
         $fetchedRows = $this->orderRepo->fetch();

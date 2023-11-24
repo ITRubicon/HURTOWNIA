@@ -25,7 +25,7 @@ class TemaCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)')
+            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)', 'ALL')
             ->addArgument('dateFrom', InputArgument::OPTIONAL, 'Data początkowa (domyślnie pierwszy dzień roku', date('Y-01-01'))
             ->addArgument('dateTo', InputArgument::OPTIONAL, 'Data końcowa (domyślnie dzień dzisiejszy)', date('Y-m-d'));
         ;
@@ -73,14 +73,14 @@ class TemaCommand extends Command
         if(!empty($input->getArgument('api')))
             $arguments['api'] = $input->getArgument('api');
 
-        switch ($cmd) {
-            case 'tema:car:order':
-                $arguments['dateFrom'] = $input->getArgument('dateFrom');
-                $arguments['dateTo'] = $input->getArgument('dateTo');
-                break;
-            default:
-                break;
-        }
+        // switch ($cmd) {
+        //     case 'tema:car:order':
+        //         $arguments['dateFrom'] = $input->getArgument('dateFrom');
+        //         $arguments['dateTo'] = $input->getArgument('dateTo');
+        //         break;
+        //     default:
+        //         break;
+        // }
 
         return $arguments;
     }

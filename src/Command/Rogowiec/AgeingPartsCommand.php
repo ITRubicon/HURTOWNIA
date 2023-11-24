@@ -30,7 +30,7 @@ class AgeingPartsCommand extends BaseApiCommand
     {
         $this
             ->addArgument('dateTo', InputArgument::REQUIRED, 'Data do')
-            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)');
+            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)', 'ALL');
     }
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)

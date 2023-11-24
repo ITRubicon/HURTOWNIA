@@ -34,7 +34,7 @@ class InvoiceCommand extends BaseApiCommand
         $this
             ->addArgument('dateFrom', InputArgument::REQUIRED, 'Data od')
             ->addArgument('dateTo', InputArgument::REQUIRED, 'Data do')
-            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)');
+            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)', 'ALL');
     }
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)

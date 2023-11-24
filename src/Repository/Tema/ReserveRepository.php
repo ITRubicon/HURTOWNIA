@@ -13,32 +13,40 @@ class ReserveRepository extends IApiRepository
     public function fetch(): array
     {
         $this->clearDataArrays();
-        $resCount = 0;
-        $res = [];
         $stocks = $this->getStocks();
+        $stocksCount = count($stocks);
+        $resultCount = 0;
+        $res = [];
 
-        foreach ($stocks as $stock) {
-            $url = str_replace('{stockId}', $stock, $this->endpoint);
-            do {
-                $nextTimestamp = '';
-                if (!empty($res['lastTimestamp']))
-                    $nextTimestamp = '?timestamp=' . urlencode($res['lastTimestamp']);
+        if ($stocksCount) {
+            $i = 1;
+            foreach ($stocks as $stock) {
+                echo "\nNr stocku $stock ----> $i/$stocksCount";
+                $i++;
+                
+                $url = str_replace('{stockId}', $stock, $this->endpoint);
+                do {
+                    $nextTimestamp = '';
+                    if (!empty($res['lastTimestamp']))
+                        $nextTimestamp = '?timestamp=' . urlencode($res['lastTimestamp']);
 
-                $res = $this->fetchApiResult($url . $nextTimestamp);
-                if (empty($res))
-                    continue;
+                    $res = $this->fetchApiResult($url . $nextTimestamp);
+                    if (empty($res))
+                        continue;
 
-                $this->fetchResult = array_merge($this->fetchResult, $res['items']);
-                $resCount += count($res['items']);
-            } while ($res['fetchNext']);
+                    $this->fetchResult = array_merge($this->fetchResult, $res['items']);
+                    $resultCount += count($res['items']);
+                } while ($res['fetchNext']);
 
-            $this->addStockId($stock);
-            $this->save();
-            $this->fetchResult = [];
-        }
+                $this->addStockId($stock);
+                $this->save();
+                $this->fetchResult = [];
+            }
+        } else
+            throw new \Exception("Nie żadnych jednostek organizacyjnych. Najpierw uruchom komendę pobierającą listę jednostek [tema:stock]");
 
         return [
-            'fetched' => $resCount,
+            'fetched' => $resultCount,
         ];
     }
 
