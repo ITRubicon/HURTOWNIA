@@ -39,6 +39,7 @@ class FvzCorrectionItemRepository extends IApiRepository
             'correction_value' => ['sourceField' => 'correctionNetValue', 'type' => ParameterType::STRING],
             'car_id' => ['sourceField' => 'vehicleId', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
             'vin' => ['sourceField' => 'vin', 'type' => ParameterType::STRING],
+            'income_type' => ['sourceField' => 'incomeType', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];   
     }

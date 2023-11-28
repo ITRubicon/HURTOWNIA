@@ -78,6 +78,7 @@ class FvzDocumentRepository extends IApiRepository
             'due_date' => ['sourceField' => 'dueDate', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d H:i:s']],
             'net_value' => ['sourceField' => 'netValue', 'type' => ParameterType::STRING],
             'gross_value' => ['sourceField' => 'grossValue', 'type' => ParameterType::STRING],
+            'document_type' => ['sourceField' => 'purchaseDocumentType', 'type' => ParameterType::STRING],
             'currency' => ['sourceField' => 'currency', 'type' => ParameterType::STRING],
             'order_id' => ['sourceField' => 'orderId', 'type' => ParameterType::STRING],
             'order_name' => ['sourceField' => 'orderName', 'type' => ParameterType::STRING],

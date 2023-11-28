@@ -45,6 +45,9 @@ class FvzDocument
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
     private ?string $grossValue = null;
 
+    #[ORM\Column(length: 40, nullable: true)]
+    private ?string $document_type = null;
+
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $currency = null;
 

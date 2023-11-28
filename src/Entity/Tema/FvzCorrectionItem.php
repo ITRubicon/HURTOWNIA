@@ -45,8 +45,11 @@ class FvzCorrectionItem
     #[ORM\Column(nullable: true)]
     private ?int $carId = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(length: 17, nullable: true)]
     private ?string $vin = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $income_type = null;
 
     #[ORM\Column]
     private ?bool $isExempt = null;

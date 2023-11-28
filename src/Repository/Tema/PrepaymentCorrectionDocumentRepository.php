@@ -73,6 +73,7 @@ class PrepaymentCorrectionDocumentRepository extends IApiRepository
             'doc_id' => ['sourceField' => 'id', 'type' => ParameterType::STRING],
             'name' => ['sourceField' => 'name', 'type' => ParameterType::STRING],
             'vin' => ['sourceField' => 'vin', 'type' => ParameterType::STRING],
+            'customer_id' => ['sourceField' => 'customerId', 'type' => ParameterType::STRING],
             'issue_date' => ['sourceField' => 'issueDate', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d H:i:s']],
             'net_value' => ['sourceField' => 'netValue', 'type' => ParameterType::STRING],
             'gross_value' => ['sourceField' => 'grossValue', 'type' => ParameterType::STRING],
