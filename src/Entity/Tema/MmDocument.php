@@ -12,7 +12,6 @@ use Doctrine\ORM\Mapping\Table;
 #[Table(name: 'tema_mm_document')]
 #[Index(name: "source_issuedate_idx", fields: ["source", "issueDate"])]
 #[Index(name: "source_vin_idx", fields: ["source", "vin"])]
-#[Index(name: "source_orderId_idx", fields: ["source", "order_id"])]
 class MmDocument
 {
     #[ORM\Id]
