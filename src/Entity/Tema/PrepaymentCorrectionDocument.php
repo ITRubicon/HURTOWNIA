@@ -43,6 +43,9 @@ class PrepaymentCorrectionDocument
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
     private ?string $grossValue = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $operator_code = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
