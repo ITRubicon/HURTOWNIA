@@ -82,6 +82,7 @@ class FvCorrectionDocumentRepository extends IApiRepository
             'gross_value' => ['sourceField' => 'grossValue', 'type' => ParameterType::STRING],
             'order_id' => ['sourceField' => 'orderId', 'type' => ParameterType::STRING],
             'order_name' => ['sourceField' => 'orderName', 'type' => ParameterType::STRING],
+            'operator_code' => ['sourceField' => 'operatorCode', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
             'notes' => ['sourceField' => 'notes', 'type' => ParameterType::STRING],
             'who' => ['sourceField' => 'who', 'type' => ParameterType::STRING],
             'for_whom' => ['sourceField' => 'forWhom', 'type' => ParameterType::STRING],

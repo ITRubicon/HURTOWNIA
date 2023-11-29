@@ -58,6 +58,9 @@ class FvCorrectionDocument
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $orderName = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $operator_code = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
