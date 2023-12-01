@@ -45,59 +45,67 @@ class InvoiceRepository extends IApiRepository
     public function archive()
     {
         $q = "INSERT INTO rogowiec_invoice_archive (id, source, `number`, doc_date, sale_date, currency, net_value, gross_value, corrected_no)
-            SELECT
-                id, source, `number`, doc_date, sale_date, currency, net_value, gross_value, corrected_no
-            FROM rogowiec_invoice ri
+            SELECT id, source, `number`, doc_date, sale_date, currency, net_value, gross_value, corrected_no
+            FROM rogowiec_invoice ri WHERE source = :source
                 ON duplicate KEY UPDATE
                 id = ri.id,
                 net_value = ri.net_value,
                 gross_value = ri.gross_value,
                 corrected_no = ri.corrected_no
         ";
-        $this->db->executeQuery($q);
+        $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
 
-        $q = "INSERT INTO rogowiec_invoice_customer_archive (invoice_id, source, customer_kind, customer_code, name, first_name, last_name, tax_number, personal_id, busines_number, kind)
-            SELECT
-                invoice_id, source, customer_kind, customer_code, name, first_name, last_name, tax_number, personal_id, busines_number, kind
-            FROM rogowiec_invoice_customer ric
-            ON duplicate KEY UPDATE
-                invoice_id = ric.invoice_id,
-                customer_kind = ric.customer_kind,
-                customer_code = ric.customer_code,
-                name = ric.name,
-                first_name = ric.first_name,
-                last_name = ric.last_name,
-                tax_number = ric.tax_number,
-                personal_id = ric.personal_id,
-                busines_number = ric.busines_number,
-                kind = ric.kind
-        ";
-        $this->db->executeQuery($q);
+        $q = "SELECT COUNT(*) AS total FROM rogowiec_invoice_customer";
+        $totalCustomers = $this->db->fetchOne($q);
+        $chunkSize = 10000;
+        $steps = ceil($totalCustomers / $chunkSize);
 
-        $q = "UPDATE rogowiec_invoice_archive i
-            JOIN rogowiec_invoice_customer_archive c ON c.source = i.source AND c.invoice_id = i.id AND ISNULL(i.customer_code) AND c.customer_kind = 'Recipient'
-            SET i.customer_code = c.customer_code
-        ";
-        $this->db->executeQuery($q);
+        for ($i = 0; $i < $steps; $i++) {
+            $offset = $i * $chunkSize;
 
-        $q = "UPDATE rogowiec_invoice_archive i
-            JOIN rogowiec_invoice_customer_archive c ON c.source = i.source AND c.invoice_id = i.id AND ISNULL(i.customer_code) AND c.customer_kind = 'ExternalPayment'
-            SET i.customer_code = c.customer_code
-        ";
-        $this->db->executeQuery($q);
+            $q = "INSERT INTO rogowiec_invoice_customer_archive (invoice_id, source, customer_kind, customer_code, name, first_name, last_name, tax_number, personal_id, busines_number, kind)
+                SELECT invoice_id, source, customer_kind, customer_code, name, first_name, last_name, tax_number, personal_id, busines_number, kind
+                FROM rogowiec_invoice_customer ric WHERE source = :source
+                LIMIT $offset, $chunkSize
+                ON duplicate KEY UPDATE
+                    invoice_id = ric.invoice_id,
+                    customer_kind = ric.customer_kind,
+                    customer_code = ric.customer_code,
+                    name = ric.name,
+                    first_name = ric.first_name,
+                    last_name = ric.last_name,
+                    tax_number = ric.tax_number,
+                    personal_id = ric.personal_id,
+                    busines_number = ric.busines_number,
+                    kind = ric.kind
+            ";
+            dump($q);
+            $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
+        }
 
         $q = "UPDATE rogowiec_invoice_archive i
-            JOIN rogowiec_invoice_customer_archive c ON c.source = i.source AND c.invoice_id = i.id AND ISNULL(i.customer_code) AND c.customer_kind = 'Buyer'
+            JOIN rogowiec_invoice_customer_archive c ON c.source = :source AND c.invoice_id = i.id AND ISNULL(i.customer_code) AND c.customer_kind = 'Recipient'
             SET i.customer_code = c.customer_code
         ";
-        $this->db->executeQuery($q);
+        $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
 
         $q = "UPDATE rogowiec_invoice_archive i
-            JOIN rogowiec_invoice_customer_archive c ON c.source = i.source AND c.invoice_id = i.id AND ISNULL(i.customer_code) AND c.customer_kind = 'Dealer'
+            JOIN rogowiec_invoice_customer_archive c ON c.source = :source AND c.invoice_id = i.id AND ISNULL(i.customer_code) AND c.customer_kind = 'ExternalPayment'
             SET i.customer_code = c.customer_code
         ";
-        $this->db->executeQuery($q);
+        $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
 
+        $q = "UPDATE rogowiec_invoice_archive i
+            JOIN rogowiec_invoice_customer_archive c ON c.source = :source AND c.invoice_id = i.id AND ISNULL(i.customer_code) AND c.customer_kind = 'Buyer'
+            SET i.customer_code = c.customer_code
+        ";
+        $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
+
+        $q = "UPDATE rogowiec_invoice_archive i
+            JOIN rogowiec_invoice_customer_archive c ON c.source = :source AND c.invoice_id = i.id AND ISNULL(i.customer_code) AND c.customer_kind = 'Dealer'
+            SET i.customer_code = c.customer_code
+        ";
+        $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
     private function collectClients(array &$invoice)
