@@ -79,7 +79,6 @@ class InvoiceRepository extends IApiRepository
                     busines_number = ric.busines_number,
                     kind = ric.kind
             ";
-            dump($q);
             $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
         }
 
