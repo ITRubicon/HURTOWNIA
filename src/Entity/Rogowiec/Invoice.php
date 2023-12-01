@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\Table;
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 #[Table(name: 'rogowiec_invoice')]
 #[Index(name: "source_idx", fields: ["source", "number"])]
+#[Index(name: "source_id_idx", fields: ["source", "id"])]
 class Invoice
 {
     #[ORM\Id]
