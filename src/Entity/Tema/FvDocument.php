@@ -46,6 +46,9 @@ class SaleInvoiceDocument
     private ?string $grossValue = null;
 
     #[ORM\Column(length: 12, nullable: true)]
+    private ?string $currency = null;
+
+    #[ORM\Column(length: 12, nullable: true)]
     private ?string $order_id = null;
 
     #[ORM\Column(length: 20, nullable: true)]
@@ -68,4 +71,7 @@ class SaleInvoiceDocument
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $reason = null;
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $branch = null;
 }

@@ -78,6 +78,7 @@ class FvDocumentRepository extends IApiRepository
             'due_date' => ['sourceField' => 'dueDate', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d H:i:s']],
             'net_value' => ['sourceField' => 'netValue', 'type' => ParameterType::STRING],
             'gross_value' => ['sourceField' => 'grossValue', 'type' => ParameterType::STRING],
+            'currency' => ['sourceField' => 'currency', 'type' => ParameterType::STRING],
             'order_id' => ['sourceField' => 'orderId', 'type' => ParameterType::STRING],
             'order_name' => ['sourceField' => 'orderName', 'type' => ParameterType::STRING],
             'payment_method' => ['sourceField' => 'paymentMethod', 'type' => ParameterType::STRING],
@@ -86,6 +87,7 @@ class FvDocumentRepository extends IApiRepository
             'who' => ['sourceField' => 'who', 'type' => ParameterType::STRING],
             'for_whom' => ['sourceField' => 'forWhom', 'type' => ParameterType::STRING],
             'reason' => ['sourceField' => 'reason', 'type' => ParameterType::STRING],
+            'branch' => ['sourceField' => 'branch', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
     }
