@@ -7,7 +7,6 @@ use Doctrine\DBAL\ParameterType;
 
 class MmRepository extends IApiRepository
 {
-    // private string $endpoint = '/api/dms/v1/outgoing-transfer-notes/{branchId}?creationDateFrom={dateFrom}&creationDateTo={dateTo}';
     private string $endpoint = '/api/dms/v1/outgoing-transfer-notes/{branchId}/:sync';
     protected $table = 'tema_mm_document';
     private $items = [];
@@ -42,27 +41,6 @@ class MmRepository extends IApiRepository
 
                 $this->save();
             }
-
-            // echo "\nPobieranie endpointów dla oddziałów";
-            // $i = 1;
-            // foreach ($stocks as $stock) {
-            //     echo "\nNr stocku $stock ----> $i/$stocksCount";
-            //     $i++;
-
-            //     $url = str_replace(
-            //         ['{branchId}', /* '{dateFrom}', '{dateTo}' */],
-            //         [$stock, /* $this->dateFrom, $this->dateTo */],
-            //         $this->endpoint
-            //     );
-            //     $this->fetchResult = $this->fetchApiResult($url);
-                
-            //     if (empty($this->fetchResult))
-            //         continue;
-
-            //     $this->collectItems($this->fetchResult);
-            //     $resultCount += count($this->fetchResult);
-            //     $this->save();
-            // }
         } else 
             throw new \Exception("Nie żadnych jednostek organizacyjnych. Najpierw uruchom komendę pobierającą listę jednostek [tema:stock]");
         
