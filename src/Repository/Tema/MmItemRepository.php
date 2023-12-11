@@ -15,9 +15,16 @@ class MmItemRepository extends IApiRepository
         $this->clearDataArrays();
         
         foreach ($items as $item) {
-            $tempItem = array_merge($item, $item['taxRate'], $item['unit']);
-            unset($tempItem['taxRate'], $item['unit']);
-            array_push($this->fetchResult, $tempItem);
+
+            if (isset($item['unit'])) {
+                $item['unit_id'] = $item['unit']['id'];
+                $item['unit_name'] = $item['unit']['name'];
+            }
+
+            $item = array_merge($item, $item['taxRate']);
+
+            unset($item['taxRate'], $item['unit']);
+            array_push($this->fetchResult, $item);
         }
         $this->save();
         $resCount = count($this->fetchResult);
@@ -35,8 +42,8 @@ class MmItemRepository extends IApiRepository
             'quantity' => ['sourceField' => 'quantity', 'type' => ParameterType::STRING],
             'net_price' => ['sourceField' => 'netPrice', 'type' => ParameterType::STRING],
             'purchase_price' => ['sourceField' => 'purchasePrice', 'type' => ParameterType::STRING],
-            'unit_id' => ['sourceField' => 'id', 'type' => ParameterType::INTEGER],
-            'unit_name' => ['sourceField' => 'name', 'type' => ParameterType::STRING],
+            'unit_id' => ['sourceField' => 'unit_id', 'type' => ParameterType::INTEGER],
+            'unit_name' => ['sourceField' => 'unit_name', 'type' => ParameterType::STRING],
             'tax_rate' => ['sourceField' => 'value', 'type' => ParameterType::STRING],
             'is_exempt' => ['sourceField' => 'isExempt', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],

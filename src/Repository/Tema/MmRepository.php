@@ -8,7 +8,7 @@ use Doctrine\DBAL\ParameterType;
 class MmRepository extends IApiRepository
 {
     // private string $endpoint = '/api/dms/v1/outgoing-transfer-notes/{branchId}?creationDateFrom={dateFrom}&creationDateTo={dateTo}';
-    private string $endpoint = '/api/dms/v1/outgoing-transfer-notes/{branchId}';
+    private string $endpoint = '/api/dms/v1/outgoing-transfer-notes/{branchId}/:sync';
     protected $table = 'tema_mm_document';
     private $items = [];
 
@@ -20,26 +20,49 @@ class MmRepository extends IApiRepository
         $resultCount = 0;
 
         if ($stocksCount) {
-            echo "\nPobieranie endpointów dla oddziałów";
             $i = 1;
             foreach ($stocks as $stock) {
                 echo "\nNr stocku $stock ----> $i/$stocksCount";
                 $i++;
-
-                $url = str_replace(
-                    ['{branchId}', /* '{dateFrom}', '{dateTo}' */],
-                    [$stock, /* $this->dateFrom, $this->dateTo */],
-                    $this->endpoint
-                );
-                $this->fetchResult = $this->fetchApiResult($url);
                 
-                if (empty($this->fetchResult))
-                    continue;
+                $url = str_replace('{branchId}', $stock, $this->endpoint);
+                do {
+                    $nextTimestamp = '';
+                    if (!empty($res['lastTimestamp']))
+                        $nextTimestamp = '?timestamp=' . urlencode($res['lastTimestamp']);
 
-                $this->collectItems($this->fetchResult);
-                $resultCount += count($this->fetchResult);
+                    $res = $this->fetchApiResult($url . $nextTimestamp);
+                    if (empty($res))
+                        continue;
+
+                        $this->collectItems($res['items']);
+                        $this->fetchResult = array_merge($this->fetchResult, $res['items']);
+                        $resultCount += count($res['items']);
+                } while ($res['fetchNext']);
+
                 $this->save();
             }
+
+            // echo "\nPobieranie endpointów dla oddziałów";
+            // $i = 1;
+            // foreach ($stocks as $stock) {
+            //     echo "\nNr stocku $stock ----> $i/$stocksCount";
+            //     $i++;
+
+            //     $url = str_replace(
+            //         ['{branchId}', /* '{dateFrom}', '{dateTo}' */],
+            //         [$stock, /* $this->dateFrom, $this->dateTo */],
+            //         $this->endpoint
+            //     );
+            //     $this->fetchResult = $this->fetchApiResult($url);
+                
+            //     if (empty($this->fetchResult))
+            //         continue;
+
+            //     $this->collectItems($this->fetchResult);
+            //     $resultCount += count($this->fetchResult);
+            //     $this->save();
+            // }
         } else 
             throw new \Exception("Nie żadnych jednostek organizacyjnych. Najpierw uruchom komendę pobierającą listę jednostek [tema:stock]");
         

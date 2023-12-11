@@ -15,9 +15,9 @@ class ServiceOrderItemRepository extends IApiRepository
         $this->clearDataArrays();
         
         foreach ($items as $item) {
-            $tempItem = array_merge($item, $item['taxRate']);
-            unset($tempItem['taxRate']);
-            array_push($this->fetchResult, $tempItem);
+            $item = array_merge($item, $item['taxRate']);
+            unset($item['taxRate']);
+            array_push($this->fetchResult, $item);
         }
         $this->save();
         $resCount = count($this->fetchResult);
