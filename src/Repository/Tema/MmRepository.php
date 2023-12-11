@@ -7,7 +7,8 @@ use Doctrine\DBAL\ParameterType;
 
 class MmRepository extends IApiRepository
 {
-    private string $endpoint = '/api/dms/v1/outgoing-transfer-notes/{branchId}?creationDateFrom={dateFrom}&creationDateTo={dateTo}';
+    // private string $endpoint = '/api/dms/v1/outgoing-transfer-notes/{branchId}?creationDateFrom={dateFrom}&creationDateTo={dateTo}';
+    private string $endpoint = '/api/dms/v1/outgoing-transfer-notes/{branchId}';
     protected $table = 'tema_mm_document';
     private $items = [];
 
@@ -26,8 +27,8 @@ class MmRepository extends IApiRepository
                 $i++;
 
                 $url = str_replace(
-                    ['{branchId}', '{dateFrom}', '{dateTo}'],
-                    [$stock, $this->dateFrom, $this->dateTo],
+                    ['{branchId}', /* '{dateFrom}', '{dateTo}' */],
+                    [$stock, /* $this->dateFrom, $this->dateTo */],
                     $this->endpoint
                 );
                 $this->fetchResult = $this->fetchApiResult($url);
