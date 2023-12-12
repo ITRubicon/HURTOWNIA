@@ -15,6 +15,11 @@ class FvCorrectionItemRepository extends IApiRepository
         $this->clearDataArrays();
         
         foreach ($items as $item) {
+            if (isset($item['unit'])) {
+                $item['unit_id'] = $item['unit']['id'];
+                $item['unit_name'] = $item['unit']['name'];
+            }
+            
             $item = array_merge($item, $item['taxRate']);
             unset($item['taxRate']);
             array_push($this->fetchResult, $item);
@@ -34,6 +39,8 @@ class FvCorrectionItemRepository extends IApiRepository
             'name' => ['sourceField' => 'name', 'type' => ParameterType::STRING],
             'quantity' => ['sourceField' => 'quantity', 'type' => ParameterType::STRING],
             'net_price' => ['sourceField' => 'netPrice', 'type' => ParameterType::STRING],
+            'unit_id' => ['sourceField' => 'unit_id', 'type' => ParameterType::INTEGER],
+            'unit_name' => ['sourceField' => 'unit_name', 'type' => ParameterType::STRING],
             'tax_rate' => ['sourceField' => 'value', 'type' => ParameterType::STRING],
             'is_exempt' => ['sourceField' => 'isExempt', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
