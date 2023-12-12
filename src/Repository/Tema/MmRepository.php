@@ -23,7 +23,8 @@ class MmRepository extends IApiRepository
             foreach ($stocks as $stock) {
                 echo "\nNr stocku $stock ----> $i/$stocksCount";
                 $i++;
-                
+
+                $res = [];
                 $url = str_replace('{branchId}', $stock, $this->endpoint);
                 do {
                     $nextTimestamp = '';
@@ -34,9 +35,9 @@ class MmRepository extends IApiRepository
                     if (empty($res))
                         continue;
 
-                        $this->collectItems($res['items']);
-                        $this->fetchResult = array_merge($this->fetchResult, $res['items']);
-                        $resultCount += count($res['items']);
+                    $this->collectItems($res['items']);
+                    $this->fetchResult = array_merge($this->fetchResult, $res['items']);
+                    $resultCount += count($res['items']);
                 } while ($res['fetchNext']);
 
                 $this->save();

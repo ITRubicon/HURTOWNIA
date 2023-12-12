@@ -67,6 +67,7 @@ abstract class IBaseRepository
                 }
             }
         }
+        $this->fetchResult = [];
     }
 
     public function clearTable()
