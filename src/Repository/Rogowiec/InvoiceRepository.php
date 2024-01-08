@@ -8,7 +8,8 @@ use Doctrine\DBAL\ParameterType;
 class InvoiceRepository extends IApiRepository
 {
     private string $invoiceIdEndpoint = '/api/GetInvoiceList?DateFrom={date_from}&DateTo={date_to}&ResourceId={resource_id}';
-    private string $endpoint = '/api/GetInvoice?Id={id}';
+    private string $idEndpoint = '/api/GetInvoice?Id={id}';
+    private string $nameEndpoint = '/api/GetInvoice?InvoiceNo={InvoiceNo}';
     private $customers = [];
     protected $table = 'rogowiec_invoice';
 
@@ -24,7 +25,7 @@ class InvoiceRepository extends IApiRepository
 
         for ($i = 0; $i < $invoicesIdsCount; $i++) {
             echo "\nId faktury " . $invoicesIdsToFetch[$i] . " ----> " . $i + 1 . "/$invoicesIdsCount";
-            $url = str_replace('{id}', $invoicesIdsToFetch[$i], $this->endpoint);
+            $url = str_replace('{id}', $invoicesIdsToFetch[$i], $this->idEndpoint);
             $res = $this->fetchApiResult($url);
             if (empty($res['id']))
                 continue;
