@@ -19,7 +19,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class RogowiecCommand extends Command
 {
     use LockableTrait;
-    private const COMMANDS = ['rogowiec:branch', 'rogowiec:orgunit', 'rogowiec:saleunit', 'rogowiec:ageing:cars', 'rogowiec:ageing:parts', 'rogowiec:ageing:production', 'rogowiec:cars:orders', 'rogowiec:cars:sold', 'rogowiec:parts:sold', 'rogowiec:service:sold', /* 'rogowiec:invoice' */, 'rogowiec:customer'];
+    private const COMMANDS = ['rogowiec:branch', 'rogowiec:orgunit', 'rogowiec:saleunit', 'rogowiec:ageing:cars', 'rogowiec:ageing:parts', 'rogowiec:ageing:production', 'rogowiec:cars:orders', 'rogowiec:cars:sold', 'rogowiec:parts:sold', 'rogowiec:service:sold', /* 'rogowiec:invoice' ,*/ 'rogowiec:customer'];
 
     protected function configure(): void
     {
