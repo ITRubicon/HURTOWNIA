@@ -150,7 +150,7 @@ class InvoiceRepository extends IApiRepository
 
     private function getPresentDocumentIds()
     {
-        $q = "SELECT id FROM rogowiec_invoice_archive WHERE NOT ISNULL(id) AND source = :source AND doc_date BETWEEN :dateFrom AND :dateTo";
+        $q = "SELECT id FROM rogowiec_invoice_archive WHERE (NOT ISNULL(id) OR coalesce(customer_code,'') = '') AND source = :source AND doc_date BETWEEN :dateFrom AND :dateTo";
         return $this->db->fetchFirstColumn(
             $q,
             ['source' => $this->source->getName(), 'dateFrom' => $this->dateFrom, 'dateTo' => $this->dateTo],
