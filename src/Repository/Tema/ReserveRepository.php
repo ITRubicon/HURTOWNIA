@@ -60,7 +60,7 @@ class ReserveRepository extends IApiRepository
 
     private function getStocks()
     {
-        $q = "SELECT stock_id FROM tema_stock WHERE category = 'workshop' AND name LIKE '%części%' AND source = :source";
+        $q = "SELECT stock_id FROM tema_stock WHERE category = 'workshop' AND name LIKE '%Magazyn%' AND source = :source";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
