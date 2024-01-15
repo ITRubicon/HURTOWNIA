@@ -41,11 +41,12 @@ class ApiFetchErrorRepository extends ServiceEntityRepository
 
     public function clearErrors(): int
     {
-        $res = $this->createQueryBuilder('e')
-            ->delete()
-            ->getQuery()
-            ->getSingleScalarResult();
-        return $res ?? 0;
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "DELETE FROM api_fetch_error WHERE `time` <= '" . date('Y-m-d H:i:s') . "'";
+        $stmt = $conn->prepare($sql);
+        $res = $stmt->executeQuery();
+
+        return $res->rowCount() ?? 0;
     }
 
     public function getErrorsCount(): int
