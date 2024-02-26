@@ -94,10 +94,19 @@ class FvDocumentRepository extends IApiRepository
 
     private function collectItems(array &$doc)
     {
-        foreach ($doc['items'] as $item) {
+        foreach ($doc['items'] as $item) {               
             $item['doc_id'] = $doc['id'];
             $item['unit'] = $item['unit']['name'] ?? '';
             array_push($this->documentItems, $item);
+
+            if ($item['setProductId'] !== 0 || !empty($item['setProducts'])) {
+                foreach ($item['setProducts'] as $product) {
+                    $product['productId'] = $item['setProductId'];
+                    $product['doc_id'] = $doc['id'];
+                    $product['unit'] = $product['unit']['name'] ?? '';
+                    array_push($this->documentItems, $product);
+                }
+            }
         }
         unset($doc['items']);
     }
@@ -105,7 +114,7 @@ class FvDocumentRepository extends IApiRepository
     private function getStocks()
     {
         
-        $q = "SELECT stock_id FROM tema_stock WHERE source = :source";
+        $q = "SELECT stock_id FROM tema_stock WHERE source = :source and stock_id = 11";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
