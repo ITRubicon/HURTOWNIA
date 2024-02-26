@@ -42,6 +42,7 @@ class DmsUserRepository extends IApiRepository
             'id' => ['sourceField' => 'id', 'type' => ParameterType::STRING],
             'name' => ['sourceField' => 'name', 'type' => ParameterType::STRING],
             'full_name' => ['sourceField' => 'fullName', 'type' => ParameterType::STRING],
+            'is_active' => ['sourceField' => 'active', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
         ];
     }
 }
