@@ -114,7 +114,7 @@ class FvDocumentRepository extends IApiRepository
     private function getStocks()
     {
         
-        $q = "SELECT stock_id FROM tema_stock WHERE source = :source and stock_id = 11";
+        $q = "SELECT stock_id FROM tema_stock WHERE source = :source";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
