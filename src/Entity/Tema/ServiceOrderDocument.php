@@ -9,7 +9,8 @@ use Doctrine\ORM\Mapping\Table;
 
 #[ORM\Entity(repositoryClass: WzDocumentRepository::class)]
 #[Table(name: 'tema_service_order_document')]
-#[Index(name: "source_issuedate_idx", fields: ["source", "openingDate"])]
+#[Index(name: "source_openingDate_idx", fields: ["source", "openingDate"])]
+#[Index(name: "source_closingDate_idx", fields: ["source", "closingDate"])]
 class ServiceOrderDocument
 {
     #[ORM\Id]
