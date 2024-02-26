@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\Table;
 #[Index(name: "source_issuedate_idx", fields: ["source", "issueDate"])]
 #[Index(name: "source_vin_idx", fields: ["source", "vin"])]
 #[Index(name: "source_docId_idx", fields: ["source", "doc_id"])]
+#[Index(name: "source_orderId_idx", fields: ["source", "order_id"])]
 class SaleInvoiceDocument
 {
     #[ORM\Id]
