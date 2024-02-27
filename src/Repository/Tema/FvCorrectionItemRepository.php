@@ -40,7 +40,7 @@ class FvCorrectionItemRepository extends IApiRepository
             'quantity' => ['sourceField' => 'quantity', 'type' => ParameterType::STRING],
             'net_price' => ['sourceField' => 'netPrice', 'type' => ParameterType::STRING],
             'unit_id' => ['sourceField' => 'unit_id', 'type' => ParameterType::INTEGER],
-            'unit_name' => ['sourceField' => 'unit_name', 'type' => ParameterType::STRING],
+            'unit' => ['sourceField' => 'unit_name', 'type' => ParameterType::STRING],
             'tax_rate' => ['sourceField' => 'value', 'type' => ParameterType::STRING],
             'is_exempt' => ['sourceField' => 'isExempt', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],

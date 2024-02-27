@@ -39,7 +39,7 @@ class FvCorrectionItem
     private ?string $unitId = null;
 
     #[ORM\Column(length: 30, nullable: true)]
-    private ?string $unitName = null;
+    private ?string $unit = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
     private ?string $taxRate = null;
