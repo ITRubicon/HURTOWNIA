@@ -32,8 +32,23 @@ class FvCorrectionItem
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 4)]
     private ?string $quantity = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 4)]
+    private ?string $originalQuantity = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 4)]
+    private ?string $correctedQuantityDifference = null;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
     private ?string $netPrice = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
+    private ?string $originalPurchasePrice = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
+    private ?string $purchasePrice = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
+    private ?string $correctedPriceDifference = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 3, nullable: true)]
     private ?string $unitId = null;

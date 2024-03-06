@@ -33,14 +33,26 @@ class FvzCorrectionItem
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 4)]
     private ?string $quantity = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 4)]
+    private ?string $originalQuantity = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 4)]
+    private ?string $correctedQuantityDifference = null;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
     private ?string $netPrice = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
+    private ?string $originalNetPrice = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
+    private ?string $correctedPriceDifference = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
     private ?string $taxRate = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 4)]
-    private ?string $correctionValue = null;
+    private ?string $net_value = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $carId = null;
