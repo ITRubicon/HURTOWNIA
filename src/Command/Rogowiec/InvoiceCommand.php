@@ -5,7 +5,7 @@ namespace App\Command\Rogowiec;
 use App\Command\BaseApiCommand;
 use App\Entity\IConnection;
 use App\Repository\ApiFetchErrorRepository;
-use App\Repository\Rogowiec\InvoiceCustomerRepository;
+use App\Repository\Rogowiec\CustomerRepository;
 use App\Repository\Rogowiec\InvoiceRepository;
 use App\Repository\SourceAuthRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -19,14 +19,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class InvoiceCommand extends BaseApiCommand
 {
     private $repo;
-    private $invoiceCustomerRepo;
+    private $customerRepo;
     protected $producerName = 'Rogowiec';
 
-    public function __construct(InvoiceRepository $repo, InvoiceCustomerRepository $invoiceRepo, SourceAuthRepository $apiAuthRepo, ApiFetchErrorRepository $errorRepo)
+    public function __construct(InvoiceRepository $repo, CustomerRepository $customerRepo, SourceAuthRepository $apiAuthRepo, ApiFetchErrorRepository $errorRepo)
     {
         parent::__construct($apiAuthRepo, $errorRepo);
         $this->repo = $repo;
-        $this->invoiceCustomerRepo = $invoiceRepo;
+        $this->customerRepo = $customerRepo;
     }
 
     protected function configure(): void
@@ -40,18 +40,19 @@ class InvoiceCommand extends BaseApiCommand
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
         $this->repo->setSource($api);
-        $this->invoiceCustomerRepo->setSource($api);
+        $this->customerRepo->setSource($api);
         $this->repo->setDateFrom($this->cmdArgs['dateFrom']);
         $this->repo->setDateTo($this->cmdArgs['dateTo']);
         $fetchedRows = $this->repo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
 
-        $customersCount = count($fetchedRows['customers']);
+        $customersCount = count($fetchedRows['customersCodes']);
         if ($customersCount > 0) {
             $io->info(sprintf('Pobrano %s klientów z faktur', $customersCount));
-            $this->invoiceCustomerRepo->saveCustomers($fetchedRows['customers']);
+            $this->customerRepo->fetchByCode($fetchedRows['customersCodes']);
+            $this->customerRepo->archive();
         }
-        unset($fetchedRows['customers']);
+        unset($fetchedRows['customersCodes']);
         
         $io->info('Archiwum faktur');
         $this->repo->archive();
@@ -60,5 +61,6 @@ class InvoiceCommand extends BaseApiCommand
     protected function clearTable()
     {
         $this->repo->clearTable();
+        $this->customerRepo->clearTable();
     }
 }
