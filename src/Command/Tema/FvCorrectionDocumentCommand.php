@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'tema:fv:corrections',
+    name: 'tema:fv:correction',
     description: 'Pobiera faktury sprzedaży i poycje z nich. Parametry: nazwa api (opcja)',
 )]
 class FvCorrectionDocumentCommand extends BaseApiCommand
