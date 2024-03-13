@@ -18,8 +18,8 @@ class Alert
     public function sendCommandAlert(string $command, string $msg): void
     {
         $email = (new TemplatedEmail())
-            ->from('alert@example.com')
-            ->to('andrzej.guzowski@rubicon.katowice.pl')
+            ->from('alert@rubicon.katowice.pl')
+            ->to('alert@rubicon.katowice.pl')
             ->priority(Email::PRIORITY_HIGH)
             ->subject('ALERT - HURTOWNIA - ' . $_ENV['COMPANY'])
             ->htmlTemplate('emails/alert.html.twig')
