@@ -37,7 +37,7 @@ class Alert
     {
         $email = (new TemplatedEmail())
             ->from('alert@example.com')
-            ->to('andrzej.guzowski@rubicon.katowice.pl')
+            ->to('alert@rubicon.katowice.pl')
             ->priority(Email::PRIORITY_HIGH)
             ->subject('ALERT - HURTOWNIA - ' . $_ENV['COMPANY'] . '. Problematyczne endpointy')
             ->htmlTemplate('emails/fetch_alert.html.twig')
