@@ -28,6 +28,6 @@ class DmsUser
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $fullName = null;
     
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $isActive = null;
+    #[ORM\Column]
+    private ?bool $isActive = null;
 }
