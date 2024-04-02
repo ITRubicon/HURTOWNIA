@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\Table;
 #[Table(name: 'tema_wz_document')]
 #[Index(name: "source_issuedate_idx", fields: ["source", "issueDate"])]
 #[Index(name: "source_vin_idx", fields: ["source", "vin"])]
+#[Index(name: "source_name_idx", fields: ["source", "name"])]
 class WzDocument
 {
     #[ORM\Id]
