@@ -36,6 +36,9 @@ class WzItem
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
     private ?string $netPrice = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
+    private ?string $purchase_price = null;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
     private ?string $taxRate = null;
 

@@ -34,6 +34,7 @@ class WzItemRepository extends IApiRepository
             'name' => ['sourceField' => 'name', 'type' => ParameterType::STRING],
             'quantity' => ['sourceField' => 'quantity', 'type' => ParameterType::STRING],
             'net_price' => ['sourceField' => 'netPrice', 'type' => ParameterType::STRING],
+            'purchase_price' => ['sourceField' => 'purchasePrice', 'type' => ParameterType::STRING],
             'tax_rate' => ['sourceField' => 'value', 'type' => ParameterType::STRING],
             'is_exempt' => ['sourceField' => 'isExempt', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
