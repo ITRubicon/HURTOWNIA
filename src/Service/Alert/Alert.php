@@ -18,8 +18,8 @@ class Alert
     public function sendCommandAlert(string $command, string $msg): void
     {
         $email = (new TemplatedEmail())
-            ->from('alert@rubicon.katowice.pl')
-            ->to('alert@rubicon.katowice.pl')
+            ->from($_ENV['MAILER_USER'])
+            ->to($_ENV['ALERT_MAIL'])
             ->priority(Email::PRIORITY_HIGH)
             ->subject('ALERT - HURTOWNIA - ' . $_ENV['COMPANY'])
             ->htmlTemplate('emails/alert.html.twig')
@@ -36,8 +36,8 @@ class Alert
     public function sendFetchErrors(array $errors): void
     {
         $email = (new TemplatedEmail())
-            ->from('alert@example.com')
-            ->to('alert@rubicon.katowice.pl')
+            ->from($_ENV['MAILER_USER'])
+            ->to($_ENV['ALERT_MAIL'])
             ->priority(Email::PRIORITY_HIGH)
             ->subject('ALERT - HURTOWNIA - ' . $_ENV['COMPANY'] . '. Problematyczne endpointy')
             ->htmlTemplate('emails/fetch_alert.html.twig')
