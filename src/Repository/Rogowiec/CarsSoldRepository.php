@@ -35,7 +35,7 @@ class CarsSoldRepository extends IApiRepository
                 $i++;
             }
         } else 
-            throw new \Exception("Nie żadnych . Najpierw uruchom komendę pobierającą listę oddziałów [rogowiec:branch]", 99);
+            throw new \Exception("Nie żadnych oddziałów dla " . $this->source->getName() . ". Najpierw uruchom komendę pobierającą listę oddziałów [rogowiec:branch]", 99);
 
         return ['fetched' => $resCount];
     }

@@ -31,7 +31,7 @@ class AgeingCarsRepository extends IApiRepository
                 $i++;
             }
         } else 
-            throw new \Exception("Nie żadnych jednostek organizacyjnych. Najpierw uruchom komendę pobierającą jednostki organizacyjne [rogowiec:orgunit]", -1);
+            throw new \Exception("Nie żadnych jednostek organizacyjnych dla " . $this->source->getName() . ". Najpierw uruchom komendę pobierającą jednostki organizacyjne [rogowiec:orgunit]", -1);
 
         return ['fetched' => $resCount];
     }

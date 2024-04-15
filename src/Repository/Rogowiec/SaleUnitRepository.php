@@ -16,6 +16,10 @@ class SaleUnitRepository extends IApiRepository
         $branches = $this->getBranches();
         $branchesCount = count($branches);
         $i = 1;
+
+        if (!$branchesCount)
+            throw new \Exception("Nie znaleziono oddziałów dla " . $this->source->getName() . ". Najpierw uruchom komendę pobierającą oddziały [rogowiec:branch]", -1);
+        
         foreach ($branches as $b) {
             echo "\nOddział $b ----> $i/$branchesCount";
             $res = $this->fetchApiResult($this->endpoint . "&BranchId=" . $b);

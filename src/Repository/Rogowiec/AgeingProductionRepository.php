@@ -35,7 +35,7 @@ class AgeingProductionRepository extends IApiRepository
                 $i++;
             }
         } else 
-            throw new \Exception("Nie żadnych . Najpierw uruchom komendę pobierającą jednostki organizacyjne [rogowiec:orgunit]", 99);
+        throw new \Exception("Nie żadnych jednostek organizacyjnych dla " . $this->source->getName() . ". Najpierw uruchom komendę pobierającą jednostki organizacyjne [rogowiec:orgunit]", -1);
 
         return ['fetched' => $resCount];
     }

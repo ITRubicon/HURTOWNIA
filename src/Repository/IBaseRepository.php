@@ -63,7 +63,7 @@ abstract class IBaseRepository
                     $this->db->executeQuery($q, $data['valuesIns'], $data['types']);
                     $this->db->close();
                 } catch (\Throwable $th) {
-                    throw new \Exception($th->getMessage(), $th->getCode(), $th);
+                    throw new \Exception('DMS: ' . $this->source->getName() . PHP_EOL . $th->getMessage(), $th->getCode(), $th);
                 }
             }
         }
