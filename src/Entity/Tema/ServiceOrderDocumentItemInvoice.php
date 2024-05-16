@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping\Table;
 
 #[ORM\Entity(repositoryClass: ServiceOrderItemRepository::class)]
 #[Table(name: 'tema_service_order_item_invoice')]
-#[ORM\UniqueConstraint(name: "tema_service_order_item_invoice_uq", fields: ["source", "doc_id", "productId", "product_code", "invoiceName"])]
+#[ORM\Index(name: "tema_source_docId_productId_productCode_invoiveName_idx", fields: ["source", "doc_id", "product_id", "product_code", "invoiceName"])]
 class ServiceOrderDocumentItemInvoice
 {
     #[ORM\Id]
@@ -22,7 +22,7 @@ class ServiceOrderDocumentItemInvoice
     private ?string $doc_id = null;
 
     #[ORM\Column]
-    private ?int $productId = null;
+    private ?int $product_id = null;
 
     #[ORM\Column]
     private ?string $product_code = null;
