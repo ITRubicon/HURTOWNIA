@@ -9,6 +9,7 @@ use App\Repository\SourceAuthRepository;
 use App\Repository\Tema\ServiceOrderCarRepository;
 use App\Repository\Tema\ServiceOrderDocumentRepository;
 use App\Repository\Tema\ServiceOrderEndDocumentRepository;
+use App\Repository\Tema\ServiceOrderItemInvoiceRepository;
 use App\Repository\Tema\ServiceOrderItemRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -22,17 +23,19 @@ class ServiceOrderDocumentCommand extends BaseApiCommand
 {
     private $docRepo;
     private $itemRepo;
+    private $itemInvoiceRepo;
     private $endDocRepo;
     private $carRepo;
     protected $producerName = 'Tema';
 
-    public function __construct(ServiceOrderDocumentRepository $docRepo, ServiceOrderItemRepository $itemRepo, ServiceOrderEndDocumentRepository $endDocRepo, ServiceOrderCarRepository $carRepo, SourceAuthRepository $apiAuthRepo, ApiFetchErrorRepository $errorRepo)
+    public function __construct(ServiceOrderDocumentRepository $docRepo, ServiceOrderItemRepository $itemRepo, ServiceOrderItemInvoiceRepository $itemInvoiceRepo, ServiceOrderEndDocumentRepository $endDocRepo, ServiceOrderCarRepository $carRepo, SourceAuthRepository $apiAuthRepo, ApiFetchErrorRepository $errorRepo)
     {
         parent::__construct($apiAuthRepo, $errorRepo);
         $this->docRepo = $docRepo;
         $this->itemRepo = $itemRepo;
         $this->endDocRepo = $endDocRepo;
         $this->carRepo = $carRepo;
+        $this->itemInvoiceRepo = $itemInvoiceRepo;
     }
 
     protected function configure(): void
@@ -46,6 +49,7 @@ class ServiceOrderDocumentCommand extends BaseApiCommand
     {
         $this->docRepo->setSource($api);
         $this->itemRepo->setSource($api);
+        $this->itemInvoiceRepo->setSource($api);
         $this->endDocRepo->setSource($api);
         $this->carRepo->setSource($api);
         $fetchedRows = $this->docRepo->fetch();
@@ -54,7 +58,12 @@ class ServiceOrderDocumentCommand extends BaseApiCommand
         $itemsCount = count($fetchedRows['items']);
         if ($itemsCount > 0) {
             $io->info(sprintf('Pobrano %s pozycji z dokumentów', $itemsCount));
-            $this->itemRepo->saveItems($fetchedRows['items']);
+            $result = $this->itemRepo->saveItems($fetchedRows['items']);
+            $io->info(sprintf('Zapisano %s faktur do pozycji', $result['fetched']));
+            
+            $savedCount = $this->itemInvoiceRepo->saveInvoices($result['invoices']);
+            $io->info(sprintf('Zapisano %s faktur', $savedCount));
+            unset($result);
         }
         unset($fetchedRows['items']);
 

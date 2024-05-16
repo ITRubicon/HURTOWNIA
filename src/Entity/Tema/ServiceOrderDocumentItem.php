@@ -50,7 +50,7 @@ class ServiceOrderDocumentItem
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $gdnName = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
-    private ?string $invoiceName = null;
+    // #[ORM\Column(length: 20, nullable: true)]
+    // private ?string $invoiceName = null;
 
 }

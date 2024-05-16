@@ -9,12 +9,14 @@ class ServiceOrderItemRepository extends IApiRepository
 {
     private string $endpoint = '/api/dms/v1/repair-orders/{branchId}/{repairOrderId}';
     protected $table = 'tema_service_order_item';
+    protected $invoices = [];
 
-    public function saveItems(array $items): int
+    public function saveItems(array $items)
     {
         $this->clearDataArrays();
         
         foreach ($items as $item) {
+            $this->collectInvoices($item);
             $item = array_merge($item, $item['taxRate']);
             unset($item['taxRate']);
             array_push($this->fetchResult, $item);
@@ -22,8 +24,29 @@ class ServiceOrderItemRepository extends IApiRepository
         $this->save();
         $resCount = count($this->fetchResult);
         $this->clearDataArrays();
+        
+        return [
+            'fetched' => $resCount,
+            'invoices' => $this->invoices,
+        ];
+    }
 
-        return $resCount;
+    protected function collectInvoices(array &$item)
+    {
+        if (empty($item['invoiceNames']))
+            return;
+
+        foreach ($item['invoiceNames'] as $i) {
+            if (empty($i) || $i === '(zwrot)')
+                continue;
+
+            $invoice['doc_id'] = $item['doc_id'];
+            $invoice['product_id'] = $item['productId'];
+            $invoice['product_code'] = $item['productCode'];
+            $invoice['invoice_name'] = $i;
+            array_push($this->invoices, $invoice);
+        }
+        unset($item['invoiceNames']);
     }
 
     protected function getFieldsParams(): array
@@ -39,7 +62,6 @@ class ServiceOrderItemRepository extends IApiRepository
             'tax_rate' => ['sourceField' => 'value', 'type' => ParameterType::STRING],
             'is_exempt' => ['sourceField' => 'isExempt', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
             'gdn_name' => ['sourceField' => 'gdnName', 'type' => ParameterType::STRING],
-            'invoice_name' => ['sourceField' => 'invoiceName', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];   
     }
