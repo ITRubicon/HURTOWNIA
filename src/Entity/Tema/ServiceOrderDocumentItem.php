@@ -20,7 +20,7 @@ class ServiceOrderDocumentItem
     #[ORM\Column(length: 20)]
     private ?string $source = null;
 
-    #[ORM\Column(length: 12, nullable: true)]
+    #[ORM\Column(length: 12)]
     private ?string $doc_id = null;
 
     #[ORM\Column(length: 30)]
