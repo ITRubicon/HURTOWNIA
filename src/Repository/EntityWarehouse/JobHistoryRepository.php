@@ -36,7 +36,7 @@ class JobHistoryRepository
     {
         $job = $this->entityManager->find(JobHistory::class, $id);
         $job->setEnd(new \DateTime());        
-        if ($job->getStatus() !== JobStatus::ERROR)
+        if ($job->getStatus() !== JobStatus::ERROR || !empty($job->getError()))
             $job->setStatus(JobStatus::ENDED);
             
         $this->entityManager->persist($job);    

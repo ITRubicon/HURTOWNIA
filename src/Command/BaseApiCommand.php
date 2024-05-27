@@ -68,8 +68,8 @@ abstract class BaseApiCommand extends Command
 
         $io->info($msg);
 
-        $io->info('Czyszczę stare błędy pobierania');
-        $io->info('Usunąłem ' . $this->errorRepo->clearErrors() . ' wpisów');
+        // $io->info('Czyszczę stare błędy pobierania');
+        // $io->info('Usunąłem ' . $this->errorRepo->clearErrors() . ' wpisów');
 
         $io->info('Pobieram dane');
 
@@ -85,11 +85,12 @@ abstract class BaseApiCommand extends Command
 
         $io->success('Koniec pracy');
         $end = new DateTime('now');
+        
         $io->info([
             'start: ' . $start->format('Y-m-d H:i:s'),
             'koniec: ' . $end->format('Y-m-d H:i:s'),
             'czas: ' . $end->diff($start)->format('%H:%I:%S'),
-            'błędy requestów: ' . $this->errorRepo->getErrorsCount(),
+            'błędy requestów: ' . $this->errorRepo->getErrorsCount($start->format('Y-m-d H:i:s')),
         ]);
 
         $this->release();

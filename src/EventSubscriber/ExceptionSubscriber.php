@@ -58,8 +58,16 @@ class ExceptionSubscriber implements EventSubscriberInterface
     public function setEnded(ConsoleTerminateEvent $event)
     {
         if ($this->id == true) {
+            
+            $problems = $this->taskReporter->sendFetchErrors();
+            if ($problems !== '') {
+                dump($problems);
+                $command = $event->getCommand();
+                $this->taskReporter->setError($this->id, $problems, $command->getName());
+            }
+            
             $this->taskReporter->setEnd($this->id);
-            $this->taskReporter->sendFetchErrors();
+            
             $output = $event->getOutput();
             $output->writeln(sprintf('KOŃCOWY ZAPIS DO JOBS_HISTORY'));
         }

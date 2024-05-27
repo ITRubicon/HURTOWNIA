@@ -49,10 +49,12 @@ class ApiFetchErrorRepository extends ServiceEntityRepository
         return $res->rowCount() ?? 0;
     }
 
-    public function getErrorsCount(): int
+    public function getErrorsCount(string $start): int
     {
         $qb = $this->createQueryBuilder('error');
-        $qb->select('COUNT(error.id) as total');
+        $qb->select('COUNT(error.id) as total')
+            ->where('error.time >= :start')
+            ->setParameter('start', $start);
 
         return (int)$qb->getQuery()->getSingleScalarResult();
     }

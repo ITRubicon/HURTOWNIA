@@ -59,6 +59,7 @@ class TaskReporter
     public function sendFetchErrors()
     {
         $errors = [];
+        $problems = [];
         foreach ($this->errorRepo->findAll() as $e) {
             $errors[] = [
                 'source' => $e->getSource(),
@@ -66,9 +67,18 @@ class TaskReporter
                 'http_code' => $e->getHttpCode(),
                 'time' => $e->getTime()->format('Y-m-d H:i:s')
             ];
+
+            $problems[] = [
+                'source' => $e->getSource(),
+                'endpoint' => $e->getEndpoint()
+            ];
         }
         
-        if (!empty($errors))
-            $this->alert->sendFetchErrors($errors);
+        if (!empty($errors)) {
+            // $this->alert->sendFetchErrors($errors);
+            return json_encode($problems, JSON_PRETTY_PRINT);
+        }
+
+        return '';
     }
 }
