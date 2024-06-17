@@ -53,6 +53,13 @@ class HttpClient
         curl_setopt($this->ch, CURLOPT_TIMEOUT, 180);
         
         $this->fetchedData = curl_exec($this->ch);
+        if ($this->fetchedData === false) {
+            if (curl_errno($this->ch) == CURLE_OPERATION_TIMEDOUT) {
+                throw new \Exception("Przekroczono czas oczekiwania na odpowiedź serwera", 1);
+            } else {
+                throw new \Exception("Błąd podczas pobierania danych: " . curl_error($this->ch), 1);
+            }
+        }
         $this->httpCode = (int) curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
         curl_close($this->ch);
 
