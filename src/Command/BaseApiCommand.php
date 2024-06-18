@@ -68,8 +68,8 @@ abstract class BaseApiCommand extends Command
 
         $io->info($msg);
 
-        // $io->info('Czyszczę stare błędy pobierania');
-        // $io->info('Usunąłem ' . $this->errorRepo->clearErrors() . ' wpisów');
+        $io->info('Czyszczę stare błędy pobierania');
+        $io->info('Usunąłem ' . $this->errorRepo->clearErrors() . ' wpisów');
 
         $io->info('Pobieram dane');
 
