@@ -49,8 +49,8 @@ class HttpClient
         // Dodanie opcji --insecure
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($this->ch, CURLOPT_TIMEOUT, 180);
+        curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($this->ch, CURLOPT_TIMEOUT, 300);
         
         $this->fetchedData = curl_exec($this->ch);
         if ($this->fetchedData === false) {
