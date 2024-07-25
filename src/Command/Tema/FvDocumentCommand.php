@@ -8,6 +8,7 @@ use App\Repository\ApiFetchErrorRepository;
 use App\Repository\SourceAuthRepository;
 use App\Repository\Tema\FvDocumentRepository;
 use App\Repository\Tema\FvItemRepository;
+use App\Repository\Tema\FvSetProductRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -20,13 +21,15 @@ class FvDocumentCommand extends BaseApiCommand
 {
     private $docRepo;
     private $itemRepo;
+    private $setProduct;
     protected $producerName = 'Tema';
 
-    public function __construct(FvDocumentRepository $docRepo, FvItemRepository $itemRepo, SourceAuthRepository $apiAuthRepo, ApiFetchErrorRepository $errorRepo)
+    public function __construct(FvDocumentRepository $docRepo, FvItemRepository $itemRepo, FvSetProductRepository $setProduct, SourceAuthRepository $apiAuthRepo, ApiFetchErrorRepository $errorRepo)
     {
         parent::__construct($apiAuthRepo, $errorRepo);
         $this->docRepo = $docRepo;
         $this->itemRepo = $itemRepo;
+        $this->setProduct = $setProduct;
     }
 
     protected function configure(): void
@@ -40,6 +43,7 @@ class FvDocumentCommand extends BaseApiCommand
     {
         $this->docRepo->setSource($api);
         $this->itemRepo->setSource($api);
+        $this->setProduct->setSource($api);
         $fetchedRows = $this->docRepo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
 
@@ -48,6 +52,13 @@ class FvDocumentCommand extends BaseApiCommand
             $io->info(sprintf('Pobrano %s pozycji z dokumentów', $itemsCount));
             $this->itemRepo->saveItems($fetchedRows['items']);
         }
+        
+        $setProductsCount = count($fetchedRows['setProducts']);
+        if ($setProductsCount > 0) {
+            $io->info(sprintf('Pobrano %s pozycji pakietowych', $setProductsCount));
+            $this->setProduct->saveItems($fetchedRows['setProducts']);
+        }
+
         unset($fetchedRows);
     }
 

@@ -10,6 +10,7 @@ class FvDocumentRepository extends IApiRepository
     private string $endpoint = '/api/dms/v1/sales-invoices/{branchId}';
     private $documentEndpoints = [];
     private $documentItems = [];
+    private $setProducts = [];
     protected $table = 'tema_fv_document';
 
     public function fetch(): array
@@ -39,7 +40,8 @@ class FvDocumentRepository extends IApiRepository
 
         return [
             'fetched' => $listCount,
-            'items' => $this->documentItems
+            'items' => $this->documentItems,
+            'setProducts' => $this->setProducts
         ];
     }
 
@@ -101,10 +103,10 @@ class FvDocumentRepository extends IApiRepository
 
             if ($item['setProductId'] !== 0 || !empty($item['setProducts'])) {
                 foreach ($item['setProducts'] as $product) {
-                    $product['productId'] = $item['setProductId'];
+                    $product['set_product_id'] = $item['setProductId'];
                     $product['doc_id'] = $doc['id'];
                     $product['unit'] = $product['unit']['name'] ?? '';
-                    array_push($this->documentItems, $product);
+                    array_push($this->setProducts, $product);
                 }
             }
         }

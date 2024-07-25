@@ -8,23 +8,24 @@ use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
 
 #[ORM\Entity(repositoryClass: WzItemRepository::class)]
-#[Table(name: 'tema_fv_document_item')]
+#[Table(name: 'tema_fv_set_product')]
 #[Index(name: "source_docid_idx", fields: ["source", "doc_id"])]
-class FvItem
+#[Index(name: "source_setProductId_idx", fields: ["source", "set_product_id"])]
+class FvSetProduct
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column]
+    private ?int $set_product_id = null;
+
     #[ORM\Column(length: 20)]
     private ?string $source = null;
 
     #[ORM\Column(length: 12, nullable: true)]
     private ?string $doc_id = null;
-
-    #[ORM\Column]
-    private ?int $productId = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
@@ -49,8 +50,4 @@ class FvItem
 
     #[ORM\Column]
     private ?bool $isExempt = null;
-
-    #[ORM\Column]
-    private ?int $setProductId = null;
-
 }
