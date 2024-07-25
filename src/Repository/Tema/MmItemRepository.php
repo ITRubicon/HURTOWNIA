@@ -42,6 +42,7 @@ class MmItemRepository extends IApiRepository
             'quantity' => ['sourceField' => 'quantity', 'type' => ParameterType::STRING],
             'net_price' => ['sourceField' => 'netPrice', 'type' => ParameterType::STRING],
             'purchase_price' => ['sourceField' => 'purchasePrice', 'type' => ParameterType::STRING],
+            'percentage_share' => ['sourceField' => 'percentageShare', 'type' => ParameterType::INTEGER],
             'unit_id' => ['sourceField' => 'unit_id', 'type' => ParameterType::INTEGER],
             'unit' => ['sourceField' => 'unit_name', 'type' => ParameterType::STRING],
             'tax_rate' => ['sourceField' => 'value', 'type' => ParameterType::STRING],

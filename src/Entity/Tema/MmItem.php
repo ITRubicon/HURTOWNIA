@@ -38,6 +38,9 @@ class MmItem
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
     private ?string $purchasePrice = null;
 
+    #[ORM\Column]
+    private ?int $percentageShare = null;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 3, nullable: true)]
     private ?string $unitId = null;
 
