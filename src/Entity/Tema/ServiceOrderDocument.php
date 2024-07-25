@@ -48,7 +48,15 @@ class ServiceOrderDocument
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $customerId = null;
 
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $serviceHandlingUserId = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\Column(length: 40, nullable: true)]
+    private ?string $sourceOrderNumber = null;
+
+    #[ORM\Column(length: 12, nullable: true)]
+    private ?string $sourceOrderId = null;
 }

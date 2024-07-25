@@ -39,6 +39,7 @@ class ServiceOrderDocumentRepository extends IApiRepository
 
             $this->save();
             $this->fetchResult = [];
+
         }
 
         return [
@@ -85,7 +86,10 @@ class ServiceOrderDocumentRepository extends IApiRepository
             'gross_value' => ['sourceField' => 'grossValue', 'type' => ParameterType::STRING],
             'stock_status' => ['sourceField' => 'stockStatus', 'type' => ParameterType::STRING],
             'customer_id' => ['sourceField' => 'customerId', 'type' => ParameterType::STRING],
+            'service_handling_user_id' => ['sourceField' => 'serviceHandlingUserId', 'type' => ParameterType::STRING],
             'description' => ['sourceField' => 'description', 'type' => ParameterType::STRING],
+            'source_order_number' => ['sourceField' => 'sourceOrderNumber', 'type' => ParameterType::STRING],
+            'source_order_id' => ['sourceField' => 'sourceOrderId', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
     }

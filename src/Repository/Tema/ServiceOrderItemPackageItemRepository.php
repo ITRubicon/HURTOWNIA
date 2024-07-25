@@ -5,34 +5,34 @@ namespace App\Repository\Tema;
 use App\Repository\IApiRepository;
 use Doctrine\DBAL\ParameterType;
 
-class ServiceOrderItemRepository extends IApiRepository
+class ServiceOrderItemPackageItemRepository extends IApiRepository
 {
-    private string $endpoint = '/api/dms/v1/repair-orders/{branchId}/{repairOrderId}';
-    protected $table = 'tema_service_order_item';
-    protected $invoices = [];
-    protected $workerHours = [];
-    protected $packageItems = [];
+    private string $endpoint = '';
+    private $invoices = [];
+    private $workerHours = [];
+    protected $table = 'tema_service_order_item_package_item';
 
     public function saveItems(array $items)
     {
         $this->clearDataArrays();
+        
         foreach ($items as $item) {
-            $this->collectInvoices($item);
-            $this->collectWorkerHours($item);
-            $this->collectPackageItems($item);
             $item = array_merge($item, $item['taxRate']);
             unset($item['taxRate']);
+
+            $this->collectInvoices($item);
+            $this->collectWorkerHours($item);
+
             array_push($this->fetchResult, $item);
         }
         $resCount = count($this->fetchResult);
         $this->save();
         $this->clearDataArrays();
-
+        
         return [
             'fetched' => $resCount,
             'invoices' => $this->invoices,
             'workerHours' => $this->workerHours,
-            'packageItems' => $this->packageItems,
         ];
     }
 
@@ -46,8 +46,8 @@ class ServiceOrderItemRepository extends IApiRepository
                 continue;
 
             $invoice['doc_id'] = $item['doc_id'];
-            $invoice['product_id'] = $item['productId'];
-            $invoice['product_code'] = $item['productCode'];
+            $invoice['item_product_id'] = $item['productId'];
+            $invoice['item_product_code'] = $item['productCode'];
             $invoice['invoice_name'] = $i;
             array_push($this->invoices, $invoice);
         }
@@ -63,35 +63,24 @@ class ServiceOrderItemRepository extends IApiRepository
             if (empty($i))
                 continue;
 
-            $i['doc_id'] = $item['doc_id'];
-            $i['product_id'] = $item['productId'];
-            $i['product_code'] = $item['productCode'];
-            array_push($this->workerHours, $i);
+            $mechanic['doc_id'] = $item['doc_id'];
+            $mechanic['item_product_id'] = $item['item_product_id'];
+            $mechanic['item_product_code'] = $item['item_product_code'];
+            $mechanic['product_id'] = $item['productId'];
+            $mechanic['product_code'] = $item['productCode'];
+            $mechanic['userId'] = $i['userId'];
+            $mechanic['manHour'] = $i['manHour'];
+            array_push($this->workerHours, $mechanic);
         }
         unset($item['repairOrderItemMechanics']);
-    }
-
-    protected function collectPackageItems(array &$item)
-    {
-        if (empty($item['packageItems']))
-            return;
-
-        foreach ($item['packageItems'] as $i) {
-            if (empty($i))
-                continue;
-
-            $i['doc_id'] = $item['doc_id'];
-            $i['item_product_id'] = $item['productId'];
-            $i['item_product_code'] = $item['productCode'];
-            array_push($this->packageItems, $i);
-        }
-        unset($item['packageItems']);
     }
 
     protected function getFieldsParams(): array
     {
         return [
             'doc_id' => ['sourceField' => 'doc_id', 'type' => ParameterType::STRING],
+            'item_product_id' => ['sourceField' => 'item_product_id', 'type' => ParameterType::INTEGER],
+            'item_product_code' => ['sourceField' => 'item_product_code', 'type' => ParameterType::STRING],
             'type' => ['sourceField' => 'type', 'type' => ParameterType::STRING],
             'product_id' => ['sourceField' => 'productId', 'type' => ParameterType::STRING],
             'product_code' => ['sourceField' => 'productCode', 'type' => ParameterType::STRING],
@@ -101,6 +90,7 @@ class ServiceOrderItemRepository extends IApiRepository
             'tax_rate' => ['sourceField' => 'value', 'type' => ParameterType::STRING],
             'is_exempt' => ['sourceField' => 'isExempt', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
             'gdn_name' => ['sourceField' => 'gdnName', 'type' => ParameterType::STRING],
+            'gdn_id' => ['sourceField' => 'gdnId', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];   
     }
