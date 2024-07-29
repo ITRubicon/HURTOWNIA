@@ -17,9 +17,9 @@ class ServiceOrderItemRepository extends IApiRepository
     {
         $this->clearDataArrays();
         foreach ($items as $item) {
-            $this->collectInvoices($item);
-            $this->collectWorkerHours($item);
-            $this->collectPackageItems($item);
+            // $this->collectInvoices($item);
+            // $this->collectWorkerHours($item);
+            // $this->collectPackageItems($item);
             $item = array_merge($item, $item['taxRate']);
             unset($item['taxRate']);
             array_push($this->fetchResult, $item);
@@ -30,9 +30,9 @@ class ServiceOrderItemRepository extends IApiRepository
 
         return [
             'fetched' => $resCount,
-            'invoices' => $this->invoices,
-            'workerHours' => $this->workerHours,
-            'packageItems' => $this->packageItems,
+            // 'invoices' => $this->invoices,
+            // 'workerHours' => $this->workerHours,
+            // 'packageItems' => $this->packageItems,
         ];
     }
 
@@ -100,8 +100,12 @@ class ServiceOrderItemRepository extends IApiRepository
             'net_price' => ['sourceField' => 'netPrice', 'type' => ParameterType::STRING],
             'tax_rate' => ['sourceField' => 'value', 'type' => ParameterType::STRING],
             'is_exempt' => ['sourceField' => 'isExempt', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
+            'gdn_id' => ['sourceField' => 'gdnId', 'type' => ParameterType::STRING],
             'gdn_name' => ['sourceField' => 'gdnName', 'type' => ParameterType::STRING],
+            'invoice_names' => ['sourceField' => 'invoiceNames', 'type' => ParameterType::STRING, 'format' => ['json' => true]],
+            'repair_order_item_mechanics' => ['sourceField' => 'repairOrderItemMechanics', 'type' => ParameterType::STRING, 'format' => ['json' => true]],
+            'package_items' => ['sourceField' => 'packageItems', 'type' => ParameterType::STRING, 'format' => ['json' => true]],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
-        ];   
+        ];
     }
 }
