@@ -89,7 +89,7 @@ class ServiceOrderDocumentCommand extends BaseApiCommand
 
             $result = $this->itemRepo->saveItems($fetchedRows['items']);
             $io->info(sprintf('Zapisano %s pozycji z faktur', $result['fetched']));
-            
+/*             
             $res = $this->itemInvoiceRepo->saveInvoices($result['invoices']);
             $io->info(sprintf('Zapisano %s faktur przypisanych do pozycji zlecenia', $res));
             unset($result['invoices']);
@@ -106,7 +106,7 @@ class ServiceOrderDocumentCommand extends BaseApiCommand
             
             $res = $this->packageItemMechanic->saveMechanics($result['workerHours']);
             $io->info(sprintf('Zapisano %s mechaników z pakietów', $res));
-
+ */
             unset($result);
         }
         unset($fetchedRows['items']);

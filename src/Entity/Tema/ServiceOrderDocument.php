@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping\Table;
 #[Table(name: 'tema_service_order_document')]
 #[Index(name: "source_openingDate_idx", fields: ["source", "openingDate"])]
 #[Index(name: "source_closingDate_idx", fields: ["source", "closingDate"])]
+#[Index(name: "source_docId_idx", fields: ["source", "doc_id"])]
+#[Index(name: "source_docId_isCanceled_stockStatus_idx", fields: ["source", "doc_id", "isCanceled", "stockStatus"])]
 class ServiceOrderDocument
 {
     #[ORM\Id]

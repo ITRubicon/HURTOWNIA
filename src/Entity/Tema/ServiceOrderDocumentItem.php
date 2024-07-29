@@ -47,6 +47,18 @@ class ServiceOrderDocumentItem
     #[ORM\Column]
     private ?bool $isExempt = null;
 
+    #[ORM\Column(length: 12, nullable: true)]
+    private ?string $gdnId = null;
+
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $gdnName = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $invoiceNames = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $repairOrderItemMechanics = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $packageItems = null;
 }
