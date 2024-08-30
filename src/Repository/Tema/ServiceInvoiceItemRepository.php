@@ -5,10 +5,10 @@ namespace App\Repository\Tema;
 use App\Repository\IApiRepository;
 use Doctrine\DBAL\ParameterType;
 
-class ServiceOrderItemRepository extends IApiRepository
+class ServiceInvoiceItemRepository extends IApiRepository
 {
-    private string $endpoint = '/api/dms/v1/repair-orders/{branchId}/{repairOrderId}';
-    protected $table = 'tema_service_order_item';
+    private string $endpoint = '';
+    protected $table = 'tema_service_invoice_item';
 
     public function saveItems(array $items)
     {
@@ -31,19 +31,12 @@ class ServiceOrderItemRepository extends IApiRepository
     {
         return [
             'doc_id' => ['sourceField' => 'doc_id', 'type' => ParameterType::STRING],
-            'type' => ['sourceField' => 'type', 'type' => ParameterType::STRING],
             'product_id' => ['sourceField' => 'productId', 'type' => ParameterType::STRING],
-            'product_code' => ['sourceField' => 'productCode', 'type' => ParameterType::STRING],
             'name' => ['sourceField' => 'name', 'type' => ParameterType::STRING],
             'quantity' => ['sourceField' => 'quantity', 'type' => ParameterType::STRING],
-            'net_price' => ['sourceField' => 'netPrice', 'type' => ParameterType::STRING],
+            'gross_price' => ['sourceField' => 'grossPrice', 'type' => ParameterType::STRING],
             'tax_rate' => ['sourceField' => 'value', 'type' => ParameterType::STRING],
             'is_exempt' => ['sourceField' => 'isExempt', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
-            'gdn_id' => ['sourceField' => 'gdnId', 'type' => ParameterType::STRING],
-            'gdn_name' => ['sourceField' => 'gdnName', 'type' => ParameterType::STRING],
-            'invoice_names' => ['sourceField' => 'invoiceNames', 'type' => ParameterType::STRING, 'format' => ['json' => true]],
-            'repair_order_item_mechanics' => ['sourceField' => 'repairOrderItemMechanics', 'type' => ParameterType::STRING, 'format' => ['json' => true]],
-            'package_items' => ['sourceField' => 'packageItems', 'type' => ParameterType::STRING, 'format' => ['json' => true]],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
     }
