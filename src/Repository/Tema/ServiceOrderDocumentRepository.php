@@ -121,7 +121,6 @@ class ServiceOrderDocumentRepository extends IApiRepository
 
     private function getStocks()
     {
-        
         $q = "SELECT stock_id FROM tema_stock WHERE source = :source AND category = 'workshop'";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
