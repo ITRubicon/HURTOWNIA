@@ -53,4 +53,6 @@ class FvItem
     #[ORM\Column]
     private ?int $setProductId = null;
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $setProducts = null;
 }

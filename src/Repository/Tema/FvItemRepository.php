@@ -40,6 +40,7 @@ class FvItemRepository extends IApiRepository
             'tax_rate' => ['sourceField' => 'value', 'type' => ParameterType::STRING],
             'is_exempt' => ['sourceField' => 'isExempt', 'type' => ParameterType::INTEGER, 'format' => ['int' => true]],
             'set_product_id' => ['sourceField' => 'setProductId', 'type' => ParameterType::STRING],
+            'set_products' => ['sourceField' => 'setProducts', 'type' => ParameterType::STRING, 'format' => ['json' => true]],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];   
     }
