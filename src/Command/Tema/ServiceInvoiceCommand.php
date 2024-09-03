@@ -16,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'tema:service:invoice',
     description: 'Pobiera faktury serwisowe i pozycje z nich. Parametry: nazwa api (opcja), rok (wymagany)',
 )]
-class ServiceinvoiceCommand extends BaseApiCommand
+class ServiceInvoiceCommand extends BaseApiCommand
 {
     private $docRepo;
     private $itemRepo;
