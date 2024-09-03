@@ -6,15 +6,10 @@ use App\Command\BaseApiCommand;
 use App\Entity\IConnection;
 use App\Repository\ApiFetchErrorRepository;
 use App\Repository\SourceAuthRepository;
-/* use App\Repository\Tema\PackageItemFvRepository;
-use App\Repository\Tema\PackageItemMechanicRepository; */
 use App\Repository\Tema\ServiceOrderCarRepository;
 use App\Repository\Tema\ServiceOrderDocumentRepository;
 use App\Repository\Tema\ServiceOrderEndDocumentRepository;
-use App\Repository\Tema\ServiceOrderItemInvoiceRepository;
-// use App\Repository\Tema\ServiceOrderItemPackageItemRepository;
 use App\Repository\Tema\ServiceOrderItemRepository;
-// use App\Repository\Tema\ServiceOrderMechanicRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -27,19 +22,13 @@ class ServiceOrderDocumentCommand extends BaseApiCommand
 {
     private $docRepo;
     private $itemRepo;
-    private $itemInvoiceRepo;
     private $endDocRepo;
     private $carRepo;
-    private $mechanicRepo;
-    private $packageRepo;
-    private $packageItemFv;
-    private $packageItemMechanic;
     protected $producerName = 'Tema';
 
     public function __construct(
         ServiceOrderDocumentRepository $docRepo,
         ServiceOrderItemRepository $itemRepo,
-        ServiceOrderItemInvoiceRepository $itemInvoiceRepo,
         ServiceOrderEndDocumentRepository $endDocRepo,
         ServiceOrderCarRepository $carRepo,
         SourceAuthRepository $apiAuthRepo,
@@ -50,7 +39,6 @@ class ServiceOrderDocumentCommand extends BaseApiCommand
         $this->itemRepo = $itemRepo;
         $this->endDocRepo = $endDocRepo;
         $this->carRepo = $carRepo;
-        $this->itemInvoiceRepo = $itemInvoiceRepo;
     }
 
     protected function configure(): void
@@ -64,13 +52,8 @@ class ServiceOrderDocumentCommand extends BaseApiCommand
     {
         $this->docRepo->setSource($api);
         $this->itemRepo->setSource($api);
-        $this->itemInvoiceRepo->setSource($api);
         $this->endDocRepo->setSource($api);
         $this->carRepo->setSource($api);
-        $this->mechanicRepo->setSource($api);
-        $this->packageRepo->setSource($api);
-        $this->packageItemFv->setSource($api);
-        $this->packageItemMechanic->setSource($api);
 
         $fetchedRows = $this->docRepo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
