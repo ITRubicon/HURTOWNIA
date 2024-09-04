@@ -27,7 +27,6 @@ class CarsSoldRepository extends IApiRepository
                     [$id, $this->dateFrom, $this->dateTo],
                     $this->endpoint
                 );
-
                 $this->fetchResult = $this->fetchApiResult($url);
                 $resCount += count($this->fetchResult);
                 $this->save();
@@ -48,6 +47,40 @@ class CarsSoldRepository extends IApiRepository
 
     protected function getFieldsParams(): array
     {
+        // tymczasowe obejście - Rogowiec zmienił kontrakt w API
+        $changedApis = ['jbr_smora', 'jbr_jaremko'];
+        if (in_array($this->source->getName(), $changedApis)) {
+            return [
+                'pracownik' => ['sourceField' => 'Pracownik', 'type' => ParameterType::STRING],
+                'zamawiajacy' => ['sourceField' => 'Zamawiajacy', 'type' => ParameterType::STRING],
+                'fv_numer' => ['sourceField' => 'NumerFakturySprzedazy', 'type' => ParameterType::STRING],
+                'fv_data' => ['sourceField' => 'DataSprzedazy', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d']],
+                'vin' => ['sourceField' => 'Vin', 'type' => ParameterType::STRING],
+                'marka' => ['sourceField' => 'Marka', 'type' => ParameterType::STRING],
+                'model' => ['sourceField' => 'Model', 'type' => ParameterType::STRING],
+                'wersja' => ['sourceField' => 'Wersja', 'type' => ParameterType::STRING],
+                'nr_wydanie' => ['sourceField' => 'NumerWydania', 'type' => ParameterType::STRING],
+                'data_wydanie' => ['sourceField' => 'DataWydania', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d']],
+                'data_wydanie_klient' => ['sourceField' => 'DataWydaniaKlient', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d H:i:s']],
+                'sprzedaz_netto' => ['sourceField' => 'SprzedazNetto', 'type' => ParameterType::STRING],
+                'korekty_wartosc' => ['sourceField' => 'KorektyWartosc', 'type' => ParameterType::STRING],
+                'rezerwy_wartosc' => ['sourceField' => 'RezerwyWartosc', 'type' => ParameterType::STRING],
+                'zcs_wartosc' => ['sourceField' => 'ZcsWartosc', 'type' => ParameterType::STRING],
+                'kks_wartosc' => ['sourceField' => 'KksWartosc', 'type' => ParameterType::STRING],
+                'zakup_wartosc' => ['sourceField' => 'ZakupWartosc', 'type' => ParameterType::STRING],
+                'usterki_koszty_wartosc' => ['sourceField' => 'DoposazenieDealerWartosc', 'type' => ParameterType::STRING],
+                'usterki_platne_wartosc' => ['sourceField' => 'DoposazenieKlientWartosc', 'type' => ParameterType::STRING],
+                'prowizja_kredyt' => ['sourceField' => 'ProwizjaKredytyWartosc', 'type' => ParameterType::STRING],
+                'zaliczki' => ['sourceField' => 'Zaliczki', 'type' => ParameterType::STRING],
+                'kod_nabywca' => ['sourceField' => 'KodNabywca', 'type' => ParameterType::STRING],
+                'kod_odbiorca' => ['sourceField' => 'KodOdbiorca', 'type' => ParameterType::STRING],
+                'klasyfikacja_sprzedaz' => ['sourceField' => 'KlasyfikacjaSprzed', 'type' => ParameterType::STRING],
+                'id_zamowienie' => ['sourceField' => 'IdZamowienia', 'type' => ParameterType::STRING],
+                'platnosci' => ['sourceField' => 'Platnosci', 'type' => ParameterType::STRING],
+                'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
+            ];
+        }
+
         return [
             'pracownik' => ['sourceField' => 'PRACOWNIK', 'type' => ParameterType::STRING],
             'zamawiajacy' => ['sourceField' => 'ZAMAWIAJACY', 'type' => ParameterType::STRING],
