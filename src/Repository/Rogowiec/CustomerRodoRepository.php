@@ -25,7 +25,7 @@ class CustomerRodoRepository extends IApiRepository
             'number' => ['sourceField' => 'number', 'type' => ParameterType::STRING],
             'time' => ['sourceField' => 'time', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d H:i:s']],
             'valid_until' => ['sourceField' => 'validUntil', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d H:i:s']],
-            'consents' => ['sourceField' => 'consents', 'type' => ParameterType::STRING],
+            'consents' => ['sourceField' => 'consents', 'type' => ParameterType::STRING, 'format' => ['json' => true]],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
     }
