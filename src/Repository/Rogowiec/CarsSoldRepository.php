@@ -48,7 +48,7 @@ class CarsSoldRepository extends IApiRepository
     protected function getFieldsParams(): array
     {
         // tymczasowe obejście - Rogowiec zmienił kontrakt w API
-        $changedApis = ['jbr_smora', 'jbr_jaremko', 'jbr_bmw'];
+        $changedApis = ['jbr_smora', 'jbr_jaremko', 'jbr_bmw', 'jbr'];
         if (in_array($this->source->getName(), $changedApis)) {
             return [
                 'pracownik' => ['sourceField' => 'Pracownik', 'type' => ParameterType::STRING],
