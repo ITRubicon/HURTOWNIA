@@ -27,6 +27,7 @@ abstract class IBaseRepository
     {
         $this->db = $conn;
         $this->timer = new Timer();
+        $this->reporter = $reporter;
     }
 
     public function setDateFrom($dateFrom)
