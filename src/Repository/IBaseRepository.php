@@ -23,7 +23,7 @@ abstract class IBaseRepository
     protected abstract function getFieldsParams(): array;
     // protected abstract function fetch(): array;
 
-    public function __construct(Connection $conn)
+    public function __construct(Connection $conn, TaskReporter $reporter)
     {
         $this->db = $conn;
         $this->timer = new Timer();
@@ -63,6 +63,7 @@ abstract class IBaseRepository
                     $this->db->executeQuery($q, $data['valuesIns'], $data['types']);
                     $this->db->close();
                 } catch (\Throwable $th) {
+                    $this->reporter->sendErrorReport('DB', 'DMS: ' . $this->source->getName() . PHP_EOL . $th->getMessage(), $th->getCode());
                     throw new \Exception('DMS: ' . $this->source->getName() . PHP_EOL . $th->getMessage(), $th->getCode(), $th);
                 }
             }

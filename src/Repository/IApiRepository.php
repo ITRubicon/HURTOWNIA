@@ -12,9 +12,8 @@ abstract class IApiRepository extends IBaseRepository
 
     public function __construct(Connection $conn, HttpClient $client, TaskReporter $reporter)
     {
-        parent::__construct($conn);
+        parent::__construct($conn, $reporter);
         $this->httpClient = $client;
-        $this->reporter = $reporter;
     }
 
     protected function fetchApiResult(string $path): array
