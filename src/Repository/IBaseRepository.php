@@ -53,7 +53,7 @@ abstract class IBaseRepository
     public function save()
     {
         if (!empty($this->fetchResult)) {
-            $this->fetchResult = array_chunk($this->fetchResult, 10000);
+            $this->fetchResult = array_chunk($this->fetchResult, 600);
             foreach ($this->fetchResult as $batch) {
                 $data = $this->prepareDataToInsert($batch);
                 $insFields = $this->makeQueryFields();
