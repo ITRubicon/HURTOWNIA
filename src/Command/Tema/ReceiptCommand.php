@@ -44,7 +44,7 @@ class ReceiptCommand extends BaseApiCommand
 
         $itemsCount = count($fetchedRows['items']);
         if ($itemsCount > 0) {
-            $io->info(sprintf('Pobrano %s kontaktów', $itemsCount));
+            $io->info(sprintf('Pobrano %s pozycji', $itemsCount));
             $this->itemRepo->saveItems($fetchedRows['items']);
         }
         unset($fetchedRows);
