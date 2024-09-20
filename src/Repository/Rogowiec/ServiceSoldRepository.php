@@ -40,6 +40,21 @@ class ServiceSoldRepository extends IApiRepository
         return ['fetched' => $resCount];
     }
 
+    public function archiveInvoices()
+    {
+        $q = "INSERT INTO rogowiec_invoice_archive (source, `number`, doc_date, sale_date, net_value, gross_value, worker, customer_code, platnosci)
+            SELECT * FROM (
+            SELECT source, fv_numer, fv_data, fv_data AS sale_date, SUM(wartosc), CAST(SUM(wartosc * 1.23) AS decimal(12,2)), fv_wystawiajacy, kod_klienta, platnosci FROM rogowiec_service_sold
+            WHERE platnik != 'Dealer'
+                AND source = :source
+            GROUP BY source, fv_numer, fv_data, fv_wystawiajacy, kod_interwencja, platnosci
+            ) r
+            ON DUPLICATE KEY UPDATE
+            platnosci = r.platnosci
+        ";
+        $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
+    }
+
     private function fetchBranchId()
     {
         $q = "SELECT dms_id FROM rogowiec_org_unit rou WHERE source = :source AND rodzaj LIKE 'Serwis%' OR nazwa LIKE '%skp%'";

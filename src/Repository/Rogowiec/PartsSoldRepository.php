@@ -40,6 +40,21 @@ class PartsSoldRepository extends IApiRepository
         return ['fetched' => $resCount];
     }
 
+    public function archiveInvoices()
+    {
+        $q = "INSERT INTO rogowiec_invoice_archive (source, `number`, doc_date, sale_date, net_value, gross_value, worker, customer_code, platnosci)
+            SELECT * FROM (
+            SELECT source, dokument_numer, `data`, `data` AS sale_date, SUM(sprzedaz_wartosc_netto), CAST(SUM(sprzedaz_wartosc_netto * 1.23) AS decimal(12,2)), pracownik, kod_klienta, platnosci FROM rogowiec_parts_sold
+            WHERE (rodzaj = 'Sklep / Klient' OR klient_rodzaj IN ('Pozostali', 'Indywidualny'))
+                AND source = :source
+            GROUP BY source, dokument_numer, `data`, pracownik, kod_klienta, platnosci
+            ) r
+            ON DUPLICATE KEY UPDATE
+            platnosci = r.platnosci
+        ";
+        $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
+    }
+
     private function fetchBranchId()
     {
         $q = "SELECT dms_id FROM rogowiec_branch WHERE source = :source";

@@ -41,6 +41,8 @@ class PartsSoldCommand extends BaseApiCommand
         $this->repo->setDateTo($this->cmdArgs['dateTo']);
         $fetchedRows = $this->repo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
+        $io->info("Archiwizacja faktur...");
+        $this->repo->archiveInvoices();
     }
 
     protected function clearTable()

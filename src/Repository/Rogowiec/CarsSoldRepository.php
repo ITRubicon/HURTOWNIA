@@ -33,10 +33,21 @@ class CarsSoldRepository extends IApiRepository
                 $this->clearDataArrays();
                 $i++;
             }
-        } else 
+        } else
             throw new \Exception("Nie żadnych oddziałów dla " . $this->source->getName() . ". Najpierw uruchom komendę pobierającą listę oddziałów [rogowiec:branch]", 99);
 
         return ['fetched' => $resCount];
+    }
+
+    public function archiveInvoices()
+    {
+        $q = "INSERT INTO rogowiec_invoice_archive (source, `number`, doc_date, sale_date, net_value, gross_value, worker, customer_code, platnosci)
+            SELECT source, fv_numer, fv_data, fv_data, sprzedaz_netto, CAST(sprzedaz_netto * 1.23 AS decimal(12,2)), pracownik, kod_odbiorca, platnosci FROM rogowiec_cars_sold r
+            WHERE source = :source
+            ON DUPLICATE KEY UPDATE
+            platnosci = r.platnosci
+        ";
+        $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
     private function fetchBranchId()
@@ -48,7 +59,7 @@ class CarsSoldRepository extends IApiRepository
     protected function getFieldsParams(): array
     {
         // tymczasowe obejście - Rogowiec zmienił kontrakt w API
-        $changedApis = ['jbr_smora', 'jbr_jaremko', 'jbr_bmw', 'jbr'];
+        $changedApis = ['jbr_smora', 'jbr_jaremko', 'jbr_bmw', 'jbr', 'jbr_jlr'];
         if (in_array($this->source->getName(), $changedApis)) {
             return [
                 'pracownik' => ['sourceField' => 'Pracownik', 'type' => ParameterType::STRING],
