@@ -31,6 +31,11 @@ class ServiceInvoiceRepository extends IApiRepository
 
                 $this->collectItems($doc);
                 array_push($this->fetchResult, $doc);
+
+                if (count($this->fetchResult) >= $this->fetchLimit) {
+                    $this->save();
+                    $this->fetchResult = [];
+                }
             }
             $this->save();
             $this->fetchResult = [];

@@ -31,6 +31,11 @@ class CustomerContactRepository extends IApiRepository
                     }
                 }
                 $i++;
+
+                if (count($this->fetchResult) >= $this->fetchLimit) {
+                    $this->save();
+                    $this->fetchResult = [];
+                }
             }
             $this->save();
         } else 

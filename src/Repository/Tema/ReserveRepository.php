@@ -36,6 +36,13 @@ class ReserveRepository extends IApiRepository
 
                     $this->fetchResult = array_merge($this->fetchResult, $res['items']);
                     $resultCount += count($res['items']);
+
+                    if (count($this->fetchResult) >= $this->fetchLimit) {
+                        $this->addStockId($stock);
+                        $this->save();
+                        $this->fetchResult = [];
+                    }
+
                 } while ($res['fetchNext']);
 
                 $this->addStockId($stock);

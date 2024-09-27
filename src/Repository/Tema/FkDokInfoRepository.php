@@ -32,6 +32,11 @@ class FkDokInfoRepository extends IApiRepository
 
             $this->fetchResult = array_merge($this->fetchResult, $res['rows']);
             $resCount += count($res['rows']);
+
+            if (count($this->fetchResult) >= $this->fetchLimit) {
+                $this->save();
+                $this->fetchResult = [];
+            }
         } while ($res['fetchNext']);
         $this->addYear();
         $this->save();

@@ -35,6 +35,11 @@ class ServiceOrderDocumentRepository extends IApiRepository
                 $this->collectEndDocuments($doc);
                 $this->collectCar($doc);
                 array_push($this->fetchResult, $doc);
+
+                if (count($this->fetchResult) >= $this->fetchLimit) {
+                    $this->save();
+                    $this->fetchResult = [];
+                }
             }
 
             $this->save();

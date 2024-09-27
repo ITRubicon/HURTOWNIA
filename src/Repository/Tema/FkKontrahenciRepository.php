@@ -29,6 +29,11 @@ class FkKontrahenciRepository extends IApiRepository
             $this->collectBankAccounts($res['items']);
             $this->fetchResult = array_merge($this->fetchResult, $res['items']);
             $resCount += count($res['items']);
+
+            if (count($this->fetchResult) >= $this->fetchLimit) {
+                $this->save();
+                $this->fetchResult = [];
+            }
         } while ($res['fetchNext']);
         $this->save();
 
