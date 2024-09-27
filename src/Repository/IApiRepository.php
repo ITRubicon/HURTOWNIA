@@ -9,7 +9,7 @@ use Doctrine\DBAL\Connection;
 abstract class IApiRepository extends IBaseRepository
 {
     protected HttpClient $httpClient;
-    protecte $fetchLimit = 200;
+    protected $fetchLimit = 200;
 
     public function __construct(Connection $conn, HttpClient $client, TaskReporter $reporter)
     {
