@@ -34,6 +34,7 @@ class FkDokInfoRepository extends IApiRepository
             $resCount += count($res['rows']);
 
             if (count($this->fetchResult) >= $this->fetchLimit) {
+                $this->addYear();
                 $this->save();
                 $this->fetchResult = [];
             }
