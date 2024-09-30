@@ -32,6 +32,7 @@ class PartsWarehouseRepository extends IApiRepository
                 $resCount += count($res['items']);
 
                 if (count($this->fetchResult) >= $this->fetchLimit) {
+                    $this->addStockId($stock);
                     $this->save();
                     $this->fetchResult = [];
                 }
