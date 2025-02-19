@@ -63,6 +63,6 @@ class PartsSold
     #[ORM\Column(length: 100)]
     private ?string $pracownik = null;
 
-    #[ORM\Column(length: 400, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $platnosci = null;
 }

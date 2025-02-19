@@ -41,6 +41,6 @@ class Invoice
     #[ORM\Column(type: 'decimal', precision: 12, scale: 2)]
     private ?string $grossValue = null;
 
-    #[ORM\Column(length: 400, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $platnosci = null;
 }

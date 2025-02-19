@@ -96,6 +96,6 @@ class CarsSold
     #[ORM\Column(nullable: true)]
     private ?int $id_zamowienie = null;
 
-    #[ORM\Column(length: 400, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $platnosci = null;
 }
