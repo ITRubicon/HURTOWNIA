@@ -49,7 +49,7 @@ class InvoiceArchive
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $customerCode = null;
 
-    #[ORM\Column(length: 300, nullable: true)]
+    #[ORM\Column(length: 400, nullable: true)]
     private ?string $platnosci = null;
 
     #[ORM\Column(length: 22, nullable: true)]
