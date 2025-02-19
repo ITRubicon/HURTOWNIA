@@ -138,6 +138,6 @@ class ServiceSold
     #[ORM\Column(length: 5)]
     private ?string $klasyfikacja_sprzedaz = null;
 
-    #[ORM\Column(length: 300)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $platnosci = null;
 }
