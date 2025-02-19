@@ -41,11 +41,25 @@ class CarsSoldRepository extends IApiRepository
 
     public function archiveInvoices()
     {
-        $q = "INSERT INTO rogowiec_invoice_archive (source, `number`, doc_date, sale_date, net_value, gross_value, worker, customer_code, platnosci)
-            SELECT source, fv_numer, fv_data, fv_data, sprzedaz_netto, CAST(sprzedaz_netto * 1.23 AS decimal(12,2)), pracownik, kod_odbiorca, platnosci FROM rogowiec_cars_sold r
+        $q = "INSERT INTO rogowiec_invoice_archive (source, `number`, doc_date, sale_date, net_value, gross_value, worker, customer_code, platnosci, metoda_platnosci, status_platnosci)
+            SELECT * FROM (
+            SELECT source, fv_numer, fv_data, fv_data AS sale_date, sprzedaz_netto, CAST(sprzedaz_netto * 1.23 AS decimal(12,2)), pracownik, kod_odbiorca, platnosci,
+                TRIM(REGEXP_REPLACE(REGEXP_REPLACE(platnosci, '.+Forma:', ''), ';.+', '')) AS metoda_platnosci,
+                CASE TRIM(REGEXP_REPLACE(REGEXP_REPLACE(platnosci, '.+Rozliczenie:', ''), '[^KCB]', ''))
+                    WHEN 'C' THEN 'opłacone częściowo'
+                    WHEN 'B' THEN 'nieopłacone'
+                    WHEN 'K' THEN 'rozliczone'
+                    ELSE 'nieznany'
+                END AS status_platnosci
+            FROM rogowiec_cars_sold
             WHERE source = :source
+            ) r
             ON DUPLICATE KEY UPDATE
-            platnosci = r.platnosci
+            platnosci = r.platnosci,
+            worker = r.pracownik,
+            customer_code = r.kod_odbiorca,
+            metoda_platnosci = r.metoda_platnosci,
+            status_platnosci = r.status_platnosci
         ";
         $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
@@ -58,9 +72,6 @@ class CarsSoldRepository extends IApiRepository
 
     protected function getFieldsParams(): array
     {
-        // tymczasowe obejście - Rogowiec zmienił kontrakt w API
-        // $changedApis = ['jbr_smora', 'jbr_jaremko', 'jbr_bmw', 'jbr', 'jbr_jlr'];
-        // if (in_array($this->source->getName(), $changedApis)) {
         return [
             'pracownik' => ['sourceField' => 'Pracownik', 'type' => ParameterType::STRING],
             'zamawiajacy' => ['sourceField' => 'Zamawiajacy', 'type' => ParameterType::STRING],
@@ -90,36 +101,5 @@ class CarsSoldRepository extends IApiRepository
             'platnosci' => ['sourceField' => 'Platnosci', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
-        // }
-
-        // return [
-        //     'pracownik' => ['sourceField' => 'PRACOWNIK', 'type' => ParameterType::STRING],
-        //     'zamawiajacy' => ['sourceField' => 'ZAMAWIAJACY', 'type' => ParameterType::STRING],
-        //     'fv_numer' => ['sourceField' => 'NUMER_FAKTURY_SPRZEDAZY', 'type' => ParameterType::STRING],
-        //     'fv_data' => ['sourceField' => 'DATA_SPRZEDAZY', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d']],
-        //     'vin' => ['sourceField' => 'VIN', 'type' => ParameterType::STRING],
-        //     'marka' => ['sourceField' => 'MARKA', 'type' => ParameterType::STRING],
-        //     'model' => ['sourceField' => 'MODEL', 'type' => ParameterType::STRING],
-        //     'wersja' => ['sourceField' => 'WERSJA', 'type' => ParameterType::STRING],
-        //     'nr_wydanie' => ['sourceField' => 'NUMER_TXT_512', 'type' => ParameterType::STRING],
-        //     'data_wydanie' => ['sourceField' => 'DATA_512', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d']],
-        //     'data_wydanie_klient' => ['sourceField' => 'DATA_PRZEKAZANIA_511', 'type' => ParameterType::STRING, 'format' => ['date' => 'Y-m-d H:i:s']],
-        //     'sprzedaz_netto' => ['sourceField' => 'SPRZEDAZ_NETTO', 'type' => ParameterType::STRING],
-        //     'korekty_wartosc' => ['sourceField' => 'KOREKTY_WARTOSC', 'type' => ParameterType::STRING],
-        //     'rezerwy_wartosc' => ['sourceField' => 'REZERWY_WARTOSC', 'type' => ParameterType::STRING],
-        //     'zcs_wartosc' => ['sourceField' => 'ZCS_WARTOSC', 'type' => ParameterType::STRING],
-        //     'kks_wartosc' => ['sourceField' => 'KKS_WARTOSC', 'type' => ParameterType::STRING],
-        //     'zakup_wartosc' => ['sourceField' => 'ZAKUP_WARTOSC', 'type' => ParameterType::STRING],
-        //     'usterki_koszty_wartosc' => ['sourceField' => 'USTERKI_KOSZTY_WARTOSC', 'type' => ParameterType::STRING],
-        //     'usterki_platne_wartosc' => ['sourceField' => 'USTERKI_PLATNE_WARTOSC', 'type' => ParameterType::STRING],
-        //     'prowizja_kredyt' => ['sourceField' => 'PROWIZJA_KREDYTY_WARTOSC', 'type' => ParameterType::STRING],
-        //     'zaliczki' => ['sourceField' => 'ZALICZKI', 'type' => ParameterType::STRING],
-        //     'kod_nabywca' => ['sourceField' => 'KOD_200_NABYWCA', 'type' => ParameterType::STRING],
-        //     'kod_odbiorca' => ['sourceField' => 'KOD_200_ODBIORCA', 'type' => ParameterType::STRING],
-        //     'klasyfikacja_sprzedaz' => ['sourceField' => 'ID_149_02_KLASYFIK_215', 'type' => ParameterType::STRING],
-        //     'id_zamowienie' => ['sourceField' => 'ID_ZAM', 'type' => ParameterType::STRING],
-        //     'platnosci' => ['sourceField' => 'PLATNOSCI', 'type' => ParameterType::STRING],
-        //     'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
-        // ];
     }
 }

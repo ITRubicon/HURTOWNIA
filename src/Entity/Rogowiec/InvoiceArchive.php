@@ -51,4 +51,10 @@ class InvoiceArchive
 
     #[ORM\Column(length: 300, nullable: true)]
     private ?string $platnosci = null;
+
+    #[ORM\Column(length: 22, nullable: true)]
+    private ?string $metodaPlatnosci = null;
+
+    #[ORM\Column(length: 18, nullable: true)]
+    private ?string $statusPlatnosci = null;
 }

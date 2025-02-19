@@ -42,15 +42,28 @@ class ServiceSoldRepository extends IApiRepository
 
     public function archiveInvoices()
     {
-        $q = "INSERT INTO rogowiec_invoice_archive (source, `number`, doc_date, sale_date, net_value, gross_value, worker, customer_code, platnosci)
+        $q = "INSERT INTO rogowiec_invoice_archive (source, `number`, doc_date, sale_date, net_value, gross_value, worker, customer_code, platnosci, metoda_platnosci, status_platnosci)
             SELECT * FROM (
-            SELECT source, fv_numer, fv_data, fv_data AS sale_date, SUM(wartosc), CAST(SUM(wartosc * 1.23) AS decimal(12,2)), fv_wystawiajacy, kod_klienta, platnosci FROM rogowiec_service_sold
+            SELECT source, fv_numer, fv_data, fv_data AS sale_date, SUM(wartosc), CAST(SUM(wartosc * 1.23) AS decimal(12,2)), fv_wystawiajacy, kod_klienta, platnosci,
+            TRIM(REGEXP_REPLACE(REGEXP_REPLACE(platnosci, '.+Forma:', ''), ';.+', '')) AS metoda_platnosci,
+            CASE TRIM(REGEXP_REPLACE(REGEXP_REPLACE(platnosci, '.+Rozliczenie:', ''), '[^KCB]', ''))
+                WHEN 'C' THEN 'opłacone częściowo'
+                WHEN 'B' THEN 'nieopłacone'
+                WHEN 'K' THEN 'rozliczone'
+                ELSE 'nieznany'
+            END AS status_platnosci
+            FROM rogowiec_service_sold
             WHERE platnik != 'Dealer'
                 AND source = :source
             GROUP BY source, fv_numer, fv_data, fv_wystawiajacy, kod_interwencja, platnosci
             ) r
             ON DUPLICATE KEY UPDATE
-            platnosci = r.platnosci
+            worker = r.fv_wystawiajacy,
+            customer_code = r.kod_klienta,
+            platnosci = r.platnosci,
+            metoda_platnosci = r.metoda_platnosci,
+            status_platnosci = r.status_platnosci
+
         ";
         $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
