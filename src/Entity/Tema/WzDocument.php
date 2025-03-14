@@ -39,10 +39,10 @@ class WzDocument
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $issueDate = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 16, scale: 2)]
     private ?string $netValue = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 16, scale: 2)]
     private ?string $grossValue = null;
 
     #[ORM\Column(length: 20, nullable: true)]
