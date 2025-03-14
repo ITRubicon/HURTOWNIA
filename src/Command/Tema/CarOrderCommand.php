@@ -38,16 +38,13 @@ class CarOrderCommand extends BaseApiCommand
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
-        $this->orderRepo->setSource($api);
         $this->itemRepo->setSource($api);
+        $this->orderRepo->setSource($api);
+        $this->orderRepo->addRelatedRepository($this->itemRepo, 'items');
+
         $fetchedRows = $this->orderRepo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
 
-        $itemsCount = count($fetchedRows['items']);
-        if ($itemsCount > 0) {
-            $io->info(sprintf('Pobrano %s pozycji z dokumentów', $itemsCount));
-            $this->itemRepo->saveItems($fetchedRows['items']);
-        }
         unset($fetchedRows);
     }
 

@@ -9,7 +9,6 @@ class CarOrderRepository extends IApiRepository
 {
     private string $endpoint = '/api/dms/v1/vehicle-orders/{branchId}/:sync';
     protected $table = 'tema_car_order';
-    private $orderItems = [];
 
     public function fetch(): array
     {
@@ -18,6 +17,7 @@ class CarOrderRepository extends IApiRepository
         $stocksCount = count($stocks);
         $resultCount = 0;
         $res = [];
+        $orderItems = [];
 
         if ($stocksCount) {
             $i = 1;
@@ -35,23 +35,32 @@ class CarOrderRepository extends IApiRepository
                     if (empty($res))
                         continue;
 
-                    $this->collectItems($res['items']);
+                    $this->collectItems($res['items'], $orderItems);
                     $this->fetchResult = array_merge($this->fetchResult, $res['items']);
                     $resultCount += count($res['items']);
+                    unset($res);
 
                     if (count($this->fetchResult) >= $this->fetchLimit) {
                         $this->save();
                         $this->fetchResult = [];
+                        $this->relatedRepositories['items']->saveItems($orderItems);
+                        $orderItems = [];
+
+                        gc_collect_cycles();
                     }
                 } while ($res['fetchNext']);
             }
             $this->save();
+            $this->fetchResult = [];
+            $this->relatedRepositories['items']->saveItems($orderItems);
+            unset($orderItems);
+
+            gc_collect_cycles();
         } else 
             throw new \Exception("Nie żadnych jednostek organizacyjnych. Najpierw uruchom komendę pobierającą listę jednostek [tema:stock]");
 
         return [
             'fetched' => $resultCount,
-            'items' => $this->orderItems
         ];
     }
 
@@ -73,12 +82,12 @@ class CarOrderRepository extends IApiRepository
         ];
     }
 
-    private function collectItems(array &$res)
+    private function collectItems(array &$res, array &$orderItems)
     {
         foreach ($res as $i => $r) {
             foreach ($r['items'] as $item) {
                 $item['doc_id'] = $r['id'];
-                array_push($this->orderItems, $item);
+                array_push($orderItems, $item);
             }
             unset($res[$i]['items']);
         }
@@ -88,11 +97,5 @@ class CarOrderRepository extends IApiRepository
     {
         $q = "SELECT stock_id FROM tema_stock WHERE source = :source AND category LIKE '%Vehicles%'";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
-    }
-
-    protected function clearDataArrays()
-    {
-        $this->fetchResult = [];
-        $this->orderItems = [];
     }
 }
