@@ -26,9 +26,6 @@ class ServiceOrderDocumentRepository extends IApiRepository
             echo "\nPobieram zapisy dokumentów";
 
             for ($i = 0; $i < $listCount; $i++) {
-                if ($i === 250)
-                    break;
-
                 echo "\nEndpoint ----> $i/$listCount";
                 $doc = $this->fetchApiResult($this->documentEndpoints[$i]['getUrl']);
                 unset($this->documentEndpoints[$i]);
