@@ -19,6 +19,7 @@ abstract class IBaseRepository
     protected TaskReporter $reporter;
     protected $table;
     protected $timer;
+    protected $relatedRepositories = [];
 
     protected abstract function getFieldsParams(): array;
     // protected abstract function fetch(): array;
@@ -76,6 +77,11 @@ abstract class IBaseRepository
     {
         dump('Czyszczę tabelę: ' . $this->table);
         $this->db->executeQuery("TRUNCATE TABLE $this->table");
+    }
+
+    public function addRelatedRepository(IApiRepository $repository, string $key): void
+    {
+        $this->relatedRepositories[$key] = $repository;
     }
 
     protected function makeQueryPlaceholders($count = 0)
