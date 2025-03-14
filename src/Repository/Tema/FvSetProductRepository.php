@@ -10,7 +10,7 @@ class FvSetProductRepository extends IApiRepository
     private string $endpoint = '';
     protected $table = 'tema_fv_set_product';
 
-    public function saveItems(array $items): int
+    public function saveSetProducts(array $items): int
     {
         $this->clearDataArrays();
         
@@ -19,9 +19,12 @@ class FvSetProductRepository extends IApiRepository
             unset($item['taxRate']);
             array_push($this->fetchResult, $item);
         }
+        unset($items);
         $this->save();
         $resCount = count($this->fetchResult);
         $this->clearDataArrays();
+
+        gc_collect_cycles();
 
         return $resCount;
     }

@@ -9,8 +9,6 @@ class FvDocumentRepository extends IApiRepository
 {
     private string $endpoint = '/api/dms/v1/sales-invoices/{branchId}';
     private $documentEndpoints = [];
-    private $documentItems = [];
-    private $setProducts = [];
     protected $table = 'tema_fv_document';
 
     public function fetch(): array
@@ -18,11 +16,15 @@ class FvDocumentRepository extends IApiRepository
         $this->clearDataArrays();
         $this->getDocumentEndpointList();
         $listCount = count($this->documentEndpoints);
+        $documentItems = [];
+        $setProducts = [];
 
         if ($listCount) {
             echo "\nPobieram zapisy dokumentów";
 
-            for ($i=0; $i < $listCount; $i++) { 
+            for ($i=0; $i < $listCount; $i++) {
+                if ($i === 210)
+                    break;
                 echo "\nEndpoint ----> $i/$listCount";
                 $doc = $this->fetchApiResult($this->documentEndpoints[$i]['getUrl']);
                 unset($this->documentEndpoints[$i]);
@@ -30,23 +32,31 @@ class FvDocumentRepository extends IApiRepository
                 if (empty($doc))
                     continue;
 
-                $this->collectItems($doc);
+                $this->collectItems($doc, $documentItems, $setProducts);
                 array_push($this->fetchResult, $doc);
+                unset($doc);
 
                 if (count($this->fetchResult) >= $this->fetchLimit) {
                     $this->save();
                     $this->fetchResult = [];
+                    $this->relatedRepositories['items']->saveItems($documentItems);
+                    $documentItems = [];
+                    $this->relatedRepositories['setProducts']->saveSetProducts($setProducts);
+                    $setProducts = [];
+
+                    gc_collect_cycles();
                 }
             }
 
             $this->save();
             $this->fetchResult = [];
+            $this->relatedRepositories['items']->saveItems($documentItems);
+            $this->relatedRepositories['setProducts']->saveSetProducts($setProducts);
+            unset($documentItems, $setProducts);
         }
 
         return [
             'fetched' => $listCount,
-            'items' => $this->documentItems,
-            'setProducts' => $this->setProducts
         ];
     }
 
@@ -99,19 +109,19 @@ class FvDocumentRepository extends IApiRepository
         ];
     }
 
-    private function collectItems(array &$doc)
+    private function collectItems(array &$doc, array &$documentItems, array &$setProducts)
     {
         foreach ($doc['items'] as $item) {               
             $item['doc_id'] = $doc['id'];
             $item['unit'] = $item['unit']['name'] ?? '';
-            array_push($this->documentItems, $item);
+            array_push($documentItems, $item);
 
             if ($item['setProductId'] !== 0 || !empty($item['setProducts'])) {
                 foreach ($item['setProducts'] as $product) {
                     $product['set_product_id'] = $item['setProductId'];
                     $product['doc_id'] = $doc['id'];
                     $product['unit'] = $product['unit']['name'] ?? '';
-                    array_push($this->setProducts, $product);
+                    array_push($setProducts, $product);
                 }
             }
         }
@@ -128,6 +138,5 @@ class FvDocumentRepository extends IApiRepository
     {
         $this->fetchResult = [];
         $this->documentEndpoints = [];
-        $this->documentItems = [];
     }
 }

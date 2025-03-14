@@ -41,23 +41,14 @@ class FvDocumentCommand extends BaseApiCommand
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
-        $this->docRepo->setSource($api);
         $this->itemRepo->setSource($api);
         $this->setProduct->setSource($api);
+        $this->docRepo->setSource($api);
+        $this->docRepo->addRelatedRepository($this->itemRepo, 'items');
+        $this->docRepo->addRelatedRepository($this->setProduct, 'setProducts');
+
         $fetchedRows = $this->docRepo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
-
-        $itemsCount = count($fetchedRows['items']);
-        if ($itemsCount > 0) {
-            $io->info(sprintf('Pobrano %s pozycji z dokumentów', $itemsCount));
-            $this->itemRepo->saveItems($fetchedRows['items']);
-        }
-        
-        $setProductsCount = count($fetchedRows['setProducts']);
-        if ($setProductsCount > 0) {
-            $io->info(sprintf('Pobrano %s pozycji pakietowych', $setProductsCount));
-            $this->setProduct->saveItems($fetchedRows['setProducts']);
-        }
 
         unset($fetchedRows);
     }
