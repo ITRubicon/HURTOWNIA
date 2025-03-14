@@ -37,16 +37,13 @@ class ReceiptCommand extends BaseApiCommand
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
-        $this->repo->setSource($api);
         $this->itemRepo->setSource($api);
+        $this->repo->setSource($api);
+        $this->repo->addRelatedRepository($this->itemRepo, 'items');
+
         $fetchedRows = $this->repo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
 
-        $itemsCount = count($fetchedRows['items']);
-        if ($itemsCount > 0) {
-            $io->info(sprintf('Pobrano %s pozycji', $itemsCount));
-            $this->itemRepo->saveItems($fetchedRows['items']);
-        }
         unset($fetchedRows);
     }
 

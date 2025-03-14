@@ -8,7 +8,6 @@ use Doctrine\DBAL\ParameterType;
 class ReceiptRepository extends IApiRepository
 {
     private string $endpoint = '/api/dms/v1/receipts/{branchId}/:sync';
-    private $receiptItems = [];
     protected $table = 'tema_receipt';
 
     public function fetch(): array
@@ -16,6 +15,8 @@ class ReceiptRepository extends IApiRepository
         $this->clearDataArrays();
         $stocks = $this->getStocks();
         $resCount = 0;
+        $receiptItems = [];
+
         foreach ($stocks as $stock) {
             $endpoint = str_replace('{branchId}', $stock, $this->endpoint);
 
@@ -29,32 +30,40 @@ class ReceiptRepository extends IApiRepository
                 if (empty($res))
                     continue;
 
-                $this->collectItems($res['items']);
+                $this->collectItems($res['items'], $receiptItems);
                 $this->fetchResult = array_merge($this->fetchResult, $res['items']);
                 $resCount += count($res['items']);
+                unset($res);
 
                 if (count($this->fetchResult) >= $this->fetchLimit) {
                     $this->save();
                     $this->fetchResult = [];
+                    $this->relatedRepositories['items']->saveItems($receiptItems);
+                    $receiptItems = [];
+
+                    gc_collect_cycles();
                 }
 
             } while ($res['fetchNext']);
+            
             $this->save();
+            $this->fetchResult = [];
+            $this->relatedRepositories['items']->saveItems($receiptItems);
+            unset($receiptItems);
         }
 
         return [
             'fetched' => $resCount,
-            'items' => $this->receiptItems
         ];
     }
 
-    private function collectItems(array &$doc)
+    private function collectItems(array &$doc, array &$receiptItems)
     {
         foreach ($doc as $d) {
             foreach ($d['items'] as $item) {
                 $item['doc_id'] = $d['id'];
                 $item['unit'] = $item['unit']['name'] ?? '';
-                array_push($this->receiptItems, $item);
+                array_push($receiptItems, $item);
             }
             unset($d['items']);
         }
@@ -90,6 +99,5 @@ class ReceiptRepository extends IApiRepository
     protected function clearDataArrays()
     {
         $this->fetchResult = [];
-        $this->receiptItems = [];
     }
 }
