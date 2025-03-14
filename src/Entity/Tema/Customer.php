@@ -37,7 +37,7 @@ class Customer
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $krsId = null;
 
-    #[ORM\Column(length: 15, nullable: true)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $regonId = null;
 
     #[ORM\Column(length: 160, nullable: true)]
