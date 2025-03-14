@@ -9,7 +9,6 @@ class PrepaymentCorrectionDocumentRepository extends IApiRepository
 {
     private string $endpoint = '/api/dms/v1/prepayment-invoice-corrections/{branchId}';
     private $documentEndpoints = [];
-    private $documentItems = [];
     protected $table = 'tema_prepayment_correction_document';
 
     public function fetch(): array
@@ -17,6 +16,7 @@ class PrepaymentCorrectionDocumentRepository extends IApiRepository
         $this->clearDataArrays();
         $this->getDocumentEndpointList();
         $listCount = count($this->documentEndpoints);
+        $documentItems = [];
 
         if ($listCount) {
             echo "\nPobieram zapisy dokumentów";
@@ -29,22 +29,28 @@ class PrepaymentCorrectionDocumentRepository extends IApiRepository
                 if (empty($doc))
                     continue;
 
-                $this->collectItems($doc);
+                $this->collectItems($doc, $documentItems);
                 array_push($this->fetchResult, $doc);
+                unset($doc);
 
                 if (count($this->fetchResult) >= $this->fetchLimit) {
                     $this->save();
                     $this->fetchResult = [];
+                    $this->relatedRepositories['items']->saveItems($documentItems);
+                    $documentItems = [];
+
+                    gc_collect_cycles();
                 }
             }
 
             $this->save();
             $this->fetchResult = [];
+            $this->relatedRepositories['items']->saveItems($documentItems);
+            unset($documentItems);
         }
 
         return [
             'fetched' => $listCount,
-            'items' => $this->documentItems
         ];
     }
 
@@ -88,11 +94,11 @@ class PrepaymentCorrectionDocumentRepository extends IApiRepository
         ];
     }
 
-    private function collectItems(array &$doc)
+    private function collectItems(array &$doc, array &$documentItems)
     {
         foreach ($doc['items'] as $item) {
             $item['doc_id'] = $doc['id'];
-            array_push($this->documentItems, $item);
+            array_push($documentItems, $item);
         }
         unset($doc['items']);
     }
@@ -108,6 +114,5 @@ class PrepaymentCorrectionDocumentRepository extends IApiRepository
     {
         $this->fetchResult = [];
         $this->documentEndpoints = [];
-        $this->documentItems = [];
     }
 }
