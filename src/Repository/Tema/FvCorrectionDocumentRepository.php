@@ -9,7 +9,6 @@ class FvCorrectionDocumentRepository extends IApiRepository
 {
     private string $endpoint = '/api/dms/v1/sales-invoice-corrections/{branchId}';
     private $documentEndpoints = [];
-    private $documentItems = [];
     protected $table = 'tema_fv_correction_document';
 
     public function fetch(): array
@@ -17,6 +16,7 @@ class FvCorrectionDocumentRepository extends IApiRepository
         $this->clearDataArrays();
         $this->getDocumentEndpointList();
         $listCount = count($this->documentEndpoints);
+        $documentItems = [];
 
         if ($listCount) {
             echo "\nPobieram zapisy dokumentów";
@@ -29,22 +29,30 @@ class FvCorrectionDocumentRepository extends IApiRepository
                 if (empty($doc))
                     continue;
 
-                $this->collectItems($doc);
+                $this->collectItems($doc, $documentItems);
                 array_push($this->fetchResult, $doc);
+                unset($doc);
 
                 if (count($this->fetchResult) >= $this->fetchLimit) {
                     $this->save();
                     $this->fetchResult = [];
+                    $this->relatedRepositories['items']->saveItems($documentItems);
+                    $documentItems = [];
+
+                    gc_collect_cycles();
                 }
             }
             
             $this->save();
             $this->fetchResult = [];
+            $this->relatedRepositories['items']->saveItems($documentItems);
+            unset($documentItems);
+
+            gc_collect_cycles();
         }
 
         return [
             'fetched' => $listCount,
-            'items' => $this->documentItems
         ];
     }
 
@@ -96,11 +104,11 @@ class FvCorrectionDocumentRepository extends IApiRepository
         ];
     }
 
-    private function collectItems(array &$doc)
+    private function collectItems(array &$doc, array &$documentItems)
     {
         foreach ($doc['items'] as $item) {
             $item['doc_id'] = $doc['id'];
-            array_push($this->documentItems, $item);
+            array_push($documentItems, $item);
         }
         unset($doc['items']);
     }
@@ -116,6 +124,5 @@ class FvCorrectionDocumentRepository extends IApiRepository
     {
         $this->fetchResult = [];
         $this->documentEndpoints = [];
-        $this->documentItems = [];
     }
 }
