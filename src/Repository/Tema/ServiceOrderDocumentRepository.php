@@ -9,9 +9,6 @@ class ServiceOrderDocumentRepository extends IApiRepository
 {
     private string $endpoint = '/api/dms/v1/repair-orders/{branchId}';
     private $documentEndpoints = [];
-    private $documentItems = [];
-    private $cars = [];
-    private $endDocuments = [];
     protected $table = 'tema_service_order_document';
 
     public function fetch(): array
@@ -20,10 +17,18 @@ class ServiceOrderDocumentRepository extends IApiRepository
         $this->getDocumentEndpointList();
         $listCount = count($this->documentEndpoints);
 
+        $documentItems = [];
+        $endDocuments = [];
+        $cars = [];
+
+
         if ($listCount) {
             echo "\nPobieram zapisy dokumentów";
 
-            for ($i=0; $i < $listCount; $i++) { 
+            for ($i = 0; $i < $listCount; $i++) {
+                if ($i === 250)
+                    break;
+
                 echo "\nEndpoint ----> $i/$listCount";
                 $doc = $this->fetchApiResult($this->documentEndpoints[$i]['getUrl']);
                 unset($this->documentEndpoints[$i]);
@@ -31,27 +36,39 @@ class ServiceOrderDocumentRepository extends IApiRepository
                 if (empty($doc))
                     continue;
 
-                $this->collectItems($doc);
-                $this->collectEndDocuments($doc);
-                $this->collectCar($doc);
+                $this->collectItems($doc, $documentItems);
+                $this->collectEndDocuments($doc, $endDocuments);
+                $this->collectCar($doc, $cars);
                 array_push($this->fetchResult, $doc);
 
                 if (count($this->fetchResult) >= $this->fetchLimit) {
                     $this->save();
                     $this->fetchResult = [];
+                    $this->relatedRepositories['items']->saveItems($documentItems);
+                    $documentItems = [];
+                    $this->relatedRepositories['endDocs']->saveDocs($endDocuments);
+                    $endDocuments = [];
+                    $this->relatedRepositories['cars']->saveCars($cars);
+                    $cars = [];
+
+                    gc_collect_cycles();
                 }
             }
 
             $this->save();
             $this->fetchResult = [];
-
+            $this->relatedRepositories['items']->saveItems($documentItems);
+            unset($documentItems);
+            $this->relatedRepositories['endDocs']->saveDocs($endDocuments);
+            unset($endDocuments);
+            $this->relatedRepositories['cars']->saveCars($cars);
+            unset($cars);
+            
+            gc_collect_cycles();
         }
 
         return [
             'fetched' => $listCount,
-            'items' => $this->documentItems,
-            'endDocs' => $this->endDocuments,
-            'cars' => $this->cars,
         ];
     }
 
@@ -67,7 +84,7 @@ class ServiceOrderDocumentRepository extends IApiRepository
             foreach ($stocks as $stock) {
                 echo "\nNr stocku $stock ----> $i/$stocksCount";
                 $i++;
-                
+
                 $url = str_replace('{branchId}', $stock, $this->endpoint);
                 $res = $this->fetchApiResult($url);
                 if (empty($res))
@@ -75,7 +92,7 @@ class ServiceOrderDocumentRepository extends IApiRepository
 
                 $this->documentEndpoints = array_merge($this->documentEndpoints, $res);
             }
-        } else 
+        } else
             throw new \Exception("Nie żadnych jednostek organizacyjnych. Najpierw uruchom komendę pobierającą listę jednostek [tema:stock]", 99);
     }
 
@@ -99,28 +116,28 @@ class ServiceOrderDocumentRepository extends IApiRepository
         ];
     }
 
-    private function collectItems(array &$doc)
+    private function collectItems(array &$doc, array &$documentItems)
     {
         foreach ($doc['items'] as $item) {
             $item['doc_id'] = $doc['id'];
-            array_push($this->documentItems, $item);
+            array_push($documentItems, $item);
         }
         unset($doc['items']);
     }
 
-    private function collectEndDocuments(array &$doc)
+    private function collectEndDocuments(array &$doc, array &$endDocuments)
     {
         foreach ($doc['documents'] as $item) {
             $item['doc_id'] = $doc['id'];
-            array_push($this->endDocuments, $item);
-            unset($doc['documents']);
+            array_push($endDocuments, $item);
         }
+        unset($doc['documents']);
     }
 
-    private function collectCar(array &$doc)
+    private function collectCar(array &$doc, array &$cars)
     {
         $doc['vehicle']['doc_id'] = $doc['id'];
-        array_push($this->cars, $doc['vehicle']);
+        array_push($cars, $doc['vehicle']);
         unset($doc['vehicle']);
     }
 
@@ -134,8 +151,5 @@ class ServiceOrderDocumentRepository extends IApiRepository
     {
         $this->fetchResult = [];
         $this->documentEndpoints = [];
-        $this->documentItems = [];
-        $this->cars = [];
-        $this->endDocuments = [];  
     }
 }

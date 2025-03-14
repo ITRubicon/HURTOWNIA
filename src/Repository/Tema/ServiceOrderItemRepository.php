@@ -18,9 +18,12 @@ class ServiceOrderItemRepository extends IApiRepository
             unset($item['taxRate']);
             array_push($this->fetchResult, $item);
         }
+        unset($items);
         $resCount = count($this->fetchResult);
         $this->save();
         $this->clearDataArrays();
+
+        gc_collect_cycles();
 
         return [
             'fetched' => $resCount,

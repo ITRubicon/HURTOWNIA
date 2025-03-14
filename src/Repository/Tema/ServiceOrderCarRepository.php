@@ -13,9 +13,12 @@ class ServiceOrderCarRepository extends IApiRepository
     {
         $this->clearDataArrays();
         $this->fetchResult = $cars;
+        unset($cars);
         $this->save();
         $resCount = count($this->fetchResult);
         $this->clearDataArrays();
+        
+        gc_collect_cycles();
 
         return $resCount;
     }

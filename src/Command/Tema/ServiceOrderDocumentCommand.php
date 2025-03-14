@@ -50,37 +50,40 @@ class ServiceOrderDocumentCommand extends BaseApiCommand
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
-        $this->docRepo->setSource($api);
         $this->itemRepo->setSource($api);
         $this->endDocRepo->setSource($api);
         $this->carRepo->setSource($api);
+        $this->docRepo->setSource($api);
+        $this->docRepo->addRelatedRepository($this->itemRepo, 'items');
+        $this->docRepo->addRelatedRepository($this->endDocRepo, 'endDocs');
+        $this->docRepo->addRelatedRepository($this->carRepo, 'cars');
 
         $fetchedRows = $this->docRepo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
 
-        $itemsCount = count($fetchedRows['items']);
-        if ($itemsCount > 0) {
-            $io->info(sprintf('Pobrano %s pozycji z dokumentów', $itemsCount));
+        // $itemsCount = count($fetchedRows['items']);
+        // if ($itemsCount > 0) {
+        //     $io->info(sprintf('Pobrano %s pozycji z dokumentów', $itemsCount));
 
-            $result = $this->itemRepo->saveItems($fetchedRows['items']);
-            $io->info(sprintf('Zapisano %s pozycji z faktur', $result['fetched']));
-            unset($result);
-        }
-        unset($fetchedRows['items']);
+        //     $result = $this->itemRepo->saveItems($fetchedRows['items']);
+        //     $io->info(sprintf('Zapisano %s pozycji z faktur', $result['fetched']));
+        //     unset($result);
+        // }
+        // unset($fetchedRows['items']);
 
-        $endDocsCount = count($fetchedRows['endDocs']);
-        if ($endDocsCount > 0) {
-            $io->info(sprintf('Pobrano %s pozycji z dokumentów końcowych', $endDocsCount));
-            $this->endDocRepo->saveDocs($fetchedRows['endDocs']);
-        }
-        unset($fetchedRows['endDocs']);
+        // $endDocsCount = count($fetchedRows['endDocs']);
+        // if ($endDocsCount > 0) {
+        //     $io->info(sprintf('Pobrano %s pozycji z dokumentów końcowych', $endDocsCount));
+        //     $this->endDocRepo->saveDocs($fetchedRows['endDocs']);
+        // }
+        // unset($fetchedRows['endDocs']);
 
-        $carsCount = count($fetchedRows['cars']);
-        if ($carsCount > 0) {
-            $io->info(sprintf('Pobrano %s samochód', $carsCount));
-            $this->carRepo->saveCars($fetchedRows['cars']);
-        }
-        unset($fetchedRows['cars']);
+        // $carsCount = count($fetchedRows['cars']);
+        // if ($carsCount > 0) {
+        //     $io->info(sprintf('Pobrano %s samochód', $carsCount));
+        //     $this->carRepo->saveCars($fetchedRows['cars']);
+        // }
+        // unset($fetchedRows['cars']);
     }
 
     protected function clearTable()
