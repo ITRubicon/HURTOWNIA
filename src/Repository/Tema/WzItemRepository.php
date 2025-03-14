@@ -19,9 +19,12 @@ class WzItemRepository extends IApiRepository
             unset($item['taxRate']);
             array_push($this->fetchResult, $item);
         }
+        unset($items);
         $this->save();
         $resCount = count($this->fetchResult);
         $this->clearDataArrays();
+
+        gc_collect_cycles();
 
         return $resCount;
     }
