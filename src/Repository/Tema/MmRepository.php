@@ -9,7 +9,6 @@ class MmRepository extends IApiRepository
 {
     private string $endpoint = '/api/dms/v1/outgoing-transfer-notes/{branchId}/:sync';
     protected $table = 'tema_mm_document';
-    private $items = [];
 
     public function fetch(): array
     {
@@ -17,6 +16,7 @@ class MmRepository extends IApiRepository
         $stocks = $this->getStocks();
         $stocksCount = count($stocks);
         $resultCount = 0;
+        $items = [];
 
         if ($stocksCount) {
             $i = 1;
@@ -35,25 +35,33 @@ class MmRepository extends IApiRepository
                     if (empty($res))
                         continue;
 
-                    $this->collectItems($res['items']);
+                    $this->collectItems($res['items'], $items);
                     $this->fetchResult = array_merge($this->fetchResult, $res['items']);
                     $resultCount += count($res['items']);
 
                     if (count($this->fetchResult) >= $this->fetchLimit) {
                         $this->save();
                         $this->fetchResult = [];
+                        $this->relatedRepositories['items']->saveItems($items);
+                        $items = [];
+
+                        gc_collect_cycles();
                     }
 
                 } while ($res['fetchNext']);
 
                 $this->save();
+                $this->fetchResult = [];
+                $this->relatedRepositories['items']->saveItems($items);
+                unset($items);
+
+                gc_collect_cycles();
             }
         } else 
             throw new \Exception("Nie żadnych jednostek organizacyjnych. Najpierw uruchom komendę pobierającą listę jednostek [tema:stock]");
         
         return [
             'fetched' => $resultCount,
-            'items' => $this->items
         ];
     }
 
@@ -63,12 +71,12 @@ class MmRepository extends IApiRepository
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
-    private function collectItems(array &$res)
+    private function collectItems(array &$res, array &$items)
     {
         foreach ($res as $i => $r) {
             foreach ($r['items'] as $item) {
                 $item['doc_id'] = $r['id'];
-                array_push($this->items, $item);
+                array_push($items, $item);
             }
             unset($res[$i]['items']);
         }
@@ -99,6 +107,5 @@ class MmRepository extends IApiRepository
     protected function clearDataArrays()
     {
         $this->fetchResult = [];
-        $this->items = [];
     }
 }

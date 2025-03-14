@@ -26,9 +26,12 @@ class MmItemRepository extends IApiRepository
             unset($item['taxRate'], $item['unit']);
             array_push($this->fetchResult, $item);
         }
+        unset($items);
         $this->save();
         $resCount = count($this->fetchResult);
         $this->clearDataArrays();
+
+        gc_collect_cycles();
 
         return $resCount;
     }
