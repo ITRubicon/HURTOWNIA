@@ -42,21 +42,15 @@ class ServiceInvoiceCommand extends BaseApiCommand
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
+        $this->itemRepo->setSource($api);
         $this->docRepo->setSource($api);
         $this->docRepo->setDateFrom($this->dateFrom);
-        $this->itemRepo->setSource($api);
+        $this->docRepo->addRelatedRepository($this->itemRepo, 'items');
 
         $fetchedRows = $this->docRepo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
 
-        $itemsCount = count($fetchedRows['items']);
-        if ($itemsCount > 0) {
-            $io->info(sprintf('Pobrano %s pozycji z dokumentów', $itemsCount));
-
-            $result = $this->itemRepo->saveItems($fetchedRows['items']);
-            $io->info(sprintf('Zapisano %s pozycji z faktur', $result['fetched']));
-            unset($result);
-        }
+        unset($fetchedRows);
     }
 
     protected function clearTable()
