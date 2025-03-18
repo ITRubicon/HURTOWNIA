@@ -33,7 +33,6 @@ class ReceiptRepository extends IApiRepository
                 $this->collectItems($res['items'], $receiptItems);
                 $this->fetchResult = array_merge($this->fetchResult, $res['items']);
                 $resCount += count($res['items']);
-                unset($res);
 
                 if (count($this->fetchResult) >= $this->fetchLimit) {
                     $this->save();

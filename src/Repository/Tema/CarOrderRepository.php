@@ -38,7 +38,6 @@ class CarOrderRepository extends IApiRepository
                     $this->collectItems($res['items'], $orderItems);
                     $this->fetchResult = array_merge($this->fetchResult, $res['items']);
                     $resultCount += count($res['items']);
-                    unset($res);
 
                     if (count($this->fetchResult) >= $this->fetchLimit) {
                         $this->save();
