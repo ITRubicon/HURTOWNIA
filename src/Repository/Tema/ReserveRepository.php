@@ -41,6 +41,8 @@ class ReserveRepository extends IApiRepository
                         $this->addStockId($stock);
                         $this->save();
                         $this->fetchResult = [];
+                        
+                        gc_collect_cycles();
                     }
 
                 } while ($res['fetchNext']);
@@ -48,6 +50,8 @@ class ReserveRepository extends IApiRepository
                 $this->addStockId($stock);
                 $this->save();
                 $this->fetchResult = [];
+
+                gc_collect_cycles();
             }
         } else
             throw new \Exception("Nie żadnych jednostek organizacyjnych. Najpierw uruchom komendę pobierającą listę jednostek [tema:stock]");

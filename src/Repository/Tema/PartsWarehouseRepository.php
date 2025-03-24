@@ -35,6 +35,8 @@ class PartsWarehouseRepository extends IApiRepository
                     $this->addStockId($stock);
                     $this->save();
                     $this->fetchResult = [];
+            
+                    gc_collect_cycles();
                 }
 
             } while ($res['fetchNext']);
@@ -42,6 +44,8 @@ class PartsWarehouseRepository extends IApiRepository
             $this->addStockId($stock);
             $this->save();
             $this->fetchResult = [];
+
+            gc_collect_cycles();
         }
 
         return [

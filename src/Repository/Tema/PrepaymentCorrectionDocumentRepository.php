@@ -49,9 +49,7 @@ class PrepaymentCorrectionDocumentRepository extends IApiRepository
             unset($documentItems);
         }
 
-        return [
-            'fetched' => $listCount,
-        ];
+        return ['fetched' => $listCount];
     }
 
     private function getDocumentEndpointList()

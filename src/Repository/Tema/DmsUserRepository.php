@@ -27,11 +27,13 @@ class DmsUserRepository extends IApiRepository
             $this->fetchResult = array_merge($this->fetchResult, $res['items']);
             $resCount += count($res['items']);
         } while ($res['fetchNext']);
-        $this->save();
 
-        return [
-            'fetched' => $resCount,
-        ];
+        $this->save();
+        $this->fetchResult = [];
+        
+        gc_collect_cycles();
+
+        return ['fetched' => $resCount];
     }
 
     protected function getFieldsParams(): array

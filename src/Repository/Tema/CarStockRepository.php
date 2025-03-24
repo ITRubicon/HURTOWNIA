@@ -40,7 +40,9 @@ class CarStockRepository extends IApiRepository
                     $this->fetchResult = [];
                 }
             }
+            
             $this->save();
+            $this->fetchResult = [];
         } else
             throw new \Exception("Nie znaleziono magazynów. Najpierw uruchom komendę pobierającą listę magazynów [tema:stock]", 99);
             

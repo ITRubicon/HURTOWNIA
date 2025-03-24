@@ -52,7 +52,7 @@ class CarOrderRepository extends IApiRepository
             $this->save();
             $this->fetchResult = [];
             $this->relatedRepositories['items']->saveItems($orderItems);
-            unset($orderItems);
+            $orderItems = [];
 
             gc_collect_cycles();
         } else 

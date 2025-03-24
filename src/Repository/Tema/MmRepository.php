@@ -53,16 +53,14 @@ class MmRepository extends IApiRepository
                 $this->save();
                 $this->fetchResult = [];
                 $this->relatedRepositories['items']->saveItems($items);
-                unset($items);
+                $items = [];
 
                 gc_collect_cycles();
             }
         } else 
             throw new \Exception("Nie żadnych jednostek organizacyjnych. Najpierw uruchom komendę pobierającą listę jednostek [tema:stock]");
         
-        return [
-            'fetched' => $resultCount,
-        ];
+        return ['fetched' => $resultCount];
     }
 
     private function getStocks()

@@ -27,9 +27,9 @@ class ReceiptRepository extends IApiRepository
                     $nextTimestamp = '?timestamp=' . urlencode($res['lastTimestamp']);
 
                 $res = $this->fetchApiResult($endpoint . $nextTimestamp);
-                if (empty($res))
+                if (empty($res['items']))
                     continue;
-
+                
                 $this->collectItems($res['items'], $receiptItems);
                 $this->fetchResult = array_merge($this->fetchResult, $res['items']);
                 $resCount += count($res['items']);
@@ -47,13 +47,14 @@ class ReceiptRepository extends IApiRepository
             
             $this->save();
             $this->fetchResult = [];
+
             $this->relatedRepositories['items']->saveItems($receiptItems);
-            unset($receiptItems);
+            $receiptItems = [];
+            
+            gc_collect_cycles();
         }
 
-        return [
-            'fetched' => $resCount,
-        ];
+        return ['fetched' => $resCount];
     }
 
     private function collectItems(array &$doc, array &$receiptItems)

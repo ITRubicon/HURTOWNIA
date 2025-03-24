@@ -37,7 +37,9 @@ class CustomerContactRepository extends IApiRepository
                     $this->fetchResult = [];
                 }
             }
+
             $this->save();
+            $this->fetchResult = [];
         } else 
             throw new \Exception("Nie znaleziono klentów. Najpierw uruchom komendę pobierającą listę klientóœ [tema:customer]", 99);
 
@@ -50,6 +52,7 @@ class CustomerContactRepository extends IApiRepository
     {
         $this->fetchResult = $contacts;
         $this->save();
+        $this->fetchResult = [];
     }
 
     protected function getFieldsParams(): array
