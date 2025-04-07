@@ -20,6 +20,7 @@ abstract class IBaseRepository
     protected $table;
     protected $timer;
     protected $relatedRepositories = [];
+    protected $onDuplicateClause = '';
 
     protected abstract function getFieldsParams(): array;
     // protected abstract function fetch(): array;
@@ -60,7 +61,7 @@ abstract class IBaseRepository
                 $data = $this->prepareDataToInsert($batch);
                 $insFields = $this->makeQueryFields();
 
-                $q = "INSERT INTO $this->table ($insFields) VALUES " . $data['questionMarks'];
+                $q = "INSERT INTO $this->table ($insFields) VALUES " . $data['questionMarks'] . ' ' . $this->onDuplicateClause;
                 try {
                     $this->db->executeQuery($q, $data['valuesIns'], $data['types']);
                     $this->db->close();
