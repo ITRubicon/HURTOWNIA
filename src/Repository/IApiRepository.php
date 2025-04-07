@@ -51,6 +51,11 @@ abstract class IApiRepository extends IBaseRepository
 
     protected function decodeResponse(): array
     {
-        return json_decode($this->httpClient->getContent(), true);
+        $response = $this->httpClient->getContent();
+        if (str_contains($response, 'Us³ugaPunktSprzedazy')) {
+            $response = preg_replace('/Us³ugaPunktSprzedazy/', 'UsługaPunktSprzedazy', $response);
+        }
+
+        return json_decode($response, true);
     }
 }
