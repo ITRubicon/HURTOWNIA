@@ -22,7 +22,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ScheduleCommand extends BaseApiCommand
 {
     protected $producerName = 'Tema';
-    private const string HANDLES_API = 'https://1099dcrm.tema.com.pl';
+    private const HANDLED_API = 'https://1099dcrm.tema.com.pl';
 
     public function __construct(
         private ScheduleRepository $repo,
@@ -45,7 +45,7 @@ class ScheduleCommand extends BaseApiCommand
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
-        if ($api->getBaseUrl() !== self::HANDLES_API) {
+        if ($api->getBaseUrl() !== self::HANDLED_API) {
             $io->warning(sprintf('To api nie jest obsługiwane: %s', $api->getBaseUrl()));
             return;
         }
