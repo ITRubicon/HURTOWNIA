@@ -7,7 +7,11 @@ use App\Entity\IConnection;
 use App\Repository\ApiFetchErrorRepository;
 use App\Repository\SourceAuthRepository;
 use App\Repository\Tema\ScheduleRepository;
+use App\Repository\Tema\ScheduleReservationRepository;
+use App\Repository\Tema\ScheduleResourcesAvailabilityRepository;
+use App\Repository\Tema\ScheduleResourcesRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -17,13 +21,18 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class ScheduleCommand extends BaseApiCommand
 {
-    private $repo;
     protected $producerName = 'Tema';
+    private const string HANDLES_API = 'https://1099dcrm.tema.com.pl';
 
-    public function __construct(ScheduleRepository $repo, SourceAuthRepository $apiAuthRepo, ApiFetchErrorRepository $errorRepo)
-    {
+    public function __construct(
+        private ScheduleRepository $repo,
+        private ScheduleReservationRepository $reservationRepo,
+        private ScheduleResourcesRepository $resourcesRepo,
+        private ScheduleResourcesAvailabilityRepository $resourcesAvailabilityRepo,
+        protected SourceAuthRepository $apiAuthRepo,
+        protected ApiFetchErrorRepository $errorRepo
+    ) {
         parent::__construct($apiAuthRepo, $errorRepo);
-        $this->repo = $repo;
     }
 
     protected function configure(): void
@@ -36,15 +45,34 @@ class ScheduleCommand extends BaseApiCommand
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
+        if ($api->getBaseUrl() !== self::HANDLES_API) {
+            $io->warning(sprintf('To api nie jest obsługiwane: %s', $api->getBaseUrl()));
+            return;
+        }
+
         $this->repo->setSource($api);
         $this->repo->setDateFrom($this->dateFrom);
         $this->repo->setDateTo($this->dateTo);
+
         $fetchedRows = $this->repo->fetch();
+        $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
+
+        $this->resourcesRepo->setSource($api);
+        $this->resourcesRepo->setDateFrom($this->dateFrom);
+        $this->resourcesRepo->setDateTo($this->dateTo);
+        $this->resourcesAvailabilityRepo->setSource($api);
+        $this->resourcesRepo->addRelatedRepository($this->resourcesAvailabilityRepo, 'availability');
+
+        $fetchedRows = $this->resourcesRepo->fetch();
+        $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
+
+        $this->reservationRepo->setSource($api);
+        $this->reservationRepo->setDateFrom($this->dateFrom);
+        $this->reservationRepo->setDateTo($this->dateTo);
+
+        $fetchedRows = $this->reservationRepo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
     }
 
-    protected function clearTable()
-    {
-        $this->repo->clearTable();
-    }
+    protected function clearTable() {}
 }
