@@ -5,8 +5,6 @@ namespace App\Command;
 use App\Entity\IConnection;
 use App\Repository\ApiFetchErrorRepository;
 use App\Repository\SourceAuthRepository;
-use DateTime;
-use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
@@ -49,17 +47,17 @@ abstract class BaseApiCommand extends Command
 
         if (empty($this->producerName)) {
             $io->error('Ustaw w klasie wartość pola $producerName');
-            throw new Exception('Ustaw w klasie wartość pola $producerName');
+            throw new \Exception('Ustaw w klasie wartość pola $producerName');
             return Command::FAILURE;
         }
 
         if (!$apiSources) {
             $io->error('Nie znalazłem żadnego api');
-            throw new Exception('Nieznana nazwa parametru api');
+            throw new \Exception('Nieznana nazwa parametru api');
             return Command::FAILURE;
         }
 
-        $start = new DateTime('now');
+        $start = new \DateTime('now');
 
         $msg = 'Znalezione api:';
         for ($i = 0; $i < $apiSourcesCount; $i++) {
@@ -84,7 +82,7 @@ abstract class BaseApiCommand extends Command
         }
 
         $io->success('Koniec pracy');
-        $end = new DateTime('now');
+        $end = new \DateTime('now');
         
         $io->info([
             'start: ' . $start->format('Y-m-d H:i:s'),
