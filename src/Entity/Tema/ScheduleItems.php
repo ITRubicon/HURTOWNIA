@@ -27,6 +27,9 @@ class ScheduleItems
     #[ORM\Column(length: 80, nullable: true)]
     private ?string $relatedReservation = null;
 
+    #[ORM\Column(length: 14, nullable: true)]
+    private ?string $reservationId = null;
+
     #[ORM\Column(length: 3, nullable: true)]
     private ?string $warehouseId = null;
 
