@@ -50,6 +50,9 @@ class ScheduleCommand extends BaseApiCommand
             return;
         }
 
+        // Pobieramy do przodu, bo wyliczenia są robione do końca miesiąca
+        $this->dateTo = date('Y-m-t', strtotime('+ 1 month', strtotime($this->dateTo)));
+
         $this->repo->setSource($api);
         $this->repo->setDateFrom($this->dateFrom);
         $this->repo->setDateTo($this->dateTo);
