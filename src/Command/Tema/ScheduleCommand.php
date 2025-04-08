@@ -51,18 +51,18 @@ class ScheduleCommand extends BaseApiCommand
         }
 
         // Pobieramy do przodu, bo wyliczenia są robione do końca miesiąca
-        $this->dateTo = date('Y-m-t', strtotime('+ 1 month', strtotime($this->dateTo)));
+        $dateTo = date('Y-m-t', strtotime('+ 1 month', strtotime($this->dateTo)));
 
         $this->repo->setSource($api);
         $this->repo->setDateFrom($this->dateFrom);
-        $this->repo->setDateTo($this->dateTo);
+        $this->repo->setDateTo($dateTo);
 
         $fetchedRows = $this->repo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
 
         $this->resourcesRepo->setSource($api);
         $this->resourcesRepo->setDateFrom($this->dateFrom);
-        $this->resourcesRepo->setDateTo($this->dateTo);
+        $this->resourcesRepo->setDateTo($dateTo);
         $this->resourcesAvailabilityRepo->setSource($api);
         $this->resourcesRepo->addRelatedRepository($this->resourcesAvailabilityRepo, 'availability');
 
@@ -71,7 +71,7 @@ class ScheduleCommand extends BaseApiCommand
 
         $this->reservationRepo->setSource($api);
         $this->reservationRepo->setDateFrom($this->dateFrom);
-        $this->reservationRepo->setDateTo($this->dateTo);
+        $this->reservationRepo->setDateTo($dateTo);
 
         $fetchedRows = $this->reservationRepo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
