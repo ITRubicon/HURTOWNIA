@@ -21,6 +21,9 @@ class AgeingProduction
     #[ORM\Column(length: 20)]
     private ?string $source = null;
 
+    #[ORM\Column]
+    private ?int $org_unit_id = null;
+
     #[ORM\Column(length: 50)]
     private ?string $zlecenie_nr = null;
 

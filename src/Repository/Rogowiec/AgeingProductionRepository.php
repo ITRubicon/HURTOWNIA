@@ -14,14 +14,14 @@ class AgeingProductionRepository extends IApiRepository
     {
         $this->clearDataArrays();
         $orgUnitsIds = $this->fetchBranchId();
-        $branchesCount = count($orgUnitsIds);
+        $orgUnitsCount = count($orgUnitsIds);
         $resCount = 0;
 
-        if ($branchesCount) {
+        if ($orgUnitsCount) {
             $i = 1;
 
             foreach ($orgUnitsIds as $id) {
-                echo "\nId jednostki $id ----> $i/$branchesCount";
+                echo "\nId jednostki $id ----> $i/$orgUnitsCount";
                 $url = str_replace(
                     ['{id_org}', '{date_to}'],
                     [$id, $this->dateTo],
@@ -30,6 +30,7 @@ class AgeingProductionRepository extends IApiRepository
 
                 $this->fetchResult = $this->fetchApiResult($url);
                 $resCount += count($this->fetchResult);
+                $this->addOrgUnitId((int) $id);
                 $this->save();
                 $this->clearDataArrays();
                 $i++;
@@ -38,6 +39,13 @@ class AgeingProductionRepository extends IApiRepository
         throw new \Exception("Nie żadnych jednostek organizacyjnych dla " . $this->source->getName() . ". Najpierw uruchom komendę pobierającą jednostki organizacyjne [rogowiec:orgunit]", -1);
 
         return ['fetched' => $resCount];
+    }
+
+    private function addOrgUnitId(int $orgUnitId)
+    {
+        foreach ($this->fetchResult as $key => $row) {
+            $this->fetchResult[$key]['org_unit_id'] = $orgUnitId;
+        }
     }
 
     private function fetchBranchId()
@@ -71,6 +79,7 @@ class AgeingProductionRepository extends IApiRepository
             'prowadzacy' => ['sourceField' => 'Prowadzacy', 'type' => ParameterType::STRING],
             'vin' => ['sourceField' => 'VIN', 'type' => ParameterType::STRING],
             'rejestracja_nr' => ['sourceField' => 'NrRejestracyjny', 'type' => ParameterType::STRING],
+            'org_unit_id' => ['sourceField' => 'org_unit_id', 'type' => ParameterType::INTEGER],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
     }
