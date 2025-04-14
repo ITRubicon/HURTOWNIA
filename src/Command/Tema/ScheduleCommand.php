@@ -77,5 +77,11 @@ class ScheduleCommand extends BaseApiCommand
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
     }
 
-    protected function clearTable() {}
+    protected function clearTable()
+    {
+        $this->repo->clearTable();
+        $this->reservationRepo->clearTable();
+        $this->resourcesRepo->clearTable();
+        $this->resourcesAvailabilityRepo->clearTable();
+    }
 }
