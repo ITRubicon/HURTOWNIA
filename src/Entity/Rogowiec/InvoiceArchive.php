@@ -52,7 +52,7 @@ class InvoiceArchive
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $platnosci = null;
 
-    #[ORM\Column(length: 22, nullable: true)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $metodaPlatnosci = null;
 
     #[ORM\Column(length: 18, nullable: true)]
