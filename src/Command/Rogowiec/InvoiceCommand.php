@@ -58,7 +58,7 @@ class InvoiceCommand extends BaseApiCommand
             $this->customerInvoiceRepo->archive();
         }
 
-        $customersCodes = array_unique(array_column($fetchedRows['customers'], 'code'));
+        $customersCodes = array_values(array_unique(array_column($fetchedRows['customers'], 'code')));
         $this->customerRepo->fetchByCode($customersCodes);
         unset($fetchedRows['customers']);
         
