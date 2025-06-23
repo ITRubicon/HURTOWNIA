@@ -46,6 +46,37 @@ class CustomerRepository extends IApiRepository
         ];
     }
 
+    public function fetchByCode(array $customersCodes): array
+    {
+        $this->clearDataArrays();
+        $codesCount = count($customersCodes);
+        $i = 0;
+
+        for ($i = 0; $i < $codesCount; $i++) {
+            echo "\nKlient " . $i + 1 . "/$codesCount";
+            $url = str_replace('{code}', $customersCodes[$i], $this->endpoint);
+            $res = $this->fetchApiResult($url);
+            if (empty($res['code']))
+                continue;
+            $this->collectFeature($res, 'addresses');
+            $this->collectFeature($res, 'emails');
+            $this->collectFeature($res, 'phones');
+            $this->collectFeature($res, 'dataProcessingStatements');
+            array_push($this->fetchResult, $res);
+            unset($customersCodes[$i]);
+            $this->save();
+            $this->fetchResult = [];
+        }
+
+        return [
+            'fetched' => $codesCount,
+            'emails' => $this->emails,
+            'phones' => $this->phones,
+            'addresses' => $this->addresses,
+            'rodo' => $this->dataProcessingStatements,
+        ];
+    }
+
     public function archive()
     {
         $q = "INSERT INTO rogowiec_customer_archive (source, code, name, first_name, last_name, tax_number, personal_id, busines_number, kind)

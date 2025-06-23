@@ -37,9 +37,12 @@ class InvoiceRepository extends IApiRepository
             $this->fetchResult = [];
         }
 
+        $uniqueCustomerCodes = array_column($this->customers, 'fetchByCode');
+        $this->customers = array_values(array_unique($uniqueCustomerCodes, SORT_REGULAR));  
+
         return [
             'fetched' => $invoicesIdsCount,
-            'customers' => $this->customers
+            'customersCodes' => $this->customers
         ];
     }
 
