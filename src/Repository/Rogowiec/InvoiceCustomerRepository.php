@@ -17,6 +17,25 @@ class InvoiceCustomerRepository extends IApiRepository
         $this->clearDataArrays();
     }
 
+    public function archive()
+    {
+        $q = "INSERT INTO rogowiec_invoice_customer_archive (customer_code, name, first_name, last_name, tax_number, personal_id, busines_number, kind, customer_kind, invoice_id, source)
+            SELECT customer_code, name, first_name, last_name, tax_number, personal_id, busines_number, kind, customer_kind, invoice_id, source
+            FROM rogowiec_invoice_customer ric WHERE source = :source
+                ON duplicate KEY UPDATE
+                customer_code = ric.customer_code,
+                name = ric.name,
+                first_name = ric.first_name,
+                last_name = ric.last_name,
+                tax_number = ric.tax_number,
+                personal_id = ric.personal_id,
+                busines_number = ric.busines_number,
+                kind = ric.kind,
+                customer_kind = ric.customer_kind
+        ";
+        $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
+    }
+
     protected function getFieldsParams(): array
     {
         return [
