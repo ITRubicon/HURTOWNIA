@@ -43,4 +43,7 @@ class Invoice
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $platnosci = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $worker = null;
 }

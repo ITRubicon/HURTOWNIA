@@ -49,14 +49,14 @@ class InvoiceRepository extends IApiRepository
     public function archive()
     {
         $q = "INSERT INTO rogowiec_invoice_archive (id, source, `number`, doc_date, sale_date, currency, net_value, gross_value, corrected_no, worker)
-            SELECT id, source, `number`, doc_date, sale_date, currency, net_value, gross_value, corrected_no, issuedBy
+            SELECT id, source, `number`, doc_date, sale_date, currency, net_value, gross_value, corrected_no, worker
             FROM rogowiec_invoice ri WHERE source = :source
                 ON duplicate KEY UPDATE
                 id = ri.id,
                 net_value = ri.net_value,
                 gross_value = ri.gross_value,
                 corrected_no = ri.corrected_no,
-                worker = ri.issuedBy
+                worker = ri.worker
         ";
         $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
 
@@ -173,6 +173,7 @@ class InvoiceRepository extends IApiRepository
             'currency' => ['sourceField' => 'currency', 'type' => ParameterType::STRING],
             'net_value' => ['sourceField' => 'netValue', 'type' => ParameterType::STRING],
             'gross_value' => ['sourceField' => 'grossValue', 'type' => ParameterType::STRING],
+            'worker' => ['sourceField' => 'issuedBy', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
     }
