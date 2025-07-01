@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\Table;
 #[Table(name: 'tema_car')]
 #[Index(name: "source_idx", fields: ["source"])]
 #[Index(name: "source_vin_idx", fields: ["source", "vin"])]
+#[Index(name: "vin_idx", fields: ["vin"])]
 class Car
 {
     #[ORM\Id]
