@@ -52,7 +52,7 @@ class AgeingPartsRepository extends IApiRepository
     private function fetchBranchId()
     {
         
-        $q = "SELECT dms_id FROM rogowiec_org_unit rou WHERE source = :source AND rodzaj LIKE 'Magazyn cz%'";
+        $q = "SELECT dms_id FROM rogowiec_org_unit rou WHERE source = :source AND (rodzaj LIKE 'Magazyn cz%' OR rodzaj LIKE 'Magazyn narz%')";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
