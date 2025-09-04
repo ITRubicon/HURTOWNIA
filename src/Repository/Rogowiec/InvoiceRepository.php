@@ -21,7 +21,6 @@ class InvoiceRepository extends IApiRepository
         $invoicesIdsToFetch = array_values(array_diff($invoicesIds, $invoicesArchived));
 
         $invoicesIdsCount = count($invoicesIdsToFetch);
-        $this->clearDataArrays();
 
         for ($i = 0; $i < $invoicesIdsCount; $i++) {
             echo "\nId faktury " . $invoicesIdsToFetch[$i] . " ----> " . $i + 1 . "/$invoicesIdsCount";
