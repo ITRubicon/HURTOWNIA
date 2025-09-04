@@ -69,6 +69,7 @@ class InvoiceCommand extends BaseApiCommand
     protected function clearTable()
     {
         $this->repo->clearTable();
+        $this->customerInvoiceRepo->clearTable();
         $this->customerRepo->clearTable();
     }
 }
