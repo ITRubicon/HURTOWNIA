@@ -136,7 +136,7 @@ class CustomerRepository extends IApiRepository
                     'customer_code' => $customer['code'],
                     'number' => $p['number'],
                     'owner' => $p['owner'],
-                    'is_default' => $p['isDefault'] ?? 0,
+                    'is_default' => (bool) $p['isDefault'],
                 ], [
                     'source' => ParameterType::STRING,
                     'customer_code' => ParameterType::STRING,
@@ -161,7 +161,7 @@ class CustomerRepository extends IApiRepository
                     'customer_code' => $customer['code'],
                     'address' => $e['address'],
                     'owner' => $e['owner'],
-                    'is_default' => $e['isDefault'] ?? 0,
+                    'is_default' => (bool) $e['isDefault'],
                 ], [
                     'source' => ParameterType::STRING,
                     'customer_code' => ParameterType::STRING,

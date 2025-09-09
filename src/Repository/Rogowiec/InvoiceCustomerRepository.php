@@ -67,6 +67,7 @@ class InvoiceCustomerRepository extends IApiRepository
         foreach ($uniqueCustomers as $c) {
             $customer = $this->customerRepo->fetchByCode($c);
             if ($customer) {
+                echo "Znaleziono klienta: {$customer['code']}. Zapisuję...\n";
                 $this->customerRepo->saveCustomer($customer);
             }
         }
