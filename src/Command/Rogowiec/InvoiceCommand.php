@@ -43,8 +43,10 @@ class InvoiceCommand extends BaseApiCommand
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
         $this->repo->setSource($api);
-        $this->customerInvoiceRepo->setSource($api);
         $this->customerRepo->setSource($api);
+        $this->customerInvoiceRepo->setSource($api);
+        $this->customerInvoiceRepo->setCustomerRepository($this->customerRepo);
+        
         $this->repo->setDateFrom($this->cmdArgs['dateFrom']);
         $this->repo->setDateTo($this->cmdArgs['dateTo']);
         
@@ -57,10 +59,6 @@ class InvoiceCommand extends BaseApiCommand
             $this->customerInvoiceRepo->saveCustomers($fetchedRows['customers']);
             $this->customerInvoiceRepo->archive();
         }
-
-        $customersCodes = array_values(array_unique(array_column($fetchedRows['customers'], 'code')));
-        $this->customerRepo->fetchByCode($customersCodes);
-        unset($fetchedRows['customers']);
         
         $io->info('Archiwum faktur');
         $this->repo->archive();

@@ -83,6 +83,7 @@ class InvoiceRepository extends IApiRepository
             $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
         }
 
+        // wymuszanie powiązania faktur z kodem wg kolejności: Recipient, ExternalPayment, Buyer, Dealer
         $q = "UPDATE rogowiec_invoice_archive i
             JOIN rogowiec_invoice_customer_archive c ON c.source = :source AND c.invoice_id = i.id AND ISNULL(i.customer_code) AND c.customer_kind = 'Recipient'
             SET i.customer_code = c.customer_code

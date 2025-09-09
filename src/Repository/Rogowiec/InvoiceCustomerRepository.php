@@ -7,12 +7,19 @@ use Doctrine\DBAL\ParameterType;
 
 class InvoiceCustomerRepository extends IApiRepository
 {
+    private $customerRepo;
     protected $table = 'rogowiec_invoice_customer';
+
+    public function setCustomerRepository($CustomerRepository)
+    {
+        $this->customerRepo = $CustomerRepository;
+    }
 
     public function saveCustomers(array $customers)
     {
         $this->clearDataArrays();
         $this->fetchResult = $customers;
+        $this->fetchCustomerData($customers);
         $this->save();
         $this->clearDataArrays();
     }
@@ -51,5 +58,17 @@ class InvoiceCustomerRepository extends IApiRepository
             'invoice_id' => ['sourceField' => 'invoice_id', 'type' => ParameterType::INTEGER],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
+    }
+
+    private function fetchCustomerData(array $customers)
+    {
+        $uniqueCustomers = array_unique(array_column($customers, 'code'));
+        
+        foreach ($uniqueCustomers as $c) {
+            $customer = $this->customerRepo->fetchByCode($c);
+            if ($customer) {
+                $this->customerRepo->saveCustomer($customer);
+            }
+        }
     }
 }
