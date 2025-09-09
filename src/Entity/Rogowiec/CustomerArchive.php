@@ -47,6 +47,6 @@ class CustomerArchive
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $kind;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
     private ?\DateTimeInterface $fetchDate = null;
 }

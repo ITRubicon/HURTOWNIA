@@ -40,6 +40,6 @@ class CustomerRodoArchive
     #[ORM\Column(type: 'json', nullable: true)]
     private ?array $consents;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
     private ?\DateTimeInterface $fetchDate = null;
 }
