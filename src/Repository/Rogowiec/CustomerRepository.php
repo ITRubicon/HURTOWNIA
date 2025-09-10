@@ -67,7 +67,8 @@ class CustomerRepository extends IApiRepository
                 tax_number = VALUES(tax_number),
                 personal_id = VALUES(personal_id),
                 busines_number = VALUES(busines_number),
-                kind = VALUES(kind)
+                kind = VALUES(kind),
+                fetchDate = NOW()
         ";
         $this->db->executeQuery($q, [
             'source' => $this->source->getName(),
@@ -100,7 +101,8 @@ class CustomerRepository extends IApiRepository
                         city = VALUES(city),
                         street = VALUES(street),
                         postal_code = VALUES(postal_code),
-                        `number` = VALUES(`number`)
+                        `number` = VALUES(`number`),
+                        fetchDate = NOW()
                 ";
                 $this->db->executeQuery($q, [
                     'source' => $this->source->getName(),
@@ -129,7 +131,8 @@ class CustomerRepository extends IApiRepository
                         ON DUPLICATE KEY UPDATE
                         `number` = VALUES(`number`),
                         owner = VALUES(owner),
-                        is_default = VALUES(is_default)
+                        is_default = VALUES(is_default),
+                        fetchDate = NOW()
                 ";
                 $this->db->executeQuery($q, [
                     'source' => $this->source->getName(),
@@ -154,7 +157,8 @@ class CustomerRepository extends IApiRepository
                         ON DUPLICATE KEY UPDATE
                         address = VALUES(address),
                         owner = VALUES(owner),
-                        is_default = VALUES(is_default)
+                        is_default = VALUES(is_default),
+                        fetchDate = NOW()
                 ";
                 $this->db->executeQuery($q, [
                     'source' => $this->source->getName(),
@@ -179,7 +183,8 @@ class CustomerRepository extends IApiRepository
                         ON DUPLICATE KEY UPDATE
                         statement = VALUES(statement),
                         date_statement = VALUES(date_statement),
-                        method_statement = VALUES(method_statement)
+                        method_statement = VALUES(method_statement),
+                        fetchDate = NOW()
                 ";
                 $this->db->executeQuery($q, [
                     'source' => $this->source->getName(),
@@ -209,7 +214,8 @@ class CustomerRepository extends IApiRepository
                 tax_number = r.tax_number,
                 personal_id = r.personal_id,
                 busines_number = r.busines_number,
-                kind = r.kind
+                kind = r.kind,
+                fetchDate = NOW()
         ";
         $this->db->executeQuery($q);
 
@@ -220,7 +226,8 @@ class CustomerRepository extends IApiRepository
                 city = r.city,
                 street = r.street,
                 postal_code = r.postal_code,
-                number = r.number
+                number = r.number,
+                fetchDate = NOW()
         ";
         $this->db->executeQuery($q);
 
@@ -229,7 +236,8 @@ class CustomerRepository extends IApiRepository
                 ON DUPLICATE KEY UPDATE
                 address = r.address,
                 owner = r.owner,
-                is_default = r.is_default
+                is_default = r.is_default,
+                fetchDate = NOW()
         ";
         $this->db->executeQuery($q);
 
@@ -238,7 +246,8 @@ class CustomerRepository extends IApiRepository
                 ON DUPLICATE KEY UPDATE
                 number = r.number,
                 owner = r.owner,
-                is_default = r.is_default
+                is_default = r.is_default,
+                fetchDate = NOW()
         ";
         $this->db->executeQuery($q);
     }
