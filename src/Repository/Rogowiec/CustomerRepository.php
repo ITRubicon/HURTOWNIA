@@ -276,7 +276,7 @@ class CustomerRepository extends IApiRepository
                 SELECT DISTINCT customer_code FROM rogowiec_invoice_archive WHERE source = :source
             ) uq
             WHERE kod_klienta != ''
-            -- AND kod_klienta NOT IN (SELECT code FROM rogowiec_customer_archive WHERE source = :source)
+            AND kod_klienta NOT IN (SELECT code FROM rogowiec_customer_archive WHERE source = :source)
         ";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
