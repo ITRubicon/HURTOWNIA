@@ -2,6 +2,7 @@
 
 namespace App\Entity\Rogowiec;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
@@ -38,4 +39,7 @@ class CustomerAddressArchive
 
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $number = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
+    private ?\DateTimeInterface $fetchDate = null;
 }
