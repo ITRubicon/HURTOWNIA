@@ -10,6 +10,23 @@ class FvzCorrectionItemRepository extends IApiRepository
     private string $endpoint = '/api/dms/v1/purchase-invoice-corrections/{branchId}/{correctionId}';
     protected $table = 'tema_fvz_correction_document_item';
 
+    protected $onDuplicateClause = 'ON DUPLICATE KEY UPDATE
+        product_id = VALUES(product_id),
+        name = VALUES(name),
+        quantity = VALUES(quantity),
+        original_quantity = VALUES(original_quantity),
+        corrected_quantity_difference = VALUES(corrected_quantity_difference),
+        net_price = VALUES(net_price),
+        original_net_price = VALUES(original_net_price),
+        corrected_price_difference = VALUES(corrected_price_difference),
+        tax_rate = VALUES(tax_rate),
+        is_exempt = VALUES(is_exempt),
+        net_value = VALUES(net_value),
+        car_id = VALUES(car_id),
+        vin = VALUES(vin),
+        income_type = VALUES(income_type)
+    ';
+
     public function saveItems(array $items): int
     {
         $this->clearDataArrays();
