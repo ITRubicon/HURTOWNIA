@@ -45,6 +45,6 @@ class FvPaymentCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->docRepo->clearTable();
+        // $this->docRepo->clearTable();
     }
 }

@@ -9,12 +9,20 @@ class FvPaymentRepository extends IApiRepository
 {
     private string $endpoint = '/api/dms/v1/sales-invoices/{branchId}/{invoiceId}/status';
     protected $table = 'tema_fv_payment';
+    protected $onDuplicateClause = 'ON DUPLICATE KEY UPDATE
+        document_payment_status = VALUES(document_payment_status),
+        document_value = VALUES(document_value),
+        document_payment_value = VALUES(document_payment_value)
+    ';
 
     public function fetch(): array
     {
         $this->clearDataArrays();
+        $genCount = iterator_count($this->documentIds());
+        echo "\nPobieram zapisy płatności dla $genCount dokumentów";
 
-        foreach ($this->documentIds() as $row) {
+        foreach ($this->documentIds() as $i => $row) {
+            echo "\nDokument ----> $i/$genCount";
             if (empty($row['doc_id']) || empty($row['branch']))
                 continue;
 

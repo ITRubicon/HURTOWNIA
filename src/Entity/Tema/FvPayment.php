@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity()]
 #[ORM\Table(name: 'tema_fv_payment')]
+#[ORM\UniqueConstraint(name: "source_docId_paymentDocumentId_customerId_uniq", fields: ["source", "docId", "paymentDocumentId", "customerId"])]
 #[ORM\Index(name: "source_docId_idx", fields: ["source", "docId"])]
 #[ORM\Index(name: "source_customerId_idx", fields: ["source", "customerId"])]
 class FvPayment
