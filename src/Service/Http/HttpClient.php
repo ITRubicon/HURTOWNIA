@@ -19,7 +19,7 @@ class HttpClient
     ];
     private $timer;
     private const MAX_ATTEMPTS = 3;
-    private const WAIT_TIME_STEP = 1;
+    private const WAIT_TIME_STEP = 10; // seconds
     private $tryColors = [
         "\033[0;32m", // green
         "\033[0;33m", // yellow
