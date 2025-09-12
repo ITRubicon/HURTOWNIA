@@ -50,7 +50,7 @@ class PrepaymentCorrectionDocumentCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->docRepo->clearTable();
-        $this->itemRepo->clearTable();
+        // $this->docRepo->clearTable();
+        // $this->itemRepo->clearTable();
     }
 }

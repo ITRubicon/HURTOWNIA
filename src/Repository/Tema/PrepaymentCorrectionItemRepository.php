@@ -7,6 +7,14 @@ use Doctrine\DBAL\ParameterType;
 
 class PrepaymentCorrectionItemRepository extends IApiRepository
 {
+    protected $onDuplicateClause = 'ON DUPLICATE KEY UPDATE
+        product_id = VALUES(product_id),
+        name = VALUES(name),
+        quantity = VALUES(quantity),
+        gross_price = VALUES(gross_price),
+        tax_rate = VALUES(tax_rate),
+        is_exempt = VALUES(is_exempt)
+    ';
     private string $endpoint = '/api/dms/v1/prepayment-invoice-corrections/{branchId}/{invoiceId}';
     protected $table = 'tema_prepayment_correction_item';
 
