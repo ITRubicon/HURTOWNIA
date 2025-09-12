@@ -9,6 +9,19 @@ class FvItemRepository extends IApiRepository
 {
     private string $endpoint = '/api/dms/v1/sales-invoices/{branchId}/{invoiceId}';
     protected $table = 'tema_fv_document_item';
+    protected $onDuplicateClause = 'ON DUPLICATE KEY UPDATE
+        product_id = VALUES(product_id),
+        name = VALUES(name),
+        quantity = VALUES(quantity),
+        net_price = VALUES(net_price),
+        purchase_price = VALUES(purchase_price),
+        percentage_share = VALUES(percentage_share),
+        unit = VALUES(unit),
+        tax_rate = VALUES(tax_rate),
+        is_exempt = VALUES(is_exempt),
+        set_product_id = VALUES(set_product_id),
+        set_products = VALUES(set_products),
+    ';
 
     public function saveItems(array $items): int
     {
