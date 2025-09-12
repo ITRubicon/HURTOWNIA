@@ -20,7 +20,7 @@ class FvItemRepository extends IApiRepository
         tax_rate = VALUES(tax_rate),
         is_exempt = VALUES(is_exempt),
         set_product_id = VALUES(set_product_id),
-        set_products = VALUES(set_products),
+        set_products = VALUES(set_products)
     ';
 
     public function saveItems(array $items): int
