@@ -88,6 +88,86 @@ class HttpClient
             $this->timer->stop();
     }
 
+    public function requestMulti(IConnection $apiConn, array $paths): array
+    {
+        $this->setParams($apiConn);
+        $results = [];
+        $attempts = [];
+        $maxAttempts = self::MAX_ATTEMPTS;
+
+        // Initialize attempts
+        foreach ($paths as $key => $path) {
+            $attempts[$key] = 1;
+        }
+
+        $pending = $paths;
+
+        while (!empty($pending)) {
+            $this->timer->start(); // Start timing the batch
+
+            $multiHandle = curl_multi_init();
+            $handles = [];
+
+            // Prepare handles for pending requests
+            foreach ($pending as $key => $path) {
+                echo PHP_EOL . $this->baseUrl . $path;
+                echo PHP_EOL . $this->tryColors[$attempts[$key] - 1] . "Próba " . $attempts[$key] . "\033[0m" . PHP_EOL;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $this->baseUrl . $path);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $this->httpHeader);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 300);
+                curl_multi_add_handle($multiHandle, $ch);
+                $handles[$key] = $ch;
+            }
+
+            // Execute all requests
+            $running = null;
+            do {
+                curl_multi_exec($multiHandle, $running);
+                curl_multi_select($multiHandle);
+            } while ($running > 0);
+
+            // Collect results and determine which need retry
+            $nextPending = [];
+            foreach ($handles as $key => $ch) {
+                $content = curl_multi_getcontent($ch);
+                $error = curl_errno($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+                if ($content === false || $error || $httpCode >= 500 || empty($content)) {
+                    if ($attempts[$key] < $maxAttempts) {
+                        $attempts[$key]++;
+                        $nextPending[$key] = $paths[$key];
+                    } else {
+                        $results[$key] = $content; // Save whatever we got (could be false)
+                    }
+                } else {
+                    $results[$key] = $content;
+                }
+                curl_multi_remove_handle($multiHandle, $ch);
+                curl_close($ch);
+            }
+            curl_multi_close($multiHandle);
+
+            $this->timer->stop(); // Stop timing the batch
+            echo "\nCzas batcha: " . $this->timer->getInterval() . "s\n";
+
+            if (!empty($nextPending)) {
+                sleep(self::WAIT_TIME_STEP); // Wait before retrying
+            }
+            $pending = $nextPending;
+        }
+
+        // Ensure results are in the same order as input
+        ksort($results);
+
+        return $results;
+    }
+
     public function getRequestTime()
     {
         return $this->timer->getInterval();

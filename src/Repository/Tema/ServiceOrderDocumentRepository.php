@@ -10,6 +10,7 @@ class ServiceOrderDocumentRepository extends IApiRepository
     private string $endpoint = '/api/dms/v1/repair-orders/{branchId}';
     private $documentEndpoints = [];
     protected $table = 'tema_service_order_document';
+    private const BATCH_SIZE = 10; // Number of simultaneous requests per batch
 
     public function fetch(): array
     {
@@ -21,34 +22,43 @@ class ServiceOrderDocumentRepository extends IApiRepository
         $endDocuments = [];
         $cars = [];
 
-
         if ($listCount) {
             echo "\nPobieram zapisy dokumentów";
 
-            for ($i = 0; $i < $listCount; $i++) {
-                echo "\nEndpoint ----> $i/$listCount";
-                $doc = $this->fetchApiResult($this->documentEndpoints[$i]['getUrl']);
-                unset($this->documentEndpoints[$i]);
+            $totalBatches = (int)ceil($listCount / self::BATCH_SIZE);
 
-                if (empty($doc))
-                    continue;
+            for ($i = 0; $i < $listCount; $i += self::BATCH_SIZE) {
+                $batchNumber = (int)($i / self::BATCH_SIZE) + 1;
+                echo "\nBatch $batchNumber / $totalBatches";
 
-                $this->collectItems($doc, $documentItems);
-                $this->collectEndDocuments($doc, $endDocuments);
-                $this->collectCar($doc, $cars);
-                array_push($this->fetchResult, $doc);
+                $batchEndpoints = array_slice($this->documentEndpoints, $i, self::BATCH_SIZE);
+                $urls = array_column($batchEndpoints, 'getUrl');
 
-                if (count($this->fetchResult) >= $this->fetchLimit) {
-                    $this->save();
-                    $this->fetchResult = [];
-                    $this->relatedRepositories['items']->saveItems($documentItems);
-                    $documentItems = [];
-                    $this->relatedRepositories['endDocs']->saveDocs($endDocuments);
-                    $endDocuments = [];
-                    $this->relatedRepositories['cars']->saveCars($cars);
-                    $cars = [];
+                // Fetch multiple endpoints in parallel
+                $docs = $this->httpClient->requestMulti($this->source, $urls);
 
-                    gc_collect_cycles();
+                foreach ($docs as $docRaw) {
+                    $doc = $this->decodeResponseFromRaw($docRaw);
+                    if (empty($doc))
+                        continue;
+
+                    $this->collectItems($doc, $documentItems);
+                    $this->collectEndDocuments($doc, $endDocuments);
+                    $this->collectCar($doc, $cars);
+                    array_push($this->fetchResult, $doc);
+
+                    if (count($this->fetchResult) >= $this->fetchLimit) {
+                        $this->save();
+                        $this->fetchResult = [];
+                        $this->relatedRepositories['items']->saveItems($documentItems);
+                        $documentItems = [];
+                        $this->relatedRepositories['endDocs']->saveDocs($endDocuments);
+                        $endDocuments = [];
+                        $this->relatedRepositories['cars']->saveCars($cars);
+                        $cars = [];
+
+                        gc_collect_cycles();
+                    }
                 }
             }
 
@@ -60,13 +70,22 @@ class ServiceOrderDocumentRepository extends IApiRepository
             unset($endDocuments);
             $this->relatedRepositories['cars']->saveCars($cars);
             unset($cars);
-            
+
             gc_collect_cycles();
         }
 
         return [
             'fetched' => $listCount,
         ];
+    }
+
+    // Helper to decode raw response (since fetchApiResult is not used directly)
+    private function decodeResponseFromRaw($raw): array
+    {
+        if (str_contains($raw, 'Us³ugaPunktSprzedazy')) {
+            $raw = preg_replace('/Us³ugaPunktSprzedazy/', 'UsługaPunktSprzedazy', $raw);
+        }
+        return json_decode($raw, true) ?? [];
     }
 
     private function getDocumentEndpointList()
