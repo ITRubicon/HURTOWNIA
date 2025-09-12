@@ -15,43 +15,66 @@ class FvzDocumentRepository extends IApiRepository
     {
         $this->clearDataArrays();
         $this->getDocumentEndpointList();
-        $listCount = count($this->documentEndpoints);
-        $documentItems = [];
+            $this->filterOutPossessed();
 
-        if ($listCount) {
-            echo "\nPobieram zapisy dokumentów";
+            $listCount = count($this->documentEndpoints);
+            $documentItems = [];
 
-            for ($i=0; $i < $listCount; $i++) { 
-                echo "\nEndpoint ----> $i/$listCount";
-                $doc = $this->fetchApiResult($this->documentEndpoints[$i]['getUrl']);
-                unset($this->documentEndpoints[$i]);
+            if ($listCount) {
+                echo "\nPobieram zapisy dokumentów";
 
-                if (empty($doc))
-                    continue;
+                for ($i=0; $i < $listCount; $i++) {
+                    echo "\nEndpoint ----> $i/$listCount";
+                    $doc = $this->fetchApiResult($this->documentEndpoints[$i]['getUrl']);
+                    unset($this->documentEndpoints[$i]);
 
-                $this->collectItems($doc, $documentItems);
-                array_push($this->fetchResult, $doc);
-                unset($doc);
+                    if (empty($doc))
+                        continue;
 
-                if (count($this->fetchResult) >= $this->fetchLimit) {
-                    $this->save();
-                    $this->fetchResult = [];
-                    $this->relatedRepositories['items']->saveItems($documentItems);
-                    $documentItems = [];
+                    $this->collectItems($doc, $documentItems);
+                    array_push($this->fetchResult, $doc);
+                    unset($doc);
 
-                    gc_collect_cycles();
+                    if (count($this->fetchResult) >= $this->fetchLimit) {
+                        $this->save();
+                        $this->fetchResult = [];
+                        $this->relatedRepositories['items']->saveItems($documentItems);
+                        $documentItems = [];
+
+                        gc_collect_cycles();
+                    }
                 }
+
+                $this->save();
+                $this->fetchResult = [];
+                $this->relatedRepositories['items']->saveItems($documentItems);
+                unset($documentItems);
             }
 
-            $this->save();
-            $this->fetchResult = [];
-            $this->relatedRepositories['items']->saveItems($documentItems);
-            unset($documentItems);
-        }
+            return [
+                'fetched' => $listCount,
+            ];
+    }
 
-        return [
-            'fetched' => $listCount,
-        ];
+        private function filterOutPossessed()
+    {
+        $possessed = $this->db->fetchFirstColumn("SELECT doc_id FROM {$this->table} WHERE source = :source", ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
+
+        echo PHP_EOL . 'Możliwe do pobrania dokumenty: ' . count($this->documentEndpoints) . "\033[0m" . PHP_EOL;
+        echo PHP_EOL . 'Posiadane dokumenty: ' . count($possessed) . "\033[0m" . PHP_EOL;
+
+        if (!empty($possessed)) {
+            $this->documentEndpoints = array_filter($this->documentEndpoints, function($doc) use ($possessed) {
+                // $doc['getUrl'] is like /api/dms/v1/purchase-invoice-corrections/{branchId}/{objectId}
+                // Extract objectId from getUrl
+                $parts = explode('/', $doc['getUrl']);
+                $objectId = end($parts);
+                return !in_array($objectId, $possessed);
+            });
+            // reset keys
+            $this->documentEndpoints = array_values($this->documentEndpoints);
+        }
+        echo PHP_EOL . 'Do pobrania dokumenty: ' . count($this->documentEndpoints) . "\033[0m" . PHP_EOL;
     }
 
     private function getDocumentEndpointList()

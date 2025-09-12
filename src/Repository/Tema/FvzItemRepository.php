@@ -9,6 +9,14 @@ class FvzItemRepository extends IApiRepository
 {
     private string $endpoint = '/api/dms/v1/purchase-invoices/{branchId}/{invoiceId}';
     protected $table = 'tema_fvz_document_item';
+    protected $onDuplicateClause = 'ON DUPLICATE KEY UPDATE 
+        product_id = VALUES(product_id),
+        name = VALUES(name),
+        quantity = VALUES(quantity),
+        net_price = VALUES(net_price),
+        tax_rate = VALUES(tax_rate),
+        is_exempt = VALUES(is_exempt)
+    ';
 
     public function saveItems(array $items): int
     {
