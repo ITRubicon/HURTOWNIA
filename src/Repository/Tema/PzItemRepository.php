@@ -7,6 +7,14 @@ use Doctrine\DBAL\ParameterType;
 
 class PzItemRepository extends IApiRepository
 {
+    protected $onDuplicateClause = 'ON DUPLICATE KEY UPDATE
+        product_id = VALUES(product_id),
+        name = VALUES(name),
+        quantity = VALUES(quantity),
+        net_price = VALUES(net_price),
+        tax_rate = VALUES(tax_rate),
+        is_exempt = VALUES(is_exempt)
+    ';
     private string $endpoint = '/api/dms/v1/grns/{branchId}/{gdnId}';
     protected $table = 'tema_pz_item';
 

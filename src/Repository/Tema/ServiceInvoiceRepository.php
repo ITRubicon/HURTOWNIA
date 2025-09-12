@@ -15,6 +15,7 @@ class ServiceInvoiceRepository extends IApiRepository
     {
         $this->clearDataArrays();
         $this->getDocumentEndpointList();
+        $this->filterOutPossessed();
         $listCount = count($this->documentEndpoints);
         $documentItems = [];
 
@@ -51,6 +52,24 @@ class ServiceInvoiceRepository extends IApiRepository
         return [
             'fetched' => $listCount,
         ];
+    }
+
+    private function filterOutPossessed()
+    {
+        $possessed = $this->db->fetchFirstColumn("SELECT doc_id FROM {$this->table} WHERE source = :source", ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
+
+        echo PHP_EOL . 'Możliwe do pobrania dokumenty: ' . count($this->documentEndpoints) . "\033[0m" . PHP_EOL;
+        echo PHP_EOL . 'Posiadane dokumenty: ' . count($possessed) . "\033[0m" . PHP_EOL;
+
+        if (!empty($possessed)) {
+            $this->documentEndpoints = array_filter($this->documentEndpoints, function($doc) use ($possessed) {
+                $parts = explode('/', $doc['getUrl']);
+                $objectId = end($parts);
+                return !in_array($objectId, $possessed);
+            });
+            $this->documentEndpoints = array_values($this->documentEndpoints);
+        }
+        echo PHP_EOL . 'Do pobrania dokumenty: ' . count($this->documentEndpoints) . "\033[0m" . PHP_EOL;
     }
 
     private function getDocumentEndpointList()
