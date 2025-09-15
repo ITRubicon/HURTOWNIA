@@ -15,48 +15,48 @@ class FvzDocumentRepository extends IApiRepository
     {
         $this->clearDataArrays();
         $this->getDocumentEndpointList();
-            $this->filterOutPossessed();
+        $this->filterOutPossessed();
 
-            $listCount = count($this->documentEndpoints);
-            $documentItems = [];
+        $listCount = count($this->documentEndpoints);
+        $documentItems = [];
 
-            if ($listCount) {
-                echo "\nPobieram zapisy dokumentów";
+        if ($listCount) {
+            echo "\nPobieram zapisy dokumentów";
 
-                for ($i=0; $i < $listCount; $i++) {
-                    echo "\nEndpoint ----> $i/$listCount";
-                    $doc = $this->fetchApiResult($this->documentEndpoints[$i]['getUrl']);
-                    unset($this->documentEndpoints[$i]);
+            for ($i = 0; $i < $listCount; $i++) {
+                echo "\nEndpoint ----> $i/$listCount";
+                $doc = $this->fetchApiResult($this->documentEndpoints[$i]['getUrl']);
+                unset($this->documentEndpoints[$i]);
 
-                    if (empty($doc))
-                        continue;
+                if (empty($doc))
+                    continue;
 
-                    $this->collectItems($doc, $documentItems);
-                    array_push($this->fetchResult, $doc);
-                    unset($doc);
+                $this->collectItems($doc, $documentItems);
+                array_push($this->fetchResult, $doc);
+                unset($doc);
 
-                    if (count($this->fetchResult) >= $this->fetchLimit) {
-                        $this->save();
-                        $this->fetchResult = [];
-                        $this->relatedRepositories['items']->saveItems($documentItems);
-                        $documentItems = [];
+                if (count($this->fetchResult) >= $this->fetchLimit) {
+                    $this->save();
+                    $this->fetchResult = [];
+                    $this->relatedRepositories['items']->saveItems($documentItems);
+                    $documentItems = [];
 
-                        gc_collect_cycles();
-                    }
+                    gc_collect_cycles();
                 }
-
-                $this->save();
-                $this->fetchResult = [];
-                $this->relatedRepositories['items']->saveItems($documentItems);
-                unset($documentItems);
             }
 
-            return [
-                'fetched' => $listCount,
-            ];
+            $this->save();
+            $this->fetchResult = [];
+            $this->relatedRepositories['items']->saveItems($documentItems);
+            unset($documentItems);
+        }
+
+        return [
+            'fetched' => $listCount,
+        ];
     }
 
-        private function filterOutPossessed()
+    private function filterOutPossessed()
     {
         $possessed = $this->db->fetchFirstColumn("SELECT doc_id FROM {$this->table} WHERE source = :source", ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
 
@@ -71,7 +71,7 @@ class FvzDocumentRepository extends IApiRepository
             //     }
             // ]
 
-            $this->documentEndpoints = array_filter($this->documentEndpoints, function($doc) use ($possessed) {
+            $this->documentEndpoints = array_filter($this->documentEndpoints, function ($doc) use ($possessed) {
                 return !in_array($doc['objectId'], $possessed);
             });
             // reset keys
@@ -100,7 +100,7 @@ class FvzDocumentRepository extends IApiRepository
 
                 $this->documentEndpoints = array_merge($this->documentEndpoints, $res);
             }
-        } else 
+        } else
             throw new \Exception("Nie żadnych . Najpierw uruchom komendę pobierającą listę jednostek organizacyjnych [tema:stock]", 99);
     }
 
@@ -135,7 +135,7 @@ class FvzDocumentRepository extends IApiRepository
 
     private function getStocks()
     {
-        
+
         $q = "SELECT stock_id FROM tema_stock WHERE source = :source";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
