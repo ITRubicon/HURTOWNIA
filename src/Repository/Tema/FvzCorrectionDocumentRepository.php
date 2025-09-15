@@ -22,7 +22,7 @@ class FvzCorrectionDocumentRepository extends IApiRepository
         if ($listCount) {
             echo "\nPobieram zapisy dokumentów";
 
-            for ($i=0; $i < $listCount; $i++) { 
+            for ($i = 0; $i < $listCount; $i++) {
                 echo "\nEndpoint ----> $i/$listCount";
                 $doc = $this->fetchApiResult($this->documentEndpoints[$i]['getUrl']);
                 unset($this->documentEndpoints[$i]);
@@ -39,8 +39,6 @@ class FvzCorrectionDocumentRepository extends IApiRepository
                     $this->fetchResult = [];
                     $this->relatedRepositories['items']->saveItems($documentItems);
                     $documentItems = [];
-
-                    
                 }
             }
 
@@ -48,8 +46,6 @@ class FvzCorrectionDocumentRepository extends IApiRepository
             $this->fetchResult = [];
             $this->relatedRepositories['items']->saveItems($documentItems);
             unset($documentItems);
-
-            
         }
 
         return [
@@ -59,7 +55,7 @@ class FvzCorrectionDocumentRepository extends IApiRepository
 
     private function filterOutPossessed()
     {
-        $possessed = $this->db->fetchFirstColumn("SELECT doc_id FROM {$this->table} WHERE source = :source", ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
+        $possessed = $this->db->fetchFirstColumn("SELECT doc_id FROM $this->table WHERE source = :source", ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
 
         echo PHP_EOL . 'Możliwe do pobrania dokumenty: ' . count($this->documentEndpoints) . "\033[0m" . PHP_EOL;
         echo PHP_EOL . 'Posiadane dokumenty: ' . count($possessed) . "\033[0m" . PHP_EOL;
@@ -71,8 +67,7 @@ class FvzCorrectionDocumentRepository extends IApiRepository
             //         "getUrl": "string"
             //     }
             // ]
-
-            $this->documentEndpoints = array_filter($this->documentEndpoints, function($doc) use ($possessed) {
+            $this->documentEndpoints = array_filter($this->documentEndpoints, function ($doc) use ($possessed) {
                 return !in_array($doc['objectId'], $possessed);
             });
             // reset keys
@@ -96,15 +91,13 @@ class FvzCorrectionDocumentRepository extends IApiRepository
 
                 $url = str_replace('{branchId}', $stock, $this->endpoint);
                 $res = $this->fetchApiResult($url);
-                
+
                 if (empty($res))
                     continue;
 
-                foreach ($res as $r) {
-                    $this->documentEndpoints[] = ['getUrl' => $url . '/' .$r['objectId']];   
-                }
+                $this->documentEndpoints = array_merge($this->documentEndpoints, $res);
             }
-        } else 
+        } else
             throw new \Exception("Nie żadnych . Najpierw uruchom komendę pobierającą listę jednostek organizacyjnych [tema:stock]", 99);
     }
 
@@ -137,7 +130,7 @@ class FvzCorrectionDocumentRepository extends IApiRepository
 
     private function getStocks()
     {
-        
+
         $q = "SELECT stock_id FROM tema_stock WHERE source = :source";
         return $this->db->fetchFirstColumn($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
