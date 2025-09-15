@@ -66,10 +66,11 @@ class PrepaymentDocumentRepository extends IApiRepository
 
         if (!empty($possessed)) {
             $this->documentEndpoints = array_filter($this->documentEndpoints, function($doc) use ($possessed) {
-                $parts = explode('/', $doc['getUrl']);
-                $objectId = end($parts);
-                return !in_array($objectId, $possessed);
+                // $doc['getUrl'] is like /api/dms/v1/purchase-invoice-corrections/{branchId}/{objectId}
+                // Extract objectId from getUrl
+                return !in_array($doc['objectId'], $possessed);
             });
+            // reset keys
             $this->documentEndpoints = array_values($this->documentEndpoints);
         }
         echo PHP_EOL . 'Do pobrania dokumenty: ' . count($this->documentEndpoints) . "\033[0m" . PHP_EOL;

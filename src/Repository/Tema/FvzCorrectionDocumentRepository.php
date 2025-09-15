@@ -65,12 +65,15 @@ class FvzCorrectionDocumentRepository extends IApiRepository
         echo PHP_EOL . 'Posiadane dokumenty: ' . count($possessed) . "\033[0m" . PHP_EOL;
 
         if (!empty($possessed)) {
+            // [
+            //     {
+            //         "objectId": "string",
+            //         "getUrl": "string"
+            //     }
+            // ]
+
             $this->documentEndpoints = array_filter($this->documentEndpoints, function($doc) use ($possessed) {
-                // $doc['getUrl'] is like /api/dms/v1/purchase-invoice-corrections/{branchId}/{objectId}
-                // Extract objectId from getUrl
-                $parts = explode('/', $doc['getUrl']);
-                $objectId = end($parts);
-                return !in_array($objectId, $possessed);
+                return !in_array($doc['objectId'], $possessed);
             });
             // reset keys
             $this->documentEndpoints = array_values($this->documentEndpoints);

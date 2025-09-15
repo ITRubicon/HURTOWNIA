@@ -68,9 +68,11 @@ class FvDocumentRepository extends IApiRepository
         echo PHP_EOL . 'Posiadane dokumenty: ' . count($possessed) . "\033[0m" . PHP_EOL;
 
         if (!empty($possessed)) {
-            // array:2 [
-            // "objectId" => "FV1100000109"
-            // "getUrl" => "/api/dms/v1/sales-invoices/11/FV1100000109"
+            // [
+            //     {
+            //         "objectId": "string",
+            //         "getUrl": "string"
+            //     }
             // ]
 
             $this->documentEndpoints = array_filter($this->documentEndpoints, function($doc) use ($possessed) {
