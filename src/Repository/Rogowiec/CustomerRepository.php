@@ -68,7 +68,7 @@ class CustomerRepository extends IApiRepository
                 personal_id = VALUES(personal_id),
                 busines_number = VALUES(busines_number),
                 kind = VALUES(kind),
-                fetchDate = NOW()
+                fetch_date = NOW()
         ";
         $this->db->executeQuery($q, [
             'source' => $this->source->getName(),
@@ -102,7 +102,7 @@ class CustomerRepository extends IApiRepository
                         street = VALUES(street),
                         postal_code = VALUES(postal_code),
                         `number` = VALUES(`number`),
-                        fetchDate = NOW()
+                        fetch_date = NOW()
                 ";
                 $this->db->executeQuery($q, [
                     'source' => $this->source->getName(),
@@ -132,7 +132,7 @@ class CustomerRepository extends IApiRepository
                         `number` = VALUES(`number`),
                         owner = VALUES(owner),
                         is_default = VALUES(is_default),
-                        fetchDate = NOW()
+                        fetch_date = NOW()
                 ";
                 $this->db->executeQuery($q, [
                     'source' => $this->source->getName(),
@@ -158,7 +158,7 @@ class CustomerRepository extends IApiRepository
                         address = VALUES(address),
                         owner = VALUES(owner),
                         is_default = VALUES(is_default),
-                        fetchDate = NOW()
+                        fetch_date = NOW()
                 ";
                 $this->db->executeQuery($q, [
                     'source' => $this->source->getName(),
@@ -184,7 +184,7 @@ class CustomerRepository extends IApiRepository
                         statement = VALUES(statement),
                         date_statement = VALUES(date_statement),
                         method_statement = VALUES(method_statement),
-                        fetchDate = NOW()
+                        fetch_date = NOW()
                 ";
                 $this->db->executeQuery($q, [
                     'source' => $this->source->getName(),
@@ -215,7 +215,7 @@ class CustomerRepository extends IApiRepository
                 personal_id = r.personal_id,
                 busines_number = r.busines_number,
                 kind = r.kind,
-                fetchDate = NOW()
+                fetch_date = NOW()
         ";
         $this->db->executeQuery($q);
 
@@ -227,7 +227,7 @@ class CustomerRepository extends IApiRepository
                 street = r.street,
                 postal_code = r.postal_code,
                 number = r.number,
-                fetchDate = NOW()
+                fetch_date = NOW()
         ";
         $this->db->executeQuery($q);
 
@@ -237,7 +237,7 @@ class CustomerRepository extends IApiRepository
                 address = r.address,
                 owner = r.owner,
                 is_default = r.is_default,
-                fetchDate = NOW()
+                fetch_date = NOW()
         ";
         $this->db->executeQuery($q);
 
@@ -247,7 +247,7 @@ class CustomerRepository extends IApiRepository
                 number = r.number,
                 owner = r.owner,
                 is_default = r.is_default,
-                fetchDate = NOW()
+                fetch_date = NOW()
         ";
         $this->db->executeQuery($q);
     }
