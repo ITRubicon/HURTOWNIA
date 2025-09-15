@@ -24,7 +24,7 @@ class FvSetProductRepository extends IApiRepository
         $resCount = count($this->fetchResult);
         $this->clearDataArrays();
 
-        gc_collect_cycles();
+        
 
         return $resCount;
     }

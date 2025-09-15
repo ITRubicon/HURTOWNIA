@@ -45,7 +45,7 @@ class CarOrderRepository extends IApiRepository
                         $this->relatedRepositories['items']->saveItems($orderItems);
                         $orderItems = [];
 
-                        gc_collect_cycles();
+                        
                     }
                 } while ($res['fetchNext']);
             }
@@ -54,7 +54,7 @@ class CarOrderRepository extends IApiRepository
             $this->relatedRepositories['items']->saveItems($orderItems);
             $orderItems = [];
 
-            gc_collect_cycles();
+            
         } else 
             throw new \Exception("Nie żadnych jednostek organizacyjnych. Najpierw uruchom komendę pobierającą listę jednostek [tema:stock]");
 

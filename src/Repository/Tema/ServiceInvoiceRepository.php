@@ -40,7 +40,7 @@ class ServiceInvoiceRepository extends IApiRepository
                     $this->relatedRepositories['items']->saveItems($documentItems);
                     $documentItems = [];
 
-                    gc_collect_cycles();
+                    
                 }
             }
             $this->save();

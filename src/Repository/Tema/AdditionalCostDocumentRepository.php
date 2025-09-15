@@ -37,13 +37,13 @@ class AdditionalCostDocumentRepository extends IApiRepository
                     $this->save();
                     $this->fetchResult = [];
                     
-                    gc_collect_cycles();
+                    
                 }
             } while ($res['fetchNext']);
             $this->save();
             $this->fetchResult = [];
 
-            gc_collect_cycles();
+            
         }
 
         return [

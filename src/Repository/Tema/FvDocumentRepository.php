@@ -44,7 +44,7 @@ class FvDocumentRepository extends IApiRepository
                     $this->relatedRepositories['setProducts']->saveSetProducts($setProducts);
                     $setProducts = [];
 
-                    gc_collect_cycles();
+                    
                 }
             }
 

@@ -41,7 +41,7 @@ class FvCorrectionDocumentRepository extends IApiRepository
                     $this->relatedRepositories['items']->saveItems($documentItems);
                     $documentItems = [];
 
-                    gc_collect_cycles();
+                    
                 }
             }
             
@@ -50,7 +50,7 @@ class FvCorrectionDocumentRepository extends IApiRepository
             $this->relatedRepositories['items']->saveItems($documentItems);
             unset($documentItems);
 
-            gc_collect_cycles();
+            
         }
 
         return [

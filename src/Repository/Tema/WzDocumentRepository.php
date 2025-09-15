@@ -40,7 +40,7 @@ class WzDocumentRepository extends IApiRepository
                     $this->relatedRepositories['items']->saveItems($documentItems);
                     $documentItems = [];
 
-                    gc_collect_cycles();
+                    
                 }
             }
 
@@ -49,7 +49,7 @@ class WzDocumentRepository extends IApiRepository
             $this->relatedRepositories['items']->saveItems($documentItems);
             unset($documentItems);
 
-            gc_collect_cycles();
+            
         }
 
         return [

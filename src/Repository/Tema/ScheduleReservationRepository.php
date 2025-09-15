@@ -40,7 +40,7 @@ class ScheduleReservationRepository extends IApiRepository
             $resCount += count($this->fetchResult);
             $this->save();
             $this->fetchResult = [];
-            gc_collect_cycles();
+            
         }
         
         return ['fetched' => $resCount];

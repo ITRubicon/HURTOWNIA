@@ -40,7 +40,7 @@ class ReceiptRepository extends IApiRepository
                     $this->relatedRepositories['items']->saveItems($receiptItems);
                     $receiptItems = [];
 
-                    gc_collect_cycles();
+                    
                 }
 
             } while ($res['fetchNext']);
@@ -51,7 +51,7 @@ class ReceiptRepository extends IApiRepository
             $this->relatedRepositories['items']->saveItems($receiptItems);
             $receiptItems = [];
             
-            gc_collect_cycles();
+            
         }
 
         return ['fetched' => $resCount];

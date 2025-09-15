@@ -31,7 +31,7 @@ class DmsUserRepository extends IApiRepository
         $this->save();
         $this->fetchResult = [];
         
-        gc_collect_cycles();
+        
 
         return ['fetched' => $resCount];
     }

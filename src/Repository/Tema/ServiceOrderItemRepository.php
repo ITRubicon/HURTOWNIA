@@ -24,7 +24,7 @@ class ServiceOrderItemRepository extends IApiRepository
         $this->save();
         $this->clearDataArrays();
 
-        gc_collect_cycles();
+        
 
         return [
             'fetched' => $resCount,

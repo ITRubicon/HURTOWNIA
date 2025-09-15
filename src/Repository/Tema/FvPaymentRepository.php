@@ -45,7 +45,7 @@ class FvPaymentRepository extends IApiRepository
                     $this->save();
                     $this->fetchResult = [];
 
-                    gc_collect_cycles();
+                    
                 }
         }
 

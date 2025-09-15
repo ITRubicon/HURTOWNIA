@@ -72,7 +72,7 @@ class ServiceOrderDocumentRepository extends IApiRepository
                         $this->relatedRepositories['cars']->saveCars($cars);
                         $cars = [];
 
-                        gc_collect_cycles();
+                        
                     }
                 }
             }
@@ -86,7 +86,7 @@ class ServiceOrderDocumentRepository extends IApiRepository
             $this->relatedRepositories['cars']->saveCars($cars);
             unset($cars);
 
-            gc_collect_cycles();
+            
         }
 
         return [

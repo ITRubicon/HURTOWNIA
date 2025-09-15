@@ -19,7 +19,7 @@ class ServiceOrderEndDocumentRepository extends IApiRepository
         $this->removeDocs();
         $this->clearDataArrays();
 
-        gc_collect_cycles();
+        
 
         return $resCount;
     }

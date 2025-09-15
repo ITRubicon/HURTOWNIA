@@ -40,7 +40,7 @@ class PrepaymentCorrectionDocumentRepository extends IApiRepository
                     $this->relatedRepositories['items']->saveItems($documentItems);
                     $documentItems = [];
 
-                    gc_collect_cycles();
+                    
                 }
             }
 
