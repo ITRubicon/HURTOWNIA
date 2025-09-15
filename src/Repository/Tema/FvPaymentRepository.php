@@ -56,7 +56,13 @@ class FvPaymentRepository extends IApiRepository
 
     private function documentIds(): \Generator
     {
-        $q = "SELECT SUBSTRING(doc_id, 3, 2) AS branch, doc_id FROM prehurtownia.tema_fv_document WHERE source = :source";
+        // Póki co nie aktualizują się statusy płatności. Powód nieznany.
+        // $q = "SELECT SUBSTRING(doc_id, 3, 2) AS branch, doc_id FROM prehurtownia.tema_fv_document WHERE source = :source";
+        $q = "SELECT SUBSTRING(fv.doc_id, 3, 2) AS branch, fv.doc_id FROM prehurtownia.tema_fv_document fv
+            LEFT JOIN prehurtownia.tema_fv_payment fp ON fp.source = fv.source AND fp.doc_id = fv.doc_id
+            WHERE fv.source = :source
+            AND fp.doc_id IS NULL
+        ";
         $stmt = $this->db->executeQuery($q, ['source' => $this->source->getName()]);
 
         while (($row = $stmt->fetchAssociative()) !== false) {
