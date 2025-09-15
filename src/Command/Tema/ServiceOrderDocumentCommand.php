@@ -66,9 +66,9 @@ class ServiceOrderDocumentCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->docRepo->clearTable();
-        $this->itemRepo->clearTable();
-        $this->endDocRepo->clearTable();
-        $this->carRepo->clearTable();
+        // $this->docRepo->clearTable();
+        // $this->itemRepo->clearTable();
+        // $this->endDocRepo->clearTable();
+        // $this->carRepo->clearTable();
     }
 }

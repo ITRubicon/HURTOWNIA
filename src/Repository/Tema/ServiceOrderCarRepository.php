@@ -16,11 +16,24 @@ class ServiceOrderCarRepository extends IApiRepository
         unset($cars);
         $this->save();
         $resCount = count($this->fetchResult);
+        $this->removeCars();
         $this->clearDataArrays();
         
         gc_collect_cycles();
 
         return $resCount;
+    }
+
+    private function removeCars()
+    {
+        $docIds = array_unique(array_column($this->fetchResult, 'doc_id'));
+        if (empty($docIds))
+            return;
+
+        $docIds = "'" . implode("','", $docIds) . "'";
+
+        $q = "DELETE FROM $this->table WHERE source = :source AND doc_id IN ($docIds)";
+        $this->db->executeStatement($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
     protected function getFieldsParams(): array

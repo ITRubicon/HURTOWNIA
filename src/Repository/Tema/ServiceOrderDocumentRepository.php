@@ -11,11 +11,26 @@ class ServiceOrderDocumentRepository extends IApiRepository
     private $documentEndpoints = [];
     protected $table = 'tema_service_order_document';
     private const BATCH_SIZE = 10; // Number of simultaneous requests per batch
+    protected $onDuplicateClause = 'ON DUPLICATE KEY UPDATE
+        name = VALUES(name),
+        opening_date = VALUES(opening_date),
+        closing_date = VALUES(closing_date),
+        is_canceled = VALUES(is_canceled),
+        net_value = VALUES(net_value),
+        gross_value = VALUES(gross_value),
+        stock_status = VALUES(stock_status),
+        customer_id = VALUES(customer_id),
+        service_handling_user_id = VALUES(service_handling_user_id),
+        description = VALUES(description),
+        source_order_number = VALUES(source_order_number),
+        source_order_id = VALUES(source_order_id)
+    ';
 
     public function fetch(): array
     {
         $this->clearDataArrays();
         $this->getDocumentEndpointList();
+        $this->filterOutPossessed();
         $listCount = count($this->documentEndpoints);
 
         $documentItems = [];
@@ -77,6 +92,34 @@ class ServiceOrderDocumentRepository extends IApiRepository
         return [
             'fetched' => $listCount,
         ];
+    }
+
+    private function filterOutPossessed()
+    {
+        $possessed = $this->db->fetchFirstColumn(
+            "SELECT doc_id FROM $this->table WHERE source = :source AND (stock_status != 'ended' OR closing_date = '0001-01-01 00:00:00')",
+            ['source' => $this->source->getName()],
+            ['source' => ParameterType::STRING]
+        );
+
+        echo PHP_EOL . 'Możliwe do pobrania dokumenty: ' . count($this->documentEndpoints) . "\033[0m" . PHP_EOL;
+        echo PHP_EOL . 'Posiadane dokumenty: ' . count($possessed) . "\033[0m" . PHP_EOL;
+
+        if (!empty($possessed)) {
+            // [
+            //     {
+            //         "objectId": "string",
+            //         "getUrl": "string"
+            //     }
+            // ]
+
+            $this->documentEndpoints = array_filter($this->documentEndpoints, function($doc) use ($possessed) {
+                return !in_array($doc['objectId'], $possessed);
+            });
+            // reset keys
+            $this->documentEndpoints = array_values($this->documentEndpoints);
+        }
+        echo PHP_EOL . 'Do pobrania dokumenty: ' . count($this->documentEndpoints) . "\033[0m" . PHP_EOL;
     }
 
     // Helper to decode raw response (since fetchApiResult is not used directly)

@@ -20,6 +20,7 @@ class ServiceOrderItemRepository extends IApiRepository
         }
         unset($items);
         $resCount = count($this->fetchResult);
+        $this->removeItems();
         $this->save();
         $this->clearDataArrays();
 
@@ -28,6 +29,17 @@ class ServiceOrderItemRepository extends IApiRepository
         return [
             'fetched' => $resCount,
         ];
+    }
+
+    private function removeItems()
+    {
+        $docIds = array_unique(array_column($this->fetchResult, 'doc_id'));
+        if (empty($docIds))
+            return;
+
+        $docIds = "'" . implode("','", $docIds) . "'";
+        $q = "DELETE FROM $this->table WHERE source = :source AND doc_id IN ($docIds)";
+        $this->db->executeStatement($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
     protected function getFieldsParams(): array

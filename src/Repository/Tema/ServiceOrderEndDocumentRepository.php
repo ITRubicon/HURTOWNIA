@@ -16,11 +16,24 @@ class ServiceOrderEndDocumentRepository extends IApiRepository
         unset($documents);
         $this->save();
         $resCount = count($this->fetchResult);
+        $this->removeDocs();
         $this->clearDataArrays();
 
         gc_collect_cycles();
 
         return $resCount;
+    }
+
+    private function removeDocs()
+    {
+        $docIds = array_unique(array_column($this->fetchResult, 'doc_id'));
+        if (empty($docIds))
+            return;
+
+        $docIds = "'" . implode("','", $docIds) . "'";
+
+        $q = "DELETE FROM $this->table WHERE source = :source AND doc_id IN ($docIds)";
+        $this->db->executeStatement($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
     protected function getFieldsParams(): array
