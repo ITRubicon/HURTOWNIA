@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 #[Table(name: 'rogowiec_invoice_archive')]
 #[Index(name: "source_id_idx", fields: ["source", "id"])]
+#[Index(name: "source_number_idx", fields: ["source", "number"])]
+#[Index(name: "source_correctedNo_idx", fields: ["source", "correctedNo"])]
 class InvoiceArchive
 {
     // #[ORM\Id]
