@@ -14,9 +14,9 @@ class ServiceOrderEndDocumentRepository extends IApiRepository
         $this->clearDataArrays();
         $this->fetchResult = $documents;
         unset($documents);
+        $this->removeDocs();
         $this->save();
         $resCount = count($this->fetchResult);
-        $this->removeDocs();
         $this->clearDataArrays();
 
         

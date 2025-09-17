@@ -7,14 +7,6 @@ use Doctrine\DBAL\ParameterType;
 
 class ServiceInvoiceItemRepository extends IApiRepository
 {
-    protected $onDuplicateClause = 'ON DUPLICATE KEY UPDATE
-        product_id = VALUES(product_id),
-        name = VALUES(name),
-        quantity = VALUES(quantity),
-        gross_price = VALUES(gross_price),
-        tax_rate = VALUES(tax_rate),
-        is_exempt = VALUES(is_exempt)
-    ';
     private string $endpoint = '';
     protected $table = 'tema_service_invoice_item';
 
@@ -27,15 +19,23 @@ class ServiceInvoiceItemRepository extends IApiRepository
             array_push($this->fetchResult, $item);
         }
         unset($items);
+        $this->removeOld();
         $resCount = count($this->fetchResult);
         $this->save();
         $this->clearDataArrays();
 
-        
-
         return [
             'fetched' => $resCount,
         ];
+    }
+
+    private function removeOld()
+    {
+        $docIds = array_unique(array_map(function($item) { return $item['doc_id']; }, $this->fetchResult));
+        if (count($docIds)) {
+            $placeholders = implode(',', array_fill(0, count($docIds), '?'));
+            $this->db->executeStatement("DELETE FROM $this->table WHERE source = ? AND doc_id IN ($placeholders)", array_merge([$this->source->getName()], $docIds), array_merge([ParameterType::STRING], array_fill(0, count($docIds), ParameterType::STRING)));
+        }
     }
 
     protected function getFieldsParams(): array
