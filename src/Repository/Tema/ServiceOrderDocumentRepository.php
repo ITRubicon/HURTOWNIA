@@ -97,7 +97,7 @@ class ServiceOrderDocumentRepository extends IApiRepository
     private function filterOutPossessed()
     {
         $possessed = $this->db->fetchFirstColumn(
-            "SELECT doc_id FROM $this->table WHERE source = :source AND (stock_status != 'ended' OR closing_date = '0001-01-01 00:00:00')",
+            "SELECT doc_id FROM $this->table WHERE source = :source AND (stock_status = 'ended' OR closing_date != '0001-01-01 00:00:00')",
             ['source' => $this->source->getName()],
             ['source' => ParameterType::STRING]
         );
