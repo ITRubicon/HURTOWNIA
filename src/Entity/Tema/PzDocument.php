@@ -7,9 +7,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 #[ORM\Entity(repositoryClass: WzDocumentRepository::class)]
 #[Table(name: 'tema_pz_document')]
+#[UniqueConstraint(name: "source_pzId_idx", fields: ["source", "pzId"])]
 #[Index(name: "source_issuedate_idx", fields: ["source", "issueDate"])]
 #[Index(name: "source_vin_idx", fields: ["source", "vin"])]
 class PzDocument

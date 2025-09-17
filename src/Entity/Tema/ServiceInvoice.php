@@ -6,10 +6,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 #[ORM\Entity(repositoryClass: WzDocumentRepository::class)]
 #[Table(name: 'tema_service_invoice')]
-#[Index(name: "source_docId_idx", fields: ["source", "doc_id"])]
+#[UniqueConstraint(name: "source_docId_idx", fields: ["source", "doc_id"])]
 #[Index(name: "source_issueDate_idx", fields: ["source", "openingDate"])]
 class ServiceInvoice
 {
