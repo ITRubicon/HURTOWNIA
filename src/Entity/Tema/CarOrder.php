@@ -12,7 +12,6 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 #[Table(name: 'tema_car_order')]
 #[UniqueConstraint(name: "source_docId_idx", fields: ["source", "doc_id"])]
 #[Index(name: "source_idx", fields: ["source"])]
-#[Index(name: "source_docid_idx", fields: ["source", "doc_id"])]
 #[Index(name: "source_vin_idx", fields: ["source", "vin"])]
 class CarOrder
 {
