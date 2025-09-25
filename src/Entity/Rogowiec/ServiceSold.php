@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\Table;
 #[ORM\Entity(repositoryClass: ServiceSoldRepository::class)]
 #[Table(name: 'rogowiec_service_sold')]
 #[Index(name: "source_idx", fields: ["source"])]
+#[Index(name: "vin_idx", fields: ["vin"])]
 class ServiceSold
 {
     #[ORM\Id]
