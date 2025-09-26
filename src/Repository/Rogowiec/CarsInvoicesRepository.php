@@ -9,7 +9,7 @@ class CarsInvoicesRepository extends IApiRepository
 {
     private $endpoint = '/wdf/Reports/vehicleInvoiceList?VIN={vin}&id_oddzial={branch_id}';
     protected $table = 'rogowiec_car_invoices';
-    private const BATCH_SIZE = 5; // Number of simultaneous requests per batch
+    private const BATCH_SIZE = 10; // Number of simultaneous requests per batch
     protected $onDuplicateClause = 'ON DUPLICATE KEY UPDATE 
         vehicle_id = VALUES(vehicle_id),
         fv_data = VALUES(fv_data),
