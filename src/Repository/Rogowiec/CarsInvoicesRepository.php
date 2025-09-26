@@ -9,6 +9,7 @@ class CarsInvoicesRepository extends IApiRepository
 {
     private $endpoint = '/wdf/Reports/vehicleInvoiceList?VIN={vin}&id_oddzial={branch_id}';
     protected $table = 'rogowiec_car_invoices';
+    private const BATCH_SIZE = 5; // Number of simultaneous requests per batch
     protected $onDuplicateClause = 'ON DUPLICATE KEY UPDATE 
         vehicle_id = VALUES(vehicle_id),
         fv_data = VALUES(fv_data),
@@ -27,25 +28,65 @@ class CarsInvoicesRepository extends IApiRepository
         $resCount = 0;
 
         if ($vinCount) {
-            $i = 1;
+            echo "\nPobieram faktury samochodów w batch'ach po " . self::BATCH_SIZE;
+            $totalBatches = (int)ceil($vinCount / self::BATCH_SIZE);
 
-            foreach ($vinBranches as $vb) {
-                echo "\nId jednostki {$vb['branch_id']}, VIN: {$vb['vin']} ----> $i/$vinCount";
-                $url = str_replace(
-                    ['{vin}', '{branch_id}'],
-                    [$vb['vin'], $vb['branch_id']],
-                    $this->endpoint
-                );
-                $this->fetchResult = $this->fetchApiResult($url);
-                $resCount += count($this->fetchResult);
-                $this->save();
-                $this->clearDataArrays();
-                $i++;
+            for ($i = 0; $i < $vinCount; $i += self::BATCH_SIZE) {
+                $batchNumber = (int)($i / self::BATCH_SIZE) + 1;
+                echo "\nBatch $batchNumber / $totalBatches";
+
+                $batchVinBranches = array_slice($vinBranches, $i, self::BATCH_SIZE);
+                $urls = [];
+
+                // Prepare URLs for the batch
+                foreach ($batchVinBranches as $index => $vb) {
+                    $url = str_replace(
+                        ['{vin}', '{branch_id}'],
+                        [$vb['vin'], $vb['branch_id']],
+                        $this->endpoint
+                    );
+                    $urls[$index] = $url;
+                    echo "\nId jednostki {$vb['branch_id']}, VIN: {$vb['vin']} ----> " . ($i + $index + 1) . "/$vinCount";
+                }
+
+                // Fetch multiple endpoints in parallel
+                $responses = $this->httpClient->requestMulti($this->source, $urls);
+
+                // Process responses
+                foreach ($responses as $responseRaw) {
+                    $response = $this->decodeResponseFromRaw($responseRaw);
+                    if (!empty($response)) {
+                        $this->fetchResult = array_merge($this->fetchResult, $response);
+                        $resCount += count($response);
+                    }
+                }
+
+                // Save when we have enough data or at the end of processing
+                if (count($this->fetchResult) >= $this->fetchLimit || ($i + self::BATCH_SIZE) >= $vinCount) {
+                    $this->save();
+                    $this->clearDataArrays();
+                }
             }
-        } else
+        } else {
             throw new \Exception("Nie żadnych oddziałów lub VINów dla " . $this->source->getName() . ". Najpierw uruchom komendę pobierającą listę oddziałów [rogowiec:branch] i sprzedanych samochodów [rogowiec:cars:sold]", 99);
+        }
 
         return ['fetched' => $resCount];
+    }
+
+    // Helper to decode raw response (since fetchApiResult is not used directly)
+    private function decodeResponseFromRaw($raw): array
+    {
+        if (empty($raw) || $raw === false) {
+            return [];
+        }
+
+        if (str_contains($raw, 'Us³ugaPunktSprzedazy')) {
+            $raw = preg_replace('/Us³ugaPunktSprzedazy/', 'UsługaPunktSprzedazy', $raw);
+        }
+        
+        $decoded = json_decode($raw, true);
+        return is_array($decoded) ? $decoded : [];
     }
 
     private function fetchBranchWithVin()
