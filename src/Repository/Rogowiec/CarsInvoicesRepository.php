@@ -23,36 +23,41 @@ class CarsInvoicesRepository extends IApiRepository
     public function fetch(): array
     {
         $this->clearDataArrays();
-        $vinBranches = $this->fetchBranchWithVin();
-        $vinCount = count($vinBranches);
+        $branches = $this->findBrachesId();
         $resCount = 0;
-
-        if ($vinCount) {
-            echo "\nPobieram faktury samochodów w batch'ach po " . self::BATCH_SIZE;
+        $totalBranches = count($branches);
+        if ($totalBranches === 0) {
+            throw new \Exception("Brak oddziałów dla " . $this->source->getName() . ". Najpierw uruchom komendę pobierającą listę oddziałów [rogowiec:branch]", 99);
+        }
+        $branchIdx = 1;
+        foreach ($branches as $branch) {
+            $branchId = $branch['branch_id'];
+            echo "\nPrzetwarzam oddział dms_id={$branchId} ($branchIdx/$totalBranches)";
+            // Fetch VINs for this branch
+            $vins = $this->fetchVinsForBranch($branchId);
+            $vinCount = count($vins);
+            if ($vinCount === 0) {
+                echo "\nBrak VINów dla oddziału $branchId";
+                $branchIdx++;
+                continue;
+            }
+            echo "\nPobieram faktury samochodów w batch'ach po " . self::BATCH_SIZE . " (oddział $branchId, VINów: $vinCount)";
             $totalBatches = (int)ceil($vinCount / self::BATCH_SIZE);
-
             for ($i = 0; $i < $vinCount; $i += self::BATCH_SIZE) {
                 $batchNumber = (int)($i / self::BATCH_SIZE) + 1;
-                echo "\nBatch $batchNumber / $totalBatches";
-
-                $batchVinBranches = array_slice($vinBranches, $i, self::BATCH_SIZE);
+                echo "\nBatch $batchNumber / $totalBatches (oddział $branchId)";
+                $batchVins = array_slice($vins, $i, self::BATCH_SIZE);
                 $urls = [];
-
-                // Prepare URLs for the batch
-                foreach ($batchVinBranches as $index => $vb) {
+                foreach ($batchVins as $index => $vin) {
                     $url = str_replace(
                         ['{vin}', '{branch_id}'],
-                        [$vb['vin'], $vb['branch_id']],
+                        [$vin, $branchId],
                         $this->endpoint
                     );
                     $urls[$index] = $url;
-                    echo "\nId jednostki {$vb['branch_id']}, VIN: {$vb['vin']} ----> " . ($i + $index + 1) . "/$vinCount";
+                    echo "\nId jednostki $branchId, VIN: $vin ----> " . ($i + $index + 1) . "/$vinCount";
                 }
-
-                // Fetch multiple endpoints in parallel
                 $responses = $this->httpClient->requestMulti($this->source, $urls);
-
-                // Process responses
                 foreach ($responses as $responseRaw) {
                     $response = $this->decodeResponseFromRaw($responseRaw);
                     if (!empty($response)) {
@@ -60,23 +65,31 @@ class CarsInvoicesRepository extends IApiRepository
                         $resCount += count($response);
                     }
                 }
-
-                // Save when we have enough data
                 if (count($this->fetchResult) >= $this->fetchLimit) {
                     $this->save();
                     $this->clearDataArrays();
                 }
             }
-            // Final save for any remaining results
             if (!empty($this->fetchResult)) {
                 $this->save();
                 $this->clearDataArrays();
             }
-        } else {
-            throw new \Exception("Nie żadnych oddziałów lub VINów dla " . $this->source->getName() . ". Najpierw uruchom komendę pobierającą listę oddziałów [rogowiec:branch] i sprzedanych samochodów [rogowiec:cars:sold]", 99);
+            $branchIdx++;
         }
-
         return ['fetched' => $resCount];
+    // Fetch VINs for a given branch
+    private function fetchVinsForBranch($branchId)
+    {
+        $q = "SELECT vin FROM prehurtownia.rogowiec_cars_sold WHERE source = :source AND SUBSTRING(fv_numer, 1, 1) = CAST((SELECT oddzial_id FROM prehurtownia.rogowiec_branch WHERE dms_id = :branchId AND source = :source LIMIT 1) AS UNSIGNED)";
+        $result = $this->db->fetchAllAssociative($q, [
+            'source' => $this->source->getName(),
+            'branchId' => $branchId
+        ], [
+            'source' => ParameterType::STRING,
+            'branchId' => ParameterType::STRING
+        ]);
+        return array_column($result, 'vin');
+    }
     }
 
     // Helper to decode raw response (since fetchApiResult is not used directly)
@@ -92,6 +105,18 @@ class CarsInvoicesRepository extends IApiRepository
         
         $decoded = json_decode($raw, true);
         return is_array($decoded) ? $decoded : [];
+    }
+
+    private function findBrachesId()
+    {
+        $q = "SELECT
+                b.source,
+                b.dms_id AS branch_id
+            FROM prehurtownia.rogowiec_branch b
+            WHERE b.source = :source
+            ORDER BY b.dms_id
+        ";
+        return $this->db->fetchAllAssociative($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
     private function fetchBranchWithVin()
@@ -121,5 +146,18 @@ class CarsInvoicesRepository extends IApiRepository
             'typ_korekty' => ['sourceField' => 'TypKorekty', 'type' => ParameterType::STRING],
             'source' => ['sourceField' => 'source', 'type' => ParameterType::STRING],
         ];
+    }
+    // Fetch VINs for a given branch
+    private function fetchVinsForBranch($branchId)
+    {
+        $q = "SELECT vin FROM prehurtownia.rogowiec_cars_sold WHERE source = :source AND SUBSTRING(fv_numer, 1, 1) = CAST((SELECT oddzial_id FROM prehurtownia.rogowiec_branch WHERE dms_id = :branchId AND source = :source LIMIT 1) AS UNSIGNED)";
+        $result = $this->db->fetchAllAssociative($q, [
+            'source' => $this->source->getName(),
+            'branchId' => $branchId
+        ], [
+            'source' => ParameterType::STRING,
+            'branchId' => ParameterType::STRING
+        ]);
+        return array_column($result, 'vin');
     }
 }
