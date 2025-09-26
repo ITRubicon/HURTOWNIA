@@ -24,72 +24,79 @@ class CarsInvoicesRepository extends IApiRepository
     {
         $this->clearDataArrays();
         $branches = $this->findBrachesId();
+        $vins = $this->findVins();
         $resCount = 0;
+        
         $totalBranches = count($branches);
+        $totalVins = count($vins);
+        
         if ($totalBranches === 0) {
             throw new \Exception("Brak oddziałów dla " . $this->source->getName() . ". Najpierw uruchom komendę pobierającą listę oddziałów [rogowiec:branch]", 99);
         }
-        $branchIdx = 1;
-        foreach ($branches as $branch) {
-            $branchId = $branch['branch_id'];
-            echo "\nPrzetwarzam oddział dms_id={$branchId} ($branchIdx/$totalBranches)";
-            // Fetch VINs for this branch
-            $vins = $this->fetchVinsForBranch($branchId);
-            $vinCount = count($vins);
-            if ($vinCount === 0) {
-                echo "\nBrak VINów dla oddziału $branchId";
-                $branchIdx++;
-                continue;
-            }
-            echo "\nPobieram faktury samochodów w batch'ach po " . self::BATCH_SIZE . " (oddział $branchId, VINów: $vinCount)";
-            $totalBatches = (int)ceil($vinCount / self::BATCH_SIZE);
-            for ($i = 0; $i < $vinCount; $i += self::BATCH_SIZE) {
-                $batchNumber = (int)($i / self::BATCH_SIZE) + 1;
-                echo "\nBatch $batchNumber / $totalBatches (oddział $branchId)";
-                $batchVins = array_slice($vins, $i, self::BATCH_SIZE);
-                $urls = [];
-                foreach ($batchVins as $index => $vin) {
-                    $url = str_replace(
+        
+        if ($totalVins === 0) {
+            throw new \Exception("Brak VINów dla " . $this->source->getName() . ". Najpierw uruchom komendę pobierającą sprzedane samochody [rogowiec:cars:sold]", 99);
+        }
+        
+        echo "\nPobieram faktury samochodów dla $totalVins VINów x $totalBranches oddziałów w batch'ach po " . self::BATCH_SIZE;
+        
+        // Create all VIN x Branch combinations
+        $allRequests = [];
+        foreach ($vins as $vinData) {
+            $vin = $vinData['vin'];
+            foreach ($branches as $branch) {
+                $branchId = $branch['branch_id'];
+                $allRequests[] = [
+                    'vin' => $vin,
+                    'branch_id' => $branchId,
+                    'url' => str_replace(
                         ['{vin}', '{branch_id}'],
                         [$vin, $branchId],
                         $this->endpoint
-                    );
-                    $urls[$index] = $url;
-                    echo "\nId jednostki $branchId, VIN: $vin ----> " . ($i + $index + 1) . "/$vinCount";
-                }
-                $responses = $this->httpClient->requestMulti($this->source, $urls);
-                foreach ($responses as $responseRaw) {
-                    $response = $this->decodeResponseFromRaw($responseRaw);
-                    if (!empty($response)) {
-                        $this->fetchResult = array_merge($this->fetchResult, $response);
-                        $resCount += count($response);
-                    }
-                }
-                if (count($this->fetchResult) >= $this->fetchLimit) {
-                    $this->save();
-                    $this->clearDataArrays();
+                    )
+                ];
+            }
+        }
+        
+        $totalRequests = count($allRequests);
+        echo "\nŁącznie żądań do wykonania: $totalRequests";
+        $totalBatches = (int)ceil($totalRequests / self::BATCH_SIZE);
+        
+        // Process in batches
+        for ($i = 0; $i < $totalRequests; $i += self::BATCH_SIZE) {
+            $batchNumber = (int)($i / self::BATCH_SIZE) + 1;
+            echo "\nBatch $batchNumber / $totalBatches";
+            
+            $batchRequests = array_slice($allRequests, $i, self::BATCH_SIZE);
+            $urls = [];
+            
+            foreach ($batchRequests as $index => $request) {
+                $urls[$index] = $request['url'];
+                echo "\n  VIN: {$request['vin']}, Oddział: {$request['branch_id']} ----> " . ($i + $index + 1) . "/$totalRequests";
+            }
+            
+            $responses = $this->httpClient->requestMulti($this->source, $urls);
+            
+            foreach ($responses as $responseRaw) {
+                $response = $this->decodeResponseFromRaw($responseRaw);
+                if (!empty($response)) {
+                    $this->fetchResult = array_merge($this->fetchResult, $response);
+                    $resCount += count($response);
                 }
             }
-            if (!empty($this->fetchResult)) {
+            
+            if (count($this->fetchResult) >= $this->fetchLimit) {
                 $this->save();
                 $this->clearDataArrays();
             }
-            $branchIdx++;
         }
+        
+        if (!empty($this->fetchResult)) {
+            $this->save();
+            $this->clearDataArrays();
+        }
+        
         return ['fetched' => $resCount];
-    // Fetch VINs for a given branch
-    private function fetchVinsForBranch($branchId)
-    {
-        $q = "SELECT vin FROM prehurtownia.rogowiec_cars_sold WHERE source = :source AND SUBSTRING(fv_numer, 1, 1) = CAST((SELECT oddzial_id FROM prehurtownia.rogowiec_branch WHERE dms_id = :branchId AND source = :source LIMIT 1) AS UNSIGNED)";
-        $result = $this->db->fetchAllAssociative($q, [
-            'source' => $this->source->getName(),
-            'branchId' => $branchId
-        ], [
-            'source' => ParameterType::STRING,
-            'branchId' => ParameterType::STRING
-        ]);
-        return array_column($result, 'vin');
-    }
     }
 
     // Helper to decode raw response (since fetchApiResult is not used directly)
@@ -110,24 +117,22 @@ class CarsInvoicesRepository extends IApiRepository
     private function findBrachesId()
     {
         $q = "SELECT
-                b.source,
-                b.dms_id AS branch_id
-            FROM prehurtownia.rogowiec_branch b
-            WHERE b.source = :source
-            ORDER BY b.dms_id
+                source,
+                dms_id AS branch_id
+            FROM prehurtownia.rogowiec_branch
+            WHERE source = :source
+            ORDER BY dms_id
         ";
         return $this->db->fetchAllAssociative($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
-    private function fetchBranchWithVin()
+    private function findVins()
     {
         $q = "SELECT
-                b.source,
-                b.dms_id AS branch_id,
-                c.vin
-            FROM prehurtownia.rogowiec_branch b
-            JOIN prehurtownia.rogowiec_cars_sold c ON c.source = b.source AND SUBSTRING(c.fv_numer, 1, 1) = CAST(b.oddzial_id AS UNSIGNED)
-            WHERE b.source = :source
+                source,
+                vin
+            FROM prehurtownia.rogowiec_cars_sold
+            WHERE source = :source
         ";
         return $this->db->fetchAllAssociative($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
