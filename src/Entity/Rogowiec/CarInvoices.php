@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'rogowiec_car_invoices')]
 #[ORM\UniqueConstraint(name: "car_invoices_unique", columns: ["source", "vin", "fv_numer"])]
 #[ORM\Index(name: "source_idx", fields: ["source"])]
+#[ORM\Index(name: "vin_idx", fields: ["vin"])]
+#[ORM\Index(name: "fv_data_idx", fields: ["fv_data"])]
 class CarInvoices
 {
     #[ORM\Id]
