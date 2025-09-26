@@ -115,6 +115,10 @@ class HttpClient
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $this->baseUrl . $path);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                
+                // Set authentication for this handle
+                $this->setAuthHeaders($ch);
+                
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $this->httpHeader);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
@@ -173,12 +177,13 @@ class HttpClient
         return $this->timer->getInterval();
     }
 
-    private function setAuthHeaders()
+    private function setAuthHeaders($ch = null)
     {
+        $handle = $ch !== null ? $ch : $this->ch;
         switch (strtoupper($this->authType)) {
             case 'BASIC_AUTH':
-                curl_setopt($this->ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-                curl_setopt($this->ch, CURLOPT_USERPWD, "$this->auth");
+                curl_setopt($handle, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                curl_setopt($handle, CURLOPT_USERPWD, "$this->auth");
                 break;
             case 'WEBAPIKEY':
                 if (!in_array($this->auth, $this->httpHeader))
@@ -186,7 +191,6 @@ class HttpClient
                 break;
             default:
                 throw new \Exception("Nieznany lub niepoprawny sposób autoryzacji", 1);
-                break;
         }
     }
 

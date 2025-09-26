@@ -7,7 +7,7 @@ use Doctrine\DBAL\ParameterType;
 
 class CarsInvoicesRepository extends IApiRepository
 {
-    private $endpoint = '/wdf/Reports/vehicleInvoiceList?VIN={vin}&id_oddzial={branch_id}';
+    private $endpoint = '/wdf/Reports/vehicleInvoiceList?id_oddzial={branch_id}&VIN={vin}';
     protected $table = 'rogowiec_car_invoices';
     private const BATCH_SIZE = 10; // Number of simultaneous requests per batch
     protected $onDuplicateClause = 'ON DUPLICATE KEY UPDATE 
@@ -77,7 +77,7 @@ class CarsInvoicesRepository extends IApiRepository
             
             $responses = $this->httpClient->requestMulti($this->source, $urls);
             
-            foreach ($responses as $responseRaw) {
+            foreach ($responses as $idx => $responseRaw) {
                 $response = $this->decodeResponseFromRaw($responseRaw);
                 if (!empty($response)) {
                     $this->fetchResult = array_merge($this->fetchResult, $response);
@@ -85,29 +85,25 @@ class CarsInvoicesRepository extends IApiRepository
                 }
             }
             
+            // Save when we have enough data
             if (count($this->fetchResult) >= $this->fetchLimit) {
                 $this->save();
                 $this->clearDataArrays();
             }
         }
         
+        // Final save for any remaining results
         if (!empty($this->fetchResult)) {
             $this->save();
             $this->clearDataArrays();
         }
-        
         return ['fetched' => $resCount];
     }
 
-    // Helper to decode raw response (since fetchApiResult is not used directly)
     private function decodeResponseFromRaw($raw): array
     {
         if (empty($raw) || $raw === false) {
             return [];
-        }
-
-        if (str_contains($raw, 'Us³ugaPunktSprzedazy')) {
-            $raw = preg_replace('/Us³ugaPunktSprzedazy/', 'UsługaPunktSprzedazy', $raw);
         }
         
         $decoded = json_decode($raw, true);
@@ -133,6 +129,7 @@ class CarsInvoicesRepository extends IApiRepository
                 vin
             FROM prehurtownia.rogowiec_cars_sold
             WHERE source = :source
+                AND korekty_wartosc != 0
         ";
         return $this->db->fetchAllAssociative($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
