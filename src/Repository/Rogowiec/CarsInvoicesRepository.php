@@ -72,7 +72,6 @@ class CarsInvoicesRepository extends IApiRepository
             
             foreach ($batchRequests as $index => $request) {
                 $urls[$index] = $request['url'];
-                echo "\n  VIN: {$request['vin']}, Oddział: {$request['branch_id']} ----> " . ($i + $index + 1) . "/$totalRequests";
             }
             
             $responses = $this->httpClient->requestMulti($this->source, $urls);
