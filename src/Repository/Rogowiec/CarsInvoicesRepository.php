@@ -9,6 +9,15 @@ class CarsInvoicesRepository extends IApiRepository
 {
     private $endpoint = '/wdf/Reports/vehicleInvoiceList?VIN={vin}&id_oddzial={branch_id}';
     protected $table = 'rogowiec_car_invoices';
+    protected $onDuplicateClause = 'ON DUPLICATE KEY UPDATE 
+        vehicle_id = VALUES(vehicle_id),
+        fv_data = VALUES(fv_data),
+        fv_data_wplyw = VALUES(fv_data_wplyw),
+        wartosc = VALUES(wartosc),
+        faktura_rodzaj = VALUES(faktura_rodzaj),
+        kod_typu_korekty = VALUES(kod_typu_korekty),
+        typ_korekty = VALUES(typ_korekty)
+    ';
 
     public function fetch(): array
     {
