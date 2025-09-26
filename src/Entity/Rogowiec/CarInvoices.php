@@ -3,6 +3,7 @@
 namespace App\Entity\Rogowiec;
 
 use App\Repository\Rogowiec\CarsSoldRepository;
+use Doctrine\DBAL\Schema\UniqueConstraint;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
@@ -10,6 +11,7 @@ use Doctrine\ORM\Mapping\Table;
 
 #[ORM\Entity(repositoryClass: CarsSoldRepository::class)]
 #[Table(name: 'rogowiec_car_invoices')]
+#[UniqueConstraint(name: "car_invoices_unique", columns: ["source", "vin", "fv_numer"])]
 #[Index(name: "source_idx", fields: ["source"])]
 class CarInvoices
 {
