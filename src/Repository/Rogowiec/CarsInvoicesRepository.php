@@ -61,11 +61,16 @@ class CarsInvoicesRepository extends IApiRepository
                     }
                 }
 
-                // Save when we have enough data or at the end of processing
-                if (count($this->fetchResult) >= $this->fetchLimit || ($i + self::BATCH_SIZE) >= $vinCount) {
+                // Save when we have enough data
+                if (count($this->fetchResult) >= $this->fetchLimit) {
                     $this->save();
                     $this->clearDataArrays();
                 }
+            }
+            // Final save for any remaining results
+            if (!empty($this->fetchResult)) {
+                $this->save();
+                $this->clearDataArrays();
             }
         } else {
             throw new \Exception("Nie żadnych oddziałów lub VINów dla " . $this->source->getName() . ". Najpierw uruchom komendę pobierającą listę oddziałów [rogowiec:branch] i sprzedanych samochodów [rogowiec:cars:sold]", 99);
