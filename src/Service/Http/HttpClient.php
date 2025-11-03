@@ -180,14 +180,20 @@ class HttpClient
     private function setAuthHeaders($ch = null)
     {
         $handle = $ch !== null ? $ch : $this->ch;
+        
+        // Reset headers to default before adding auth headers
+        $this->httpHeader = [
+            'Accept: application/json',
+            'Content-Type: application/json'
+        ];
+        
         switch (strtoupper($this->authType)) {
             case 'BASIC_AUTH':
                 curl_setopt($handle, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
                 curl_setopt($handle, CURLOPT_USERPWD, "$this->auth");
                 break;
             case 'WEBAPIKEY':
-                if (!in_array($this->auth, $this->httpHeader))
-                    array_push($this->httpHeader, $this->auth);
+                array_push($this->httpHeader, $this->auth);
                 break;
             default:
                 throw new \Exception("Nieznany lub niepoprawny sposób autoryzacji", 1);
