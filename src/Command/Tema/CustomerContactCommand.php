@@ -30,19 +30,16 @@ class CustomerContactCommand extends BaseApiCommand
     protected function configure(): void
     {
         $this
-            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)', 'ALL');
-        ;
+            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)', 'ALL');;
     }
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
         $this->repo->setSource($api);
+        $this->repo->removeForCurrentSource();
         $fetchedRows = $this->repo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
     }
 
-    protected function clearTable()
-    {
-        $this->repo->removeForCurrentSource();
-    }
+    protected function clearTable() {}
 }

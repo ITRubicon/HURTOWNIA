@@ -25,7 +25,7 @@ class FkCechyCommand extends BaseApiCommand
         parent::__construct($apiAuthRepo, $errorRepo);
         $this->cechy = $cechy;
     }
-    
+
     protected function configure(): void
     {
         $this
@@ -38,15 +38,13 @@ class FkCechyCommand extends BaseApiCommand
     {
         $this->cechy->setSource($api);
         $this->cechy->setDateFrom($this->dateFrom);
-        $io->text(sprintf("Pobieranie cech dokumentów dla roku %s", date('Y', strtotime($this->dateFrom))));
+        $this->cechy->removeForCurrentSource();
 
+        $io->text(sprintf("Pobieranie cech dokumentów dla roku %s", date('Y', strtotime($this->dateFrom))));
         $fetchedRows = $this->cechy->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
         unset($fetchedRows);
     }
 
-    protected function clearTable()
-    {
-        $this->cechy->removeForCurrentSource();
-    }
+    protected function clearTable() {}
 }

@@ -60,6 +60,11 @@ class ScheduleCommand extends BaseApiCommand
         $this->repo->setDateFrom($dateFrom);
         $this->repo->setDateTo($dateTo);
 
+        $this->repo->removeForCurrentSource();
+        $this->reservationRepo->removeForCurrentSource();
+        $this->resourcesRepo->removeForCurrentSource();
+        $this->resourcesAvailabilityRepo->removeForCurrentSource();
+
         $fetchedRows = $this->repo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
 
@@ -80,11 +85,5 @@ class ScheduleCommand extends BaseApiCommand
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
     }
 
-    protected function clearTable()
-    {
-        $this->repo->removeForCurrentSource();
-        $this->reservationRepo->removeForCurrentSource();
-        $this->resourcesRepo->removeForCurrentSource();
-        $this->resourcesAvailabilityRepo->removeForCurrentSource();
-    }
+    protected function clearTable() {}
 }

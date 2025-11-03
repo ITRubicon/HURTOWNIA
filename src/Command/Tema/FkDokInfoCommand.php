@@ -25,7 +25,7 @@ class FkDokInfoCommand extends BaseApiCommand
         parent::__construct($apiAuthRepo, $errorRepo);
         $this->dokinfo = $dokinfo;
     }
-    
+
     protected function configure(): void
     {
         $this
@@ -38,15 +38,13 @@ class FkDokInfoCommand extends BaseApiCommand
     {
         $this->dokinfo->setSource($api);
         $this->dokinfo->setDateFrom($this->dateFrom);
-        $io->text(sprintf("Pobieranie informacji o dokumentach dla roku %s", date('Y', strtotime($this->dateFrom))));
+        $this->dokinfo->removeForCurrentSource();
 
+        $io->text(sprintf("Pobieranie informacji o dokumentach dla roku %s", date('Y', strtotime($this->dateFrom))));
         $fetchedRows = $this->dokinfo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
         unset($fetchedRows);
     }
 
-    protected function clearTable()
-    {
-        $this->dokinfo->removeForCurrentSource();
-    }
+    protected function clearTable() {}
 }

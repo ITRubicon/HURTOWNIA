@@ -38,6 +38,9 @@ class CustomerCommand extends BaseApiCommand
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
         $this->repo->setSource($api);
+        $this->repo->removeForCurrentSource();
+        $this->contactRepo->removeForCurrentSource();
+        
         $fetchedRows = $this->repo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
 
@@ -52,7 +55,5 @@ class CustomerCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->repo->removeForCurrentSource();
-        $this->contactRepo->removeForCurrentSource();
     }
 }

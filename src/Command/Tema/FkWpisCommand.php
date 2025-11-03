@@ -25,7 +25,7 @@ class FkWpisCommand extends BaseApiCommand
         parent::__construct($apiAuthRepo, $errorRepo);
         $this->zapisy = $zapisy;
     }
-    
+
     protected function configure(): void
     {
         $this
@@ -38,6 +38,7 @@ class FkWpisCommand extends BaseApiCommand
     {
         $this->zapisy->setSource($api);
         $this->zapisy->setDateFrom($this->dateFrom);
+        $this->zapisy->removeForCurrentSource();
         $io->text(sprintf("Pobieranie zapisów dokumentów dla roku %s", date('Y', strtotime($this->dateFrom))));
 
         $fetchedRows = $this->zapisy->fetch();
@@ -45,8 +46,5 @@ class FkWpisCommand extends BaseApiCommand
         unset($fetchedRows);
     }
 
-    protected function clearTable()
-    {
-        $this->zapisy->removeForCurrentSource();
-    }
+    protected function clearTable() {}
 }

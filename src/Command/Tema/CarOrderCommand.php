@@ -28,18 +28,21 @@ class CarOrderCommand extends BaseApiCommand
         $this->orderRepo = $orderRepo;
         $this->itemRepo = $itemRepo;
     }
-    
+
     protected function configure(): void
     {
         $this
-            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)', 'ALL')
-        ;
+            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)', 'ALL');
     }
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
         $this->itemRepo->setSource($api);
         $this->orderRepo->setSource($api);
+
+        $this->orderRepo->removeForCurrentSource();
+        $this->itemRepo->removeForCurrentSource();
+
         $this->orderRepo->addRelatedRepository($this->itemRepo, 'items');
 
         $fetchedRows = $this->orderRepo->fetch();
@@ -48,9 +51,5 @@ class CarOrderCommand extends BaseApiCommand
         unset($fetchedRows);
     }
 
-    protected function clearTable()
-    {
-        $this->orderRepo->removeForCurrentSource();
-        $this->itemRepo->removeForCurrentSource();
-    }
+    protected function clearTable() {}
 }

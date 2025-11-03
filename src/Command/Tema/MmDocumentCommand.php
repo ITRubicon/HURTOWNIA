@@ -28,14 +28,13 @@ class MmDocumentCommand extends BaseApiCommand
         $this->mmRepo = $mmRepo;
         $this->itemRepo = $itemRepo;
     }
-    
+
     protected function configure(): void
     {
         $this
             ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)', 'ALL')
             ->addArgument('dateFrom', InputArgument::OPTIONAL, 'Data początkowa (domyślnie pierwszy dzień miesiąca', date('Y-m-01'))
-            ->addArgument('dateTo', InputArgument::OPTIONAL, 'Data końcowa (domyślnie dzień dzisiejszy)', date('Y-m-d'));
-        ;
+            ->addArgument('dateTo', InputArgument::OPTIONAL, 'Data końcowa (domyślnie dzień dzisiejszy)', date('Y-m-d'));;
     }
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
@@ -46,6 +45,8 @@ class MmDocumentCommand extends BaseApiCommand
         $this->mmRepo->setSource($api);
         $this->mmRepo->addRelatedRepository($this->itemRepo, 'items');
 
+        $this->mmRepo->removeForCurrentSource();
+        $this->itemRepo->removeForCurrentSource();
 
         $fetchedRows = $this->mmRepo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
@@ -53,9 +54,5 @@ class MmDocumentCommand extends BaseApiCommand
         unset($fetchedRows);
     }
 
-    protected function clearTable()
-    {
-        $this->mmRepo->removeForCurrentSource();
-        $this->itemRepo->removeForCurrentSource();
-    }
+    protected function clearTable() {}
 }

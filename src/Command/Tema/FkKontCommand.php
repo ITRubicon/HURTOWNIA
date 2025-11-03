@@ -25,7 +25,7 @@ class FkKontCommand extends BaseApiCommand
         parent::__construct($apiAuthRepo, $errorRepo);
         $this->kont = $kont;
     }
-    
+
     protected function configure(): void
     {
         $this
@@ -38,15 +38,13 @@ class FkKontCommand extends BaseApiCommand
     {
         $this->kont->setSource($api);
         $this->kont->setDateFrom($this->dateFrom);
-        $io->text(sprintf("Pobieranie zapisów kont dla roku %s", date('Y', strtotime($this->dateFrom))));
+        $this->kont->removeForCurrentSource();
 
+        $io->text(sprintf("Pobieranie zapisów kont dla roku %s", date('Y', strtotime($this->dateFrom))));
         $fetchedRows = $this->kont->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
         unset($fetchedRows);
     }
 
-    protected function clearTable()
-    {
-        $this->kont->removeForCurrentSource();
-    }
+    protected function clearTable() {}
 }

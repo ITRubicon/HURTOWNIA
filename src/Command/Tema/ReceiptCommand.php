@@ -41,15 +41,14 @@ class ReceiptCommand extends BaseApiCommand
         $this->repo->setSource($api);
         $this->repo->addRelatedRepository($this->itemRepo, 'items');
 
+        $this->repo->removeForCurrentSource();
+        $this->itemRepo->removeForCurrentSource();
+
         $fetchedRows = $this->repo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
 
         unset($fetchedRows);
     }
 
-    protected function clearTable()
-    {
-        $this->repo->removeForCurrentSource();
-        $this->itemRepo->removeForCurrentSource();
-    }
+    protected function clearTable() {}
 }

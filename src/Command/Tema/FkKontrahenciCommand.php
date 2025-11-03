@@ -29,18 +29,20 @@ class FkKontrahenciCommand extends BaseApiCommand
         $this->kontrahenci = $kontrahenci;
         $this->kontaBankowe = $kontaBankowe;
     }
-    
+
     protected function configure(): void
     {
         $this
-            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)', 'ALL')
-        ;
+            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)', 'ALL');
     }
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
         $this->kontrahenci->setSource($api);
         $this->kontaBankowe->setSource($api);
+        $this->kontrahenci->removeForCurrentSource();
+        $this->kontaBankowe->removeForCurrentSource();
+
         $fetchedRows = $this->kontrahenci->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
 
@@ -49,9 +51,5 @@ class FkKontrahenciCommand extends BaseApiCommand
         unset($fetchedRows);
     }
 
-    protected function clearTable()
-    {
-        $this->kontrahenci->removeForCurrentSource();
-        $this->kontaBankowe->removeForCurrentSource();
-    }
+    protected function clearTable() {}
 }

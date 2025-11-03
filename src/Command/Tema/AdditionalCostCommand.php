@@ -35,8 +35,7 @@ class AdditionalCostCommand extends BaseApiCommand
     protected function configure(): void
     {
         $this
-            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)', 'ALL');
-        ;
+            ->addArgument('api', InputArgument::OPTIONAL, 'Nazwa api (ALL lub brak nazwy dla wszystkich)', 'ALL');;
     }
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
@@ -44,6 +43,10 @@ class AdditionalCostCommand extends BaseApiCommand
         $this->registerRepo->setSource($api);
         $this->docRepo->setSource($api);
         $this->itemRepo->setSource($api);
+
+        $this->registerRepo->removeForCurrentSource();
+        $this->docRepo->removeForCurrentSource();
+        $this->itemRepo->removeForCurrentSource();
 
         $fetched = $this->registerRepo->fetch();
         $io->info(sprintf("Pobrano %s rejestrów", $fetched['fetched']));
@@ -59,10 +62,5 @@ class AdditionalCostCommand extends BaseApiCommand
         unset($fetchedRows);
     }
 
-    protected function clearTable()
-    {
-        $this->registerRepo->removeForCurrentSource();
-        $this->docRepo->removeForCurrentSource();
-        $this->itemRepo->removeForCurrentSource();
-    }
+    protected function clearTable() {}
 }
