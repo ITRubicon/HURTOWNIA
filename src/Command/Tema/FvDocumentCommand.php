@@ -47,9 +47,14 @@ class FvDocumentCommand extends BaseApiCommand
         $this->docRepo->addRelatedRepository($this->itemRepo, 'items');
         $this->docRepo->addRelatedRepository($this->setProduct, 'setProducts');
 
+        // Czyszczenie danych z zakresu dat
+        $dateFrom = new \DateTime('first day of 2 months ago');
+        $dateTo = new \DateTime();
+        $this->docRepo->removeDateRangeTema($dateFrom, $dateTo);
+        
         $fetchedRows = $this->docRepo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
-
+        
         unset($fetchedRows);
     }
 

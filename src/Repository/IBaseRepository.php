@@ -80,6 +80,16 @@ abstract class IBaseRepository
         $this->db->executeQuery("TRUNCATE TABLE $this->table");
     }
 
+    public function removeDateRangeTema(\DateTime $dateFrom, \DateTime $dateTo)
+    {
+        dump('Czyszczę tabelę: ' . $this->table);
+        $this->db->executeQuery("DELETE FROM $this->table WHERE issue_date BETWEEN :dateFrom AND :dateTo AND source = :source", [
+            'dateFrom' => $dateFrom->format('Y-m-d 00:00:00'),
+            'dateTo' => $dateTo->format('Y-m-d 23:59:59'),
+            'source' => $this->source->getName()
+        ]);
+    }
+
     public function addRelatedRepository(IApiRepository $repository, string $key): void
     {
         $this->relatedRepositories[$key] = $repository;

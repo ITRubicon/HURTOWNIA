@@ -47,6 +47,11 @@ class ServiceInvoiceCommand extends BaseApiCommand
         $this->docRepo->setDateFrom($this->dateFrom);
         $this->docRepo->addRelatedRepository($this->itemRepo, 'items');
 
+        // Czyszczenie danych z zakresu dat
+        $dateFrom = new \DateTime('first day of 2 months ago');
+        $dateTo = new \DateTime();
+        $this->docRepo->removeDateRangeTema($dateFrom, $dateTo);
+
         $fetchedRows = $this->docRepo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
 
