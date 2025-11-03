@@ -60,26 +60,29 @@ class ScheduleCommand extends BaseApiCommand
         $this->repo->setDateFrom($dateFrom);
         $this->repo->setDateTo($dateTo);
 
-        $this->repo->removeForCurrentSource();
-        $this->reservationRepo->removeForCurrentSource();
-        $this->resourcesRepo->removeForCurrentSource();
-        $this->resourcesAvailabilityRepo->removeForCurrentSource();
-
-        $fetchedRows = $this->repo->fetch();
-        $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
-
         $this->resourcesRepo->setSource($api);
         $this->resourcesRepo->setDateFrom($dateFrom);
         $this->resourcesRepo->setDateTo($dateTo);
+        
         $this->resourcesAvailabilityRepo->setSource($api);
-        $this->resourcesRepo->addRelatedRepository($this->resourcesAvailabilityRepo, 'availability');
-
-        $fetchedRows = $this->resourcesRepo->fetch();
-        $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
-
+        
         $this->reservationRepo->setSource($api);
         $this->reservationRepo->setDateFrom($dateFrom);
         $this->reservationRepo->setDateTo($dateTo);
+        
+        $this->repo->removeForCurrentSource();
+        $this->resourcesRepo->removeForCurrentSource();
+        $this->resourcesAvailabilityRepo->removeForCurrentSource();
+        $this->reservationRepo->removeForCurrentSource();
+        
+        $fetchedRows = $this->repo->fetch();
+        $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
+        
+        
+        $this->resourcesRepo->addRelatedRepository($this->resourcesAvailabilityRepo, 'availability');
+        $fetchedRows = $this->resourcesRepo->fetch();
+        $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
+
 
         $fetchedRows = $this->reservationRepo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
