@@ -21,6 +21,8 @@ class FvPaymentRepository extends IApiRepository
         $genCount = iterator_count($this->documentIds());
         echo "\nPobieram zapisy płatności dla $genCount dokumentów";
 
+        $resCount = 0;
+
         foreach ($this->documentIds() as $i => $row) {
             echo "\nDokument ----> $i/$genCount";
             if (empty($row['doc_id']) || empty($row['branch']))
@@ -42,15 +44,15 @@ class FvPaymentRepository extends IApiRepository
             unset($doc);
 
             if (count($this->fetchResult) >= $this->fetchLimit) {
-                    $this->save();
-                    $this->fetchResult = [];
+                $this->save();
+                $this->fetchResult = [];
+            }
 
-                    
-                }
+            $resCount++;
         }
 
         return [
-            'fetched' => count($this->fetchResult)
+            'fetched' => $resCount
         ];
     }
 

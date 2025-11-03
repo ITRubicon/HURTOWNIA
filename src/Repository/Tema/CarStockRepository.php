@@ -15,6 +15,7 @@ class CarStockRepository extends IApiRepository
         $this->clearDataArrays();
         $stocks = $this->getStocks();
         $stocksCount = count($stocks);
+        $resCount = 0;
 
         if ($stocksCount) {
             $i = 1;
@@ -36,17 +37,18 @@ class CarStockRepository extends IApiRepository
                 $i++;
 
                 if (count($this->fetchResult) >= $this->fetchLimit) {
+                    $resCount += count($this->fetchResult);
                     $this->save();
                     $this->fetchResult = [];
                 }
             }
             
+            $resCount += count($this->fetchResult);
             $this->save();
             $this->fetchResult = [];
         } else
             throw new \Exception("Nie znaleziono magazynów. Najpierw uruchom komendę pobierającą listę magazynów [tema:stock]", 99);
             
-        $resCount = count($this->fetchResult);
         $this->clearDataArrays();
         return ['fetched' => $resCount];
     }

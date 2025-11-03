@@ -17,8 +17,8 @@ class AdditionalCostDocumentItemRepository extends IApiRepository
         foreach ($items as $item) {
             array_push($this->fetchResult, $item);
         }
-        $this->save();
         $resCount = count($this->fetchResult);
+        $this->save();
         $this->clearDataArrays();
 
         return $resCount;

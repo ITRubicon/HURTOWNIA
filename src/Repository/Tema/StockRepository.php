@@ -15,8 +15,8 @@ class StockRepository extends IApiRepository
         $this->clearDataArrays();
         
         $this->fetchResult = $this->fetchApiResult($this->endpoint);
-        $this->save();
         $resCount = count($this->fetchResult);
+        $this->save();
         
         return ['fetched' => $resCount];
     }

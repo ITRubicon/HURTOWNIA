@@ -15,6 +15,8 @@ class CustomerContactRepository extends IApiRepository
         $this->clearDataArrays();
         $customersIds = $this->getCustomers();
         $customersCount = count($customersIds);
+        $resCount = 0;
+
         if ($customersCount) {
             $i = 1;
 
@@ -33,17 +35,18 @@ class CustomerContactRepository extends IApiRepository
                 $i++;
 
                 if (count($this->fetchResult) >= $this->fetchLimit) {
+                    $resCount += count($this->fetchResult);
                     $this->save();
                     $this->fetchResult = [];
                 }
             }
 
+            $resCount += count($this->fetchResult);
             $this->save();
             $this->fetchResult = [];
         } else 
             throw new \Exception("Nie znaleziono klentów. Najpierw uruchom komendę pobierającą listę klientóœ [tema:customer]", 99);
 
-        $resCount = count($this->fetchResult);
         $this->clearDataArrays();
         return ['fetched' => $resCount];
     }

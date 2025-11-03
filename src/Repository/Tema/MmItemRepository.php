@@ -27,8 +27,8 @@ class MmItemRepository extends IApiRepository
             array_push($this->fetchResult, $item);
         }
         unset($items);
-        $this->save();
         $resCount = count($this->fetchResult);
+        $this->save();
         $this->clearDataArrays();
 
         

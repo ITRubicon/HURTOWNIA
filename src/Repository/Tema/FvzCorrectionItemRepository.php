@@ -21,8 +21,8 @@ class FvzCorrectionItemRepository extends IApiRepository
         }
         unset($items);
         $this->removeOld();
-        $this->save();
         $resCount = count($this->fetchResult);
+        $this->save();
         $this->clearDataArrays();     
 
         return $resCount;
