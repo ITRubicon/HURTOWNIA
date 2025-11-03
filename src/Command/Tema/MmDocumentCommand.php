@@ -55,7 +55,7 @@ class MmDocumentCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->mmRepo->clearTable();
-        $this->itemRepo->clearTable();
+        $this->mmRepo->removeForCurrentSource();
+        $this->itemRepo->removeForCurrentSource();
     }
 }

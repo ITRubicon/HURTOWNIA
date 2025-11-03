@@ -47,6 +47,6 @@ class FkCechyCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->cechy->clearTable();
+        $this->cechy->removeForCurrentSource();
     }
 }

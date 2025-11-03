@@ -49,7 +49,7 @@ class ReceiptCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->repo->clearTable();
-        $this->itemRepo->clearTable();
+        $this->repo->removeForCurrentSource();
+        $this->itemRepo->removeForCurrentSource();
     }
 }

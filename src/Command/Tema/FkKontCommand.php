@@ -47,6 +47,6 @@ class FkKontCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->kont->clearTable();
+        $this->kont->removeForCurrentSource();
     }
 }

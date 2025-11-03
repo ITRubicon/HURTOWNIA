@@ -61,8 +61,8 @@ class AdditionalCostCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->registerRepo->clearTable();
-        $this->docRepo->clearTable();
-        $this->itemRepo->clearTable();
+        $this->registerRepo->removeForCurrentSource();
+        $this->docRepo->removeForCurrentSource();
+        $this->itemRepo->removeForCurrentSource();
     }
 }

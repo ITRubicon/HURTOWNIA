@@ -47,6 +47,6 @@ class FkDokInfoCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->dokinfo->clearTable();
+        $this->dokinfo->removeForCurrentSource();
     }
 }

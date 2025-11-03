@@ -82,9 +82,9 @@ class ScheduleCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->repo->clearTable();
-        $this->reservationRepo->clearTable();
-        $this->resourcesRepo->clearTable();
-        $this->resourcesAvailabilityRepo->clearTable();
+        $this->repo->removeForCurrentSource();
+        $this->reservationRepo->removeForCurrentSource();
+        $this->resourcesRepo->removeForCurrentSource();
+        $this->resourcesAvailabilityRepo->removeForCurrentSource();
     }
 }

@@ -42,6 +42,6 @@ class DmsUserCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->repo->clearTable();
+        $this->repo->removeForCurrentSource();
     }
 }

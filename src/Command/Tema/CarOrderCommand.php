@@ -50,7 +50,7 @@ class CarOrderCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->orderRepo->clearTable();
-        $this->itemRepo->clearTable();
+        $this->orderRepo->removeForCurrentSource();
+        $this->itemRepo->removeForCurrentSource();
     }
 }

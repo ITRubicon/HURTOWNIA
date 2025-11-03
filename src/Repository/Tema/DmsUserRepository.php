@@ -29,9 +29,7 @@ class DmsUserRepository extends IApiRepository
         } while ($res['fetchNext']);
 
         $this->save();
-        $this->fetchResult = [];
-        
-        
+        $this->fetchResult = [];   
 
         return ['fetched' => $resCount];
     }

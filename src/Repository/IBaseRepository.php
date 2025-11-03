@@ -90,6 +90,13 @@ abstract class IBaseRepository
         ]);
     }
 
+    public function removeForCurrentSource()
+    {
+        dump('Czyszczę tabelę ' . $this->table . ' dla źródła ' . $this->source->getName());
+        $sql = sprintf('DELETE FROM %s WHERE source = :source', $this->table);
+        $this->db->executeStatement($sql, ['source' => $this->source->getName()]);
+    }
+
     public function addRelatedRepository(IApiRepository $repository, string $key): void
     {
         $this->relatedRepositories[$key] = $repository;

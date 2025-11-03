@@ -47,6 +47,6 @@ class FkWpisCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->zapisy->clearTable();
+        $this->zapisy->removeForCurrentSource();
     }
 }

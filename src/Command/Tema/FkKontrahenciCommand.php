@@ -51,7 +51,7 @@ class FkKontrahenciCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->kontrahenci->clearTable();
-        $this->kontaBankowe->clearTable();
+        $this->kontrahenci->removeForCurrentSource();
+        $this->kontaBankowe->removeForCurrentSource();
     }
 }

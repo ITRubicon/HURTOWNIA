@@ -52,7 +52,7 @@ class CustomerCommand extends BaseApiCommand
 
     protected function clearTable()
     {
-        $this->repo->clearTable();
-        $this->contactRepo->clearTable();
+        $this->repo->removeForCurrentSource();
+        $this->contactRepo->removeForCurrentSource();
     }
 }
