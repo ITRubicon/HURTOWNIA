@@ -39,15 +39,15 @@ class CustomerCommand extends BaseApiCommand
     {
         $this->repo->setSource($api);
         $this->repo->removeForCurrentSource();
-        $this->contactRepo->removeForCurrentSource();
         
         $fetchedRows = $this->repo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
-
+        
         $contactsCount = count($fetchedRows['contacts']);
         if ($contactsCount > 0) {
             $io->info(sprintf('Pobrano %s kontaktów', $contactsCount));
             $this->contactRepo->setSource($api);
+            $this->contactRepo->removeForCurrentSource();
             $this->contactRepo->saveContacts($fetchedRows['contacts']);
         }
         unset($fetchedRows);
