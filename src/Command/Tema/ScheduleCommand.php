@@ -45,10 +45,10 @@ class ScheduleCommand extends BaseApiCommand
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
-        if ($api->getBaseUrl() !== self::HANDLED_API) {
+        /* if ($api->getBaseUrl() !== self::HANDLED_API) {
             $io->warning(sprintf('To api nie jest obsługiwane: %s', $api->getBaseUrl()));
             return;
-        }
+        } */
 
         //nie pobieramy abrdziej wstecznie niż początek bieżącego miesiąca
         $dateFrom = date('Y-m-01');
