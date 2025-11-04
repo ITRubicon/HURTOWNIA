@@ -54,9 +54,10 @@ class ScheduleReservationRepository extends IApiRepository
             FROM tema_schedule_items
             WHERE CAST(date_from AS date) BETWEEN :dateFrom AND :dateTo
                 AND related_reservation != ''
+                AND source = :source
         ";
-        
-        return $this->db->iterateKeyValue($q, ['dateFrom' => $this->dateFrom, 'dateTo' => $this->dateTo]);
+
+        return $this->db->iterateKeyValue($q, ['dateFrom' => $this->dateFrom, 'dateTo' => $this->dateTo, 'source' => $this->source]);
     }
 
     protected function getFieldsParams(): array
