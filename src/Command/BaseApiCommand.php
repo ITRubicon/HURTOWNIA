@@ -72,7 +72,7 @@ abstract class BaseApiCommand extends Command
         $io->info('Pobieram dane');
 
         for ($i = 0; $i < $apiSourcesCount; $i++) {
-            // if ($i === 0)
+            if ($i === 0)
                 $this->clearTable();
 
             $io->info(sprintf('Pobieram dla %s', $apiSources[$i]->getName()));
