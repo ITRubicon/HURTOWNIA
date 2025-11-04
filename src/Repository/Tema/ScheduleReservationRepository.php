@@ -57,7 +57,7 @@ class ScheduleReservationRepository extends IApiRepository
                 AND source = :source
         ";
 
-        return $this->db->iterateKeyValue($q, ['dateFrom' => $this->dateFrom, 'dateTo' => $this->dateTo, 'source' => $this->source]);
+        return $this->db->iterateKeyValue($q, ['dateFrom' => $this->dateFrom, 'dateTo' => $this->dateTo, 'source' => $this->source->getName()]);
     }
 
     protected function getFieldsParams(): array
