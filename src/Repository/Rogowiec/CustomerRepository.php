@@ -214,26 +214,42 @@ class CustomerRepository extends IApiRepository
 
         if (!empty($customer['dataProcessingStatements'])) {
             foreach ($customer['dataProcessingStatements'] as $d) {
-                $q = "INSERT INTO rogowiec_customer_rodo_archive (source, customer_code, statement, date_statement, method_statement)
-                    VALUES (:source, :customer_code, :statement, :date_statement, :method_statement)
+                // "dataProcessingStatements": [
+                //     {
+                //         "id": 11411,
+                //         "producer": "Inni producenci",
+                //         "number": "999/01521/2025",
+                //         "time": "2025-08-22T09:42:10.000+02:00",
+                //         "validUntil": "2100-12-31",
+                //         "consents": []
+                //     }
+                // ]
+                $q = "INSERT INTO rogowiec_customer_rodo_archive (source, customer_code, producer, `number`, `time`, valid_until, consents)
+                    VALUES (:source, :customer_code, :producer, :number, :time, :valid_until, :consents)
                         ON DUPLICATE KEY UPDATE
-                        statement = VALUES(statement),
-                        date_statement = VALUES(date_statement),
-                        method_statement = VALUES(method_statement),
+                        producer = VALUES(producer),
+                        number = VALUES(number),
+                        time = VALUES(time),
+                        valid_until = VALUES(valid_until),
+                        consents = VALUES(consents),
                         fetch_date = NOW()
                 ";
                 $this->db->executeQuery($q, [
                     'source' => $this->source->getName(),
                     'customer_code' => $customer['code'],
-                    'statement' => $d['statement'],
-                    'date_statement' => !empty($d['dateStatement']) ? date('Y-m-d H:i:s', strtotime($d['dateStatement'])) : null,
-                    'method_statement' => $d['methodStatement'],
+                    'producer' => $d['producer'],
+                    'number' => $d['number'],
+                    'time' => !empty($d['time']) ? date('Y-m-d H:i:s', strtotime($d['time'])) : null,
+                    'valid_until' => !empty($d['validUntil']) ? date('Y-m-d', strtotime($d['validUntil'])) : null,
+                    'consents' => json_encode($d['consents']),
                 ], [
                     'source' => ParameterType::STRING,
                     'customer_code' => ParameterType::STRING,
-                    'statement' => ParameterType::STRING,
-                    'date_statement' => ParameterType::STRING,
-                    'method_statement' => ParameterType::STRING,
+                    'producer' => ParameterType::STRING,
+                    'number' => ParameterType::STRING,
+                    'time' => ParameterType::STRING,
+                    'valid_until' => ParameterType::STRING,
+                    'consents' => ParameterType::STRING,
                 ]);
             }
         }
