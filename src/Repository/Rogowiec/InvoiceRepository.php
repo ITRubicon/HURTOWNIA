@@ -11,6 +11,7 @@ class InvoiceRepository extends IApiRepository
     private string $idEndpoint = '/api/GetInvoice?Id={id}';
     private string $nameEndpoint = '/api/GetInvoice?InvoiceNo={InvoiceNo}';
     protected $table = 'rogowiec_invoice';
+    private const BATCH_SIZE = 5; // Number of simultaneous requests per batch
 
     public function fetch(): array
     {
@@ -21,22 +22,55 @@ class InvoiceRepository extends IApiRepository
 
         $invoicesIdsCount = count($invoicesIdsToFetch);
         $customersCount = 0;
-        $customers = [];
 
-        for ($i = 0; $i < $invoicesIdsCount; $i++) {
-            echo "\nId faktury " . $invoicesIdsToFetch[$i] . " ----> " . $i + 1 . "/$invoicesIdsCount";
-            $url = str_replace('{id}', $invoicesIdsToFetch[$i], $this->idEndpoint);
-            $res = $this->fetchApiResult($url);
-            if (empty($res['id']))
-                continue;
+        if ($invoicesIdsCount === 0) {
+            return [
+                'fetched' => 0,
+                'customers' => 0
+            ];
+        }
 
-            $this->collectClients($res, $customers);
-            array_push($this->fetchResult, $res);
+        echo "\nPobieram faktury dla $invoicesIdsCount ID w batch'ach po " . self::BATCH_SIZE;
+
+        // Process in batches of BATCH_SIZE requests
+        for ($i = 0; $i < $invoicesIdsCount; $i += self::BATCH_SIZE) {
+            $batchNumber = (int)($i / self::BATCH_SIZE) + 1;
+            $totalBatches = (int)ceil($invoicesIdsCount / self::BATCH_SIZE);
+            echo "\nBatch $batchNumber / $totalBatches";
+
+            $batchIds = array_slice($invoicesIdsToFetch, $i, self::BATCH_SIZE);
+            $urls = [];
+
+            foreach ($batchIds as $index => $invoiceId) {
+                $urls[$index] = str_replace('{id}', $invoiceId, $this->idEndpoint);
+                echo "\nId faktury " . $invoiceId . " ----> " . ($i + $index + 1) . "/$invoicesIdsCount";
+            }
+
+            $responses = $this->httpClient->requestMulti($this->source, $urls);
+
+            foreach ($responses as $responseRaw) {
+                $res = $this->decodeResponseFromRaw($responseRaw);
+                if (!empty($res['id'])) {
+                    $customers = [];
+                    $this->collectClients($res, $customers);
+                    array_push($this->fetchResult, $res);
+                    $customersCount += count($customers);
+                    if (!empty($customers)) {
+                        $this->relatedRepositories['customers']->saveCustomers($customers);
+                    }
+                }
+            }
+
+            // Save when we have enough data
+            if (count($this->fetchResult) >= $this->fetchLimit) {
+                $this->save();
+                $this->fetchResult = [];
+            }
+        }
+
+        // Final save for any remaining results
+        if (!empty($this->fetchResult)) {
             $this->save();
-            $customersCount += count($customers);
-            $this->relatedRepositories['customers']->saveCustomers($customers);
-            unset($invoicesIdsToFetch[$i]);
-            $customers = [];
             $this->fetchResult = [];
         }
 
@@ -123,6 +157,16 @@ class InvoiceRepository extends IApiRepository
         unset($invoice['customers']);
     }
 
+    private function decodeResponseFromRaw($raw): array
+    {
+        if (empty($raw) || $raw === false) {
+            return [];
+        }
+
+        $decoded = json_decode($raw, true);
+        return is_array($decoded) ? $decoded : [];
+    }
+
     private function fetchInvoiceId()
     {
         $unitsIds = $this->fetchUnitId();
@@ -182,6 +226,5 @@ class InvoiceRepository extends IApiRepository
     protected function clearDataArrays()
     {
         $this->fetchResult = [];
-        $this->customers = [];
     }
 }
