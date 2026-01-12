@@ -45,6 +45,7 @@ class InvoiceCommand extends BaseApiCommand
         $this->repo->setSource($api);
         $this->customerRepo->setSource($api);
         $this->customerInvoiceRepo->setSource($api);
+        $this->customerInvoiceRepo->setCustomerRepository($this->customerRepo);
         $this->repo->addRelatedRepository($this->customerInvoiceRepo, 'customers');
         
         $this->repo->setDateFrom($this->cmdArgs['dateFrom']);
