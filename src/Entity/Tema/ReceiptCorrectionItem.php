@@ -8,11 +8,9 @@ use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
 
 #[ORM\Entity(repositoryClass: WzItemRepository::class)]
-#[Table(name: 'tema_fvz_correction_document_item')]
+#[Table(name: 'tema_receipt_correction_item')]
 #[Index(name: "source_docid_idx", fields: ["source", "doc_id"])]
-#[Index(name: "source_vin_idx", fields: ["source", "vin"])]
-#[Index(name: "vin_idx", fields: ["vin"])]
-class FvzCorrectionItem
+class ReceiptCorrectionItem
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -47,22 +45,16 @@ class FvzCorrectionItem
     private ?string $originalNetPrice = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
-    private ?string $correctedPriceDifference = null;
+    private ?string $correctedNetPriceDifference = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
+    private ?string $purchasePrice = null;
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $unit = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
     private ?string $taxRate = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 4)]
-    private ?string $net_value = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $carId = null;
-
-    #[ORM\Column(length: 17, nullable: true)]
-    private ?string $vin = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?string $income_type = null;
 
     #[ORM\Column]
     private ?bool $isExempt = null;
