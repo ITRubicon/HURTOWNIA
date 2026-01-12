@@ -55,7 +55,7 @@ class InvoiceRepository extends IApiRepository
                     $this->collectClients($res, $customers);
                     array_push($this->fetchResult, $res);
                     $customersCount += count($customers);
-                    if (!empty($customers)) {
+                    if (!empty($customers) && isset($this->relatedRepositories['customers'])) {
                         $this->relatedRepositories['customers']->saveCustomers($customers);
                     }
                 }
