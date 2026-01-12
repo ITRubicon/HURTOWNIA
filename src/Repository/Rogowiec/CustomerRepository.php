@@ -13,26 +13,62 @@ class CustomerRepository extends IApiRepository
     private $phones = [];
     private $emails = [];
     private $dataProcessingStatements = [];
+    private const BATCH_SIZE = 5; // Number of simultaneous requests per batch
 
     public function fetch(): array
     {
         $this->clearDataArrays();
         $clientCodes = $this->fetchClientCodes();
         $codesCount = count($clientCodes);
-        $i = 0;
 
-        for ($i = 0; $i < $codesCount; $i++) {
-            echo "\nKlient " . $i + 1 . "/$codesCount";
-            $url = str_replace('{code}', $clientCodes[$i], $this->endpoint);
-            $res = $this->fetchApiResult($url);
-            if (empty($res['code']))
-                continue;
-            $this->collectFeature($res, 'addresses');
-            $this->collectFeature($res, 'emails');
-            $this->collectFeature($res, 'phones');
-            $this->collectFeature($res, 'dataProcessingStatements');
-            array_push($this->fetchResult, $res);
-            unset($clientCodes[$i]);
+        if ($codesCount === 0) {
+            return [
+                'fetched' => 0,
+                'emails' => $this->emails,
+                'phones' => $this->phones,
+                'addresses' => $this->addresses,
+                'rodo' => $this->dataProcessingStatements,
+            ];
+        }
+
+        echo "\nPobieram dane klientów dla $codesCount kodów w batch'ach po " . self::BATCH_SIZE;
+
+        // Process in batches of BATCH_SIZE requests
+        for ($i = 0; $i < $codesCount; $i += self::BATCH_SIZE) {
+            $batchNumber = (int)($i / self::BATCH_SIZE) + 1;
+            $totalBatches = (int)ceil($codesCount / self::BATCH_SIZE);
+            echo "\nBatch $batchNumber / $totalBatches";
+
+            $batchCodes = array_slice($clientCodes, $i, self::BATCH_SIZE);
+            $urls = [];
+
+            foreach ($batchCodes as $index => $code) {
+                $urls[$index] = str_replace('{code}', $code, $this->endpoint);
+                echo "\n  Kod: $code ----> " . ($i + $index + 1) . "/$codesCount";
+            }
+
+            $responses = $this->httpClient->requestMulti($this->source, $urls);
+
+            foreach ($responses as $responseRaw) {
+                $res = $this->decodeResponseFromRaw($responseRaw);
+                if (!empty($res['code'])) {
+                    $this->collectFeature($res, 'addresses');
+                    $this->collectFeature($res, 'emails');
+                    $this->collectFeature($res, 'phones');
+                    $this->collectFeature($res, 'dataProcessingStatements');
+                    array_push($this->fetchResult, $res);
+                }
+            }
+
+            // Save when we have enough data
+            if (count($this->fetchResult) >= $this->fetchLimit) {
+                $this->save();
+                $this->fetchResult = [];
+            }
+        }
+
+        // Final save for any remaining results
+        if (!empty($this->fetchResult)) {
             $this->save();
             $this->fetchResult = [];
         }
@@ -250,6 +286,16 @@ class CustomerRepository extends IApiRepository
                 fetch_date = NOW()
         ";
         $this->db->executeQuery($q);
+    }
+
+    private function decodeResponseFromRaw($raw): array
+    {
+        if (empty($raw) || $raw === false) {
+            return [];
+        }
+
+        $decoded = json_decode($raw, true);
+        return is_array($decoded) ? $decoded : [];
     }
 
     private function collectFeature(&$client, $feature)
