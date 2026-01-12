@@ -10,7 +10,6 @@ class InvoiceRepository extends IApiRepository
     private string $invoiceIdEndpoint = '/api/GetInvoiceList?DateFrom={date_from}&DateTo={date_to}&ResourceId={resource_id}';
     private string $idEndpoint = '/api/GetInvoice?Id={id}';
     private string $nameEndpoint = '/api/GetInvoice?InvoiceNo={InvoiceNo}';
-    private $customers = [];
     protected $table = 'rogowiec_invoice';
 
     public function fetch(): array
@@ -21,6 +20,8 @@ class InvoiceRepository extends IApiRepository
         $invoicesIdsToFetch = array_values(array_diff($invoicesIds, $invoicesArchived));
 
         $invoicesIdsCount = count($invoicesIdsToFetch);
+        $customersCount = 0;
+        $customers = [];
 
         for ($i = 0; $i < $invoicesIdsCount; $i++) {
             echo "\nId faktury " . $invoicesIdsToFetch[$i] . " ----> " . $i + 1 . "/$invoicesIdsCount";
@@ -29,16 +30,19 @@ class InvoiceRepository extends IApiRepository
             if (empty($res['id']))
                 continue;
 
-            $this->collectClients($res);
+            $this->collectClients($res, $customers);
             array_push($this->fetchResult, $res);
             $this->save();
+            $customersCount += count($customers);
+            $this->relatedRepositories['customers']->saveCustomers($customers);
             unset($invoicesIdsToFetch[$i]);
+            $customers = [];
             $this->fetchResult = [];
         }
 
         return [
             'fetched' => $invoicesIdsCount,
-            'customers' => $this->customers
+            'customers' => $customersCount
         ];
     }
 
@@ -109,12 +113,12 @@ class InvoiceRepository extends IApiRepository
         $this->db->executeQuery($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }
 
-    private function collectClients(array &$invoice)
+    private function collectClients(array &$invoice, array &$customers)
     {
         foreach ($invoice['customers'] as $c) {
             $c['customer']['invoice_id'] = $invoice['id'];
             $c['customer']['customer_kind'] = $c['kind'];
-            array_push($this->customers, $c['customer']);
+            array_push($customers, $c['customer']);
         }
         unset($invoice['customers']);
     }

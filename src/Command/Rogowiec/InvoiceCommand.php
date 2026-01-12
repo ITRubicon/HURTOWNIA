@@ -45,20 +45,21 @@ class InvoiceCommand extends BaseApiCommand
         $this->repo->setSource($api);
         $this->customerRepo->setSource($api);
         $this->customerInvoiceRepo->setSource($api);
-        $this->customerInvoiceRepo->setCustomerRepository($this->customerRepo);
+        $this->customerRepo->addRelatedRepository($this->customerInvoiceRepo, 'customers');
         
         $this->repo->setDateFrom($this->cmdArgs['dateFrom']);
         $this->repo->setDateTo($this->cmdArgs['dateTo']);
         
         $fetchedRows = $this->repo->fetch();
         $io->info(sprintf("Pobrano %s rekordów", $fetchedRows['fetched']));
+        $io->info(sprintf('Pobrano %s klientów z faktur', $fetchedRows['customers']));
 
-        $customersCount = count($fetchedRows['customers']);
-        if ($customersCount > 0) {
-            $io->info(sprintf('Pobrano %s klientów z faktur', $customersCount));
-            $this->customerInvoiceRepo->saveCustomers($fetchedRows['customers']);
-            $this->customerInvoiceRepo->archive();
-        }
+        // $customersCount = count($fetchedRows['customers']);
+        // if ($customersCount > 0) {
+        //     $io->info(sprintf('Pobrano %s klientów z faktur', $customersCount));
+        //     $this->customerInvoiceRepo->saveCustomers($fetchedRows['customers']);
+        //     $this->customerInvoiceRepo->archive();
+        // }
         
         $io->info('Archiwum faktur');
         $this->repo->archive();

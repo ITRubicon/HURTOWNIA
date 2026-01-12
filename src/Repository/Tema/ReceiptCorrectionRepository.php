@@ -39,8 +39,6 @@ class ReceiptCorrectionRepository extends IApiRepository
                     $this->fetchResult = [];
                     $this->relatedRepositories['items']->saveItems($receiptItems);
                     $receiptItems = [];
-
-                    
                 }
 
             } while ($res['fetchNext']);

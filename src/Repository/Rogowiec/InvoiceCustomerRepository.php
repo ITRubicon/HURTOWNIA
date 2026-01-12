@@ -10,17 +10,13 @@ class InvoiceCustomerRepository extends IApiRepository
     private $customerRepo;
     protected $table = 'rogowiec_invoice_customer';
 
-    public function setCustomerRepository($CustomerRepository)
-    {
-        $this->customerRepo = $CustomerRepository;
-    }
-
     public function saveCustomers(array $customers)
     {
         $this->clearDataArrays();
         $this->fetchResult = $customers;
         $this->fetchCustomerData($customers);
         $this->save();
+        $this->archive();
         $this->clearDataArrays();
     }
 
