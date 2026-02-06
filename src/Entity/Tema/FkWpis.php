@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping\Table;
 #[Index(name: "data_dok_idx", fields: ["data_dok"])]
 #[Index(name: "konto_idx", fields: ["konto"])]
 #[Index(name: "id_wpisu_idx", fields: ["id_wpisu"])]
+#[Index(name: "rok_idx", fields: ["rok"])]
 class FkWpis
 {
     #[ORM\Id]
