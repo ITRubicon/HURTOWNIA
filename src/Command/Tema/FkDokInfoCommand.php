@@ -36,9 +36,14 @@ class FkDokInfoCommand extends BaseApiCommand
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
+        if (!$api->hasFk()) {
+            $io->warning(sprintf("Api %s nie obsługuje FK, pomijam", $api->getName()));
+            return;
+        }
+
         $this->dokinfo->setSource($api);
         $this->dokinfo->setDateFrom($this->dateFrom);
-        $this->dokinfo->removeForCurrentSource();
+        // $this->dokinfo->removeForCurrentSource();
 
         $io->text(sprintf("Pobieranie informacji o dokumentach dla roku %s", date('Y', strtotime($this->dateFrom))));
         $fetchedRows = $this->dokinfo->fetch();

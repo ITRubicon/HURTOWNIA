@@ -36,9 +36,14 @@ class FkCechyCommand extends BaseApiCommand
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
+        if (!$api->hasFk()) {
+            $io->warning(sprintf("Api %s nie obsługuje FK, pomijam", $api->getName()));
+            return;
+        }
+
         $this->cechy->setSource($api);
         $this->cechy->setDateFrom($this->dateFrom);
-        $this->cechy->removeForCurrentSource();
+        // $this->cechy->removeForCurrentSource();
 
         $io->text(sprintf("Pobieranie cech dokumentów dla roku %s", date('Y', strtotime($this->dateFrom))));
         $fetchedRows = $this->cechy->fetch();

@@ -38,6 +38,11 @@ class FkKontrahenciCommand extends BaseApiCommand
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
+        if (!$api->hasFk()) {
+            $io->warning(sprintf("Api %s nie obsługuje FK, pomijam", $api->getName()));
+            return;
+        }
+        
         $this->kontrahenci->setSource($api);
         $this->kontaBankowe->setSource($api);
         $this->kontrahenci->removeForCurrentSource();

@@ -36,6 +36,11 @@ class FkWpisCommand extends BaseApiCommand
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
+        if (!$api->hasFk()) {
+            $io->warning(sprintf("Api %s nie obsługuje FK, pomijam", $api->getName()));
+            return;
+        }
+
         $this->zapisy->setSource($api);
         $this->zapisy->setDateFrom($this->dateFrom);
         

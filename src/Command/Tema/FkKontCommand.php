@@ -36,9 +36,14 @@ class FkKontCommand extends BaseApiCommand
 
     protected function fetch(IConnection $api, SymfonyStyle &$io)
     {
+        if (!$api->hasFk()) {
+            $io->warning(sprintf("Api %s nie obsługuje FK, pomijam", $api->getName()));
+            return;
+        }
+
         $this->kont->setSource($api);
         $this->kont->setDateFrom($this->dateFrom);
-        $this->kont->removeForCurrentSource();
+        // $this->kont->removeForCurrentSource();
 
         $io->text(sprintf("Pobieranie zapisów kont dla roku %s", date('Y', strtotime($this->dateFrom))));
         $fetchedRows = $this->kont->fetch();

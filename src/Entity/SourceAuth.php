@@ -32,6 +32,9 @@ class SourceAuth implements IConnection
     #[ORM\Column(length: 255)]
     private ?string $auth = null;
 
+    #[ORM\Column(options: ["default" => false])]
+    private ?bool $hasFk = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +108,18 @@ class SourceAuth implements IConnection
     public function setProducer(string $producer): self
     {
         $this->producer = $producer;
+
+        return $this;
+    }
+
+    public function hasFk(): bool
+    {
+        return $this->hasFk;
+    }
+
+    public function setHasFk(bool $hasFk): self
+    {
+        $this->hasFk = $hasFk;
 
         return $this;
     }

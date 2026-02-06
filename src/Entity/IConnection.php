@@ -8,4 +8,5 @@ interface IConnection
     public function getAuth();
     public function getAuthType();
     public function getName();
+    public function hasFk(): bool;
 }
