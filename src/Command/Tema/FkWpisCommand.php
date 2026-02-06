@@ -38,7 +38,7 @@ class FkWpisCommand extends BaseApiCommand
     {
         $this->zapisy->setSource($api);
         $this->zapisy->setDateFrom($this->dateFrom);
-        $this->zapisy->removeForCurrentSource();
+        
         $io->text(sprintf("Pobieranie zapisów dokumentów dla roku %s", date('Y', strtotime($this->dateFrom))));
 
         $fetchedRows = $this->zapisy->fetch();
