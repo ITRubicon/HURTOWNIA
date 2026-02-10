@@ -22,7 +22,10 @@ class WzDocumentRepository extends IApiRepository
         if ($listCount) {
             echo "\nPobieram zapisy dokumentów";
 
-            for ($i=0; $i < $listCount; $i++) { 
+            for ($i=0; $i < $listCount; $i++) {
+                if (empty($this->documentEndpoints[$i]['getUrl']))
+                    continue;
+
                 echo "\nEndpoint ----> $i/$listCount";
                 $doc = $this->fetchApiResult($this->documentEndpoints[$i]['getUrl']);
                 unset($this->documentEndpoints[$i]);
