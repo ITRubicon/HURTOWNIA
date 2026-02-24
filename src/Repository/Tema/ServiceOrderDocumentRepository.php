@@ -30,7 +30,7 @@ class ServiceOrderDocumentRepository extends IApiRepository
     {
         $this->clearDataArrays();
         $this->getDocumentEndpointList();
-        $this->filterOutPossessed();
+        // $this->filterOutPossessed();
         $listCount = count($this->documentEndpoints);
 
         $documentItems = [];
