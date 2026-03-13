@@ -55,8 +55,6 @@ abstract class IApiRepository extends IBaseRepository
     {
         $response = $this->httpClient->getContent();
 
-        dump($response, $this->httpClient->getHttpCode());
-
         return json_decode($response, true);
     }
 }
