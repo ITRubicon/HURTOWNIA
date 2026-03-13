@@ -56,7 +56,10 @@ class ServiceInvoiceRepository extends IApiRepository
 
     private function filterOutPossessed()
     {
-        $possessed = $this->db->fetchFirstColumn("SELECT doc_id FROM {$this->table} WHERE source = :source", ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
+        $possessed = $this->db->fetchFirstColumn(
+            "SELECT doc_id FROM {$this->table} WHERE source = :source AND name NOT LIKE 'TMP%'",
+            ['source' => $this->source->getName()], ['source' => ParameterType::STRING]
+        );
 
         echo PHP_EOL . 'Możliwe do pobrania dokumenty: ' . count($this->documentEndpoints) . "\033[0m" . PHP_EOL;
         echo PHP_EOL . 'Posiadane dokumenty: ' . count($possessed) . "\033[0m" . PHP_EOL;
