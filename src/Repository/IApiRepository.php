@@ -43,7 +43,9 @@ abstract class IApiRepository extends IBaseRepository
             return false;
         if (empty($this->httpClient->getContent()))
             return false;
-        if (!preg_match('/NotFound/i', $this->decodeResponse()['code']))
+
+        // bypass na dzikie rozwiązania TEMY - niektóre endpointy zwracają 400/404, mimo że zapytanie jest poprawne, ale u nich nie ma danych, więc zwracają błąd, zamiast pustej tablicy
+        if (!preg_match('/NotFound|unknownTable/i', $this->httpClient->getContent()))
             return false;
         
         return true;
@@ -52,9 +54,8 @@ abstract class IApiRepository extends IBaseRepository
     protected function decodeResponse(): array
     {
         $response = $this->httpClient->getContent();
-        if (str_contains($response, 'Us³ugaPunktSprzedazy')) {
-            $response = preg_replace('/Us³ugaPunktSprzedazy/', 'UsługaPunktSprzedazy', $response);
-        }
+
+        dump($response, $this->httpClient->getHttpCode());
 
         return json_decode($response, true);
     }
