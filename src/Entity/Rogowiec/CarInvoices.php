@@ -46,6 +46,6 @@ class CarInvoices
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $kod_typu_korekty = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(length: 80, nullable: true)]
     private ?string $typ_korekty = null;
 }
