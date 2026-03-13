@@ -88,6 +88,10 @@ abstract class IBaseRepository
             'dateTo' => $dateTo->format('Y-m-d 23:59:59'),
             'source' => $this->source->getName()
         ]);
+        
+        $this->db->executeQuery("DELETE FROM $this->table WHERE name LIKE 'TMP%' AND source = :source", [
+            'source' => $this->source->getName()
+        ]);
     }
 
     public function removeForCurrentSource()
