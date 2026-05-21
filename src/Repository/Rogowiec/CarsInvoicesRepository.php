@@ -111,7 +111,6 @@ class CarsInvoicesRepository extends IApiRepository
                 'fv_numer' => $row['NumerFaktury'],
                 'source' => $this->source->getName()
             ];
-            dump($q, $params);
             $this->db->executeStatement($q, $params);
         }
         
