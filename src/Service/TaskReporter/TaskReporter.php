@@ -13,6 +13,7 @@ class TaskReporter
     private $errorRepo;
     private $jobHistory;
     private $alert;
+    private ?string $commandName = null;
 
     public function __construct(ApiFetchErrorRepository $errorRepo, JobHistoryRepository $jobHistory, Alert $alert)
     {
@@ -21,13 +22,19 @@ class TaskReporter
         $this->alert = $alert;
     }
 
+    public function setCommandName(string $commandName): void
+    {
+        $this->commandName = $commandName;
+    }
+
     public function reportApiFetchError(string $connectionName, string $path, int $httpCode)
     {
         $error = new ApiFetchError;
         $error
             ->setEndpoint($path)
             ->setSource($connectionName)
-            ->setHttpCode($httpCode);
+            ->setHttpCode($httpCode)
+            ->setCommand($this->commandName);
         $this->errorRepo->save($error, true);
     }
 

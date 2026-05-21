@@ -29,6 +29,9 @@ class ApiFetchError
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $time = null;
 
+    #[ORM\Column(length: 60, nullable: true)]
+    private ?string $command = null;
+
     
     #[ORM\PrePersist]
     public function onPrePersistSetRegistrationDate()
@@ -85,6 +88,18 @@ class ApiFetchError
     public function setTime(\DateTimeInterface $time): self
     {
         $this->time = $time;
+
+        return $this;
+    }
+
+    public function getCommand(): ?string
+    {
+        return $this->command;
+    }
+
+    public function setCommand(?string $command): self
+    {
+        $this->command = $command;
 
         return $this;
     }

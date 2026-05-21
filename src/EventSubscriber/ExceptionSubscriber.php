@@ -50,6 +50,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
 
         $commandName = $command->getName();
         if ($commandName != 'cache:clear') {
+            $this->taskReporter->setCommandName($commandName);
             $this->id = $this->taskReporter->setStart($commandName, $args);
             $output->writeln(sprintf('ZAPIS DO JOBS_HISTORY'));
         }
