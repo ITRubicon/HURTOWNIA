@@ -87,6 +87,7 @@ class CarsInvoicesRepository extends IApiRepository
             
             // Save when we have enough data
             if (count($this->fetchResult) >= $this->fetchLimit) {
+                $this->removeOldRecords($this->fetchResult);
                 $this->save();
                 $this->clearDataArrays();
             }
@@ -94,10 +95,26 @@ class CarsInvoicesRepository extends IApiRepository
         
         // Final save for any remaining results
         if (!empty($this->fetchResult)) {
+            $this->removeOldRecords($this->fetchResult);
             $this->save();
             $this->clearDataArrays();
         }
         return ['fetched' => $resCount];
+    }
+
+    private function removeOldRecords(array $newData)
+    {   
+        foreach ($newData as $row) {
+            $q = "DELETE FROM {$this->table} WHERE vin = :vin AND fv_numer = :fv_numer AND source = :source";
+            $params = [
+                'vin' => $row['VIN'],
+                'fv_numer' => $row['NumerFaktury'],
+                'source' => $this->source->getName()
+            ];
+            dump($q, $params);
+            $this->db->executeStatement($q, $params);
+        }
+        
     }
 
     private function decodeResponseFromRaw($raw): array
