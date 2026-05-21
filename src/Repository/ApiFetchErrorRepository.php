@@ -42,11 +42,11 @@ class ApiFetchErrorRepository extends ServiceEntityRepository
     public function clearErrors(string $commandName): int
     {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = "DELETE FROM api_fetch_error WHERE command = :command AND CAST(`time` AS date) = :today";
+        $sql = "DELETE FROM api_fetch_error WHERE command = :command AND `time` < :today";
         $stmt = $conn->prepare($sql);
         $res = $stmt->executeQuery([
             'command' => $commandName,
-            'today'   => date('Y-m-d'),
+            'today'   => date('Y-m-d 00:00:00'),
         ]);
 
         return $res->rowCount() ?? 0;
