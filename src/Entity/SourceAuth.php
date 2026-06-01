@@ -35,6 +35,9 @@ class SourceAuth implements IConnection
     #[ORM\Column(options: ["default" => false])]
     private ?bool $hasFk = false;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $rpm = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +123,18 @@ class SourceAuth implements IConnection
     public function setHasFk(bool $hasFk): self
     {
         $this->hasFk = $hasFk;
+
+        return $this;
+    }
+
+    public function getRpm(): ?int
+    {
+        return $this->rpm;
+    }
+
+    public function setRpm(?int $rpm): self
+    {
+        $this->rpm = $rpm;
 
         return $this;
     }

@@ -18,6 +18,9 @@ class HttpClient
         'Content-Type: application/json'
     ];
     private $timer;
+    private $rpm;
+    private $rateLimitKey;
+    private $requestWindows = [];
     private const MAX_ATTEMPTS = 3;
     private const WAIT_TIME_STEP = 10; // seconds
     private $tryColors = [
@@ -51,6 +54,7 @@ class HttpClient
         $success = false;
 
         do {
+            $this->enforceRateLimit();
             echo PHP_EOL . $this->tryColors[$attempt - 1] . "Próba $attempt" . "\033[0m" . PHP_EOL;
             $this->ch = curl_init();
             curl_setopt($this->ch, CURLOPT_URL, $this->baseUrl . $path);
@@ -110,6 +114,7 @@ class HttpClient
 
             // Prepare handles for pending requests
             foreach ($pending as $key => $path) {
+                $this->enforceRateLimit();
                 echo PHP_EOL . $this->baseUrl . $path;
                 echo PHP_EOL . $this->tryColors[$attempts[$key] - 1] . "Próba " . $attempts[$key] . "\033[0m" . PHP_EOL;
                 $ch = curl_init();
@@ -205,6 +210,40 @@ class HttpClient
         $this->auth = $apiConn->getAuth();
         $this->authType = $apiConn->getAuthType();
         $this->baseUrl = $apiConn->getBaseUrl();
+        $this->rpm = $apiConn->getRpm();
+        $this->rateLimitKey = sprintf('%s|%s', $apiConn->getName(), $this->baseUrl);
+    }
+
+    private function enforceRateLimit(): void
+    {
+        if ($this->rpm === null || $this->rpm <= 0 || $this->rateLimitKey === null) {
+            return;
+        }
+
+        if (!isset($this->requestWindows[$this->rateLimitKey])) {
+            $this->requestWindows[$this->rateLimitKey] = [];
+        }
+
+        $window = &$this->requestWindows[$this->rateLimitKey];
+
+        while (true) {
+            $now = microtime(true);
+            $window = array_values(array_filter(
+                $window,
+                static fn(float $timestamp): bool => ($now - $timestamp) < 60
+            ));
+
+            if (count($window) < $this->rpm) {
+                $window[] = $now;
+                break;
+            }
+
+            $oldest = $window[0];
+            $waitSeconds = max(0, 60 - ($now - $oldest));
+            if ($waitSeconds > 0) {
+                usleep((int) ceil($waitSeconds * 1000000));
+            }
+        }
     }
 
     private function removeUnprintableChars()

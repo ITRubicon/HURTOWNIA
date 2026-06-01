@@ -9,4 +9,5 @@ interface IConnection
     public function getAuthType();
     public function getName();
     public function hasFk(): bool;
+    public function getRpm(): ?int;
 }
