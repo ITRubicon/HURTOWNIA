@@ -241,6 +241,12 @@ class HttpClient
             $oldest = $window[0];
             $waitSeconds = max(0, 60 - ($now - $oldest));
             if ($waitSeconds > 0) {
+                echo PHP_EOL . sprintf(
+                    "[RATE LIMIT] %s: %d/min, oczekiwanie %.2fs przed kolejnym zapytaniem",
+                    $this->rateLimitKey,
+                    $this->rpm,
+                    $waitSeconds
+                ) . PHP_EOL;
                 usleep((int) ceil($waitSeconds * 1000000));
             }
         }
