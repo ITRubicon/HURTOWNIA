@@ -17,7 +17,8 @@ class CarsInvoicesRepository extends IApiRepository
         wartosc = VALUES(wartosc),
         faktura_rodzaj = VALUES(faktura_rodzaj),
         kod_typu_korekty = VALUES(kod_typu_korekty),
-        typ_korekty = VALUES(typ_korekty)
+        typ_korekty = VALUES(typ_korekty),
+        fetch_date = NOW()
     ';
 
     public function fetch(): array
@@ -145,11 +146,14 @@ class CarsInvoicesRepository extends IApiRepository
     private function findVins()
     {
         $q = "SELECT
-                source,
-                vin
-            FROM prehurtownia.rogowiec_cars_sold
-            WHERE source = :source
-                AND korekty_wartosc != 0
+                s.source,
+                s.vin
+            FROM prehurtownia.rogowiec_cars_sold s
+            LEFT JOIN prehurtownia.rogowiec_car_invoices rci ON rci.source = s.source AND rci.vin = s.vin
+            WHERE s.source = :source
+                AND COALESCE(rci.fetch_date, '1970-01-01') <= DATE_SUB(NOW(), INTERVAL 3 DAY)
+                AND s.korekty_wartosc != 0
+                
         ";
         return $this->db->fetchAllAssociative($q, ['source' => $this->source->getName()], ['source' => ParameterType::STRING]);
     }

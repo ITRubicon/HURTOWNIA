@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: "source_idx", columns: ["source"])]
 #[ORM\Index(name: "vin_idx", columns: ["vin", "fv_numer"])]
 #[ORM\Index(name: "fv_data_idx", columns: ["fv_data"])]
+#[ORM\Index(name: "fetch_date_idx", columns: ["fetch_date"])]
 class CarInvoices
 {
     #[ORM\Id]
@@ -48,4 +49,7 @@ class CarInvoices
 
     #[ORM\Column(length: 80, nullable: true)]
     private ?string $typ_korekty = null;
+ 
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private ?\DateTimeInterface $fetch_date = null;
 }
