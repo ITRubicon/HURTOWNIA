@@ -39,8 +39,6 @@ class ServiceInvoiceRepository extends IApiRepository
                     $this->fetchResult = [];
                     $this->relatedRepositories['items']->saveItems($documentItems);
                     $documentItems = [];
-
-                    
                 }
             }
             $this->save();
@@ -58,13 +56,20 @@ class ServiceInvoiceRepository extends IApiRepository
     {
         $possessed = $this->db->fetchFirstColumn(
             "SELECT doc_id FROM {$this->table} WHERE source = :source AND name NOT LIKE 'TMP%'",
-            ['source' => $this->source->getName()], ['source' => ParameterType::STRING]
+            ['source' => $this->source->getName()],
+            ['source' => ParameterType::STRING]
         );
 
         echo PHP_EOL . 'Możliwe do pobrania dokumenty: ' . count($this->documentEndpoints) . "\033[0m" . PHP_EOL;
         echo PHP_EOL . 'Posiadane dokumenty: ' . count($possessed) . "\033[0m" . PHP_EOL;
 
         if (!empty($possessed)) {
+            $this->documentEndpoints = array_reduce($this->documentEndpoints, function ($carry, $item) {
+                if (!in_array($item['objectId'], array_column($carry, 'objectId'))) {
+                    $carry[] = $item;
+                }
+                return $carry;
+            }, []);
             // [
             //     {
             //         "objectId": "string",
@@ -72,7 +77,7 @@ class ServiceInvoiceRepository extends IApiRepository
             //     }
             // ]
 
-            $this->documentEndpoints = array_filter($this->documentEndpoints, function($doc) use ($possessed) {
+            $this->documentEndpoints = array_filter($this->documentEndpoints, function ($doc) use ($possessed) {
                 return !in_array($doc['objectId'], $possessed);
             });
             // reset keys
